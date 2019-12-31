@@ -6,12 +6,21 @@ const { filterBlack } = require('../utils/filters');
 
 // gets current user, for use by user
 exports.getUser = catchAsync(async (req, res) => {
-  const user = await User.findById(req.user.id);
+  const token = req.headers.authorization.split(' ')[1];
+  // const user = await User.findById(req.user.id);
+  const user = await User.findById(req.user._id).populate(
+    'profile',
+    '_id id displayName avatar'
+  );
+  await Profile.findByIdAndUpdate(req.user.profile._id, {
+    lastActive: new Date()
+  });
 
   res.status(200).json({
     status: 'success',
     data: {
-      user
+      user,
+      token
     }
   });
 });

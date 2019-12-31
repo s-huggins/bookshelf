@@ -1,0 +1,26 @@
+.Header__brand {
+  .logo {
+    display: flex;
+    align-items: center;
+
+    @media (max-width: $mobile-width) {
+      flex-direction: column;
+    }
+
+    .logo-icon {
+      margin-right: 0.35rem;
+    }
+
+    .logo-text {
+      .logo-text__left {
+        color: $logo-primary;
+        font-weight: 400;
+      }
+
+      .logo-text__right {
+        color: $logo-secondary;
+        font-weight: 300;
+      }
+    }
+  }
+}

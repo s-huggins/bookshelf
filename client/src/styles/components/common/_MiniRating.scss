@@ -1,0 +1,24 @@
+.MiniRating {
+  display: inline-flex;
+
+  span {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    background-size: cover;
+    background-image: url(../../../img/star-off.png);
+  }
+
+  // .off {
+  //   background-image: url(../../../img/star-off.png);
+  // }
+  .on {
+    background-image: url(../../../img/star-full.png);
+  }
+  .half {
+    background-image: url(../../../img/star-half.png);
+  }
+  .high {
+    background-image: url(../../../img/star-high.png);
+  }
+}

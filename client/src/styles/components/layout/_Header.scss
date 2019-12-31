@@ -1,0 +1,43 @@
+.Header {
+  width: 100%;
+  position: fixed;
+  z-index: 20;
+
+  @media (max-width: $mobile-width) {
+    position: static;
+  }
+}
+
+.Header nav {
+  min-height: $header-height;
+  background-color: $bg-secondary;
+  width: 100%;
+  font-size: 2rem;
+}
+
+.Header--expand nav {
+  @media (max-width: 700px) {
+    min-height: 5rem;
+  }
+}
+
+.Header {
+  nav {
+    display: flex;
+    align-items: center;
+    box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.15);
+
+    .container {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 2rem;
+      padding: 0.5rem 0rem;
+
+      @media (max-width: $mobile-width) {
+        flex-direction: column;
+      }
+    }
+  }
+}

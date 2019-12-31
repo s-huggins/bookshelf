@@ -1,0 +1,98 @@
+.HeaderSearch {
+  margin-right: 1rem;
+  max-width: 32rem;
+  flex-grow: 1;
+  position: relative;
+  .searchbar {
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    @media (max-width: $mobile-width) {
+      margin-right: 0;
+      width: 100%;
+    }
+
+    input {
+      width: 100%;
+      padding-right: 1.8rem;
+      height: 2rem;
+      font-size: 0.9rem;
+    }
+
+    button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      right: 0.4rem;
+      font-size: 1rem;
+      opacity: 0.6;
+    }
+  }
+
+  .ResultsPreview {
+    width: 100%;
+    position: absolute;
+    background-color: #fff;
+    z-index: 50;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-bottom: none;
+    display: flex;
+    flex-direction: column;
+
+    .ResultPreview {
+      display: flex;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+      max-height: 55px;
+      padding: 0.5rem;
+      padding-bottom: 0;
+      overflow: hidden;
+
+      .work-image {
+        max-height: 50px;
+        width: 50px;
+        overflow: hidden;
+        margin-right: 0.4rem;
+      }
+      .work-details {
+        max-height: 50px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        .work-title {
+          font-size: 0.9rem;
+          margin-bottom: 0.3rem;
+          padding: 0;
+        }
+
+        .work-by {
+          font-family: $font-secondary;
+          font-size: 0.75rem;
+          .work-author {
+            font-size: 0.78rem;
+          }
+        }
+      }
+    }
+
+    .ResultPreview.inFocus {
+      background-color: $hover-color;
+    }
+
+    .see-all {
+      font-size: 0.9rem;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+      &:hover {
+        span {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}

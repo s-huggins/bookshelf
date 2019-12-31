@@ -3,20 +3,27 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
+const Profile = require('./Profile');
 
 const { Schema } = mongoose;
 
 const userSchema = new Schema({
+  profile: {
+    type: Schema.Types.ObjectId,
+    ref: 'Profile'
+  },
   name: {
     type: String,
     required: [true, 'User must have a name'],
     maxlength: 40
   },
+
   email: {
     type: String,
     required: [true, 'User must have an email'],
     unique: true,
-    validate: [validator.default.isEmail, 'Email is invalid']
+    validate: [validator.default.isEmail, 'Email is invalid'],
+    maxlength: 100
   },
   password: {
     type: String,
@@ -41,16 +48,19 @@ const userSchema = new Schema({
     enum: ['user', 'admin'],
     default: 'user'
   },
-  avatar: {
-    type: String
-  },
-  date: {
+
+  dateCreated: {
     type: Date,
     default: Date.now
   },
   passwordChangedAt: Date,
   passwordResetToken: String,
   passwordResetExpires: Date
+});
+
+userSchema.pre('save', function(next) {
+  this.wasNew = this.isNew;
+  next();
 });
 
 userSchema.pre('save', async function(next) {
@@ -66,6 +76,22 @@ userSchema.pre('save', function(next) {
   if (!this.isModified('password') || this.isNew) return next();
 
   this.passwordChangedAt = Date.now() - 1000; // ensures new auth token gets issued after password changed
+  next();
+});
+
+userSchema.post('save', async function(doc, next) {
+  if (this.wasNew) {
+    await Profile.create({
+      user: doc._id,
+      firstName: doc.name
+    });
+  }
+  next();
+});
+
+userSchema.post('remove', async function(doc, next) {
+  // TODO: test this
+  await Profile.findByIdAndRemove(doc.profile);
   next();
 });
 

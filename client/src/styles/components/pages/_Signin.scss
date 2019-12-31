@@ -1,0 +1,14 @@
+@import 'form-box';
+
+.Signin {
+  @extend %form-box;
+
+  .signin-footer {
+    padding-top: 0.5rem;
+    font-size: 0.8rem;
+
+    a {
+      padding-left: 0.4rem;
+    }
+  }
+}

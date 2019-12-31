@@ -1,0 +1,11 @@
+@import 'form-box';
+
+.Signup {
+  @extend %form-box;
+
+  .signup-terms {
+    margin: 1rem 2rem;
+    font-size: 0.85rem;
+    opacity: 0.9;
+  }
+}

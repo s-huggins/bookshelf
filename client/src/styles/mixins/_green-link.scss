@@ -1,0 +1,8 @@
+@mixin green-link {
+  .green-link {
+    color: $txt-green;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

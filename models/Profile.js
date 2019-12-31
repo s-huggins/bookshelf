@@ -1,5 +1,9 @@
 /* eslint-disable object-shorthand, func-names */
 const mongoose = require('mongoose');
+const validator = require('validator');
+const autoIncrementModelId = require('./Counter');
+
+// const User = require('./User');
 
 const { Schema } = mongoose;
 
@@ -20,7 +24,13 @@ const { Schema } = mongoose;
 function getAge(birthday) {
   const today = new Date();
   const yearsDiff = today.getFullYear() - birthday.getFullYear();
-  return today.getDay() < birthday.getDay() ? yearsDiff - 1 : yearsDiff;
+  if (
+    today.getMonth() < birthday.getMonth() ||
+    today.getDate() < birthday.getDate()
+  ) {
+    return yearsDiff - 1;
+  }
+  return yearsDiff;
 }
 
 const profileSchema = new Schema(
@@ -29,64 +39,190 @@ const profileSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'User'
     },
+    id: {
+      type: Number,
+      unique: true,
+      min: 1
+    },
+    isPublic: {
+      type: Boolean,
+      default: true
+    },
+    friends: {
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Profile'
+        }
+      ],
+      default: []
+    },
+    friendRequests: {
+      type: [
+        {
+          kind: {
+            type: String,
+            enum: ['Sent', 'Received']
+          },
+          profile: {
+            type: Schema.Types.ObjectId,
+            ref: 'Profile'
+          }
+        }
+      ],
+      default: []
+    },
     firstName: {
       type: String,
       required: [true, 'First name is required'],
-      min: 1,
-      max: 40
-    },
-    middleName: {
-      type: String,
-      max: 40
+      minlength: 1,
+      maxlength: 40
     },
     lastName: {
-      type: String,
-      max: 40
+      value: {
+        type: String,
+        maxlength: 40
+      },
+      private: {
+        type: Boolean,
+        default: false
+      }
     },
     displayName: {
       type: String,
-      max: 40,
+      maxlength: 20,
       default() {
-        return this.firstName;
+        return this.firstName.substring(0, 20);
+      }
+    },
+    handle: {
+      type: String,
+      unique: true,
+      maxlength: 40,
+      minlength: 1,
+      validate: {
+        validator: function(handle) {
+          return /^[a-zA-Z][a-zA-Z0-9-]*$/.test(handle);
+        },
+        message:
+          'Handle must begin with a letter and consist of only alphanumeric characters and dashes.'
       }
     },
     birthday: {
-      type: Date,
-      // required: [true, 'User must confirm their age'],
-      validate: {
-        validator: function(birthday) {
-          return getAge(birthday) >= 13;
-        },
-        message: 'User must be 13 to register'
+      value: {
+        type: Date,
+        // required: [true, 'User must confirm their age'],
+        validate: {
+          validator: function(birthday) {
+            return getAge(birthday) >= 13;
+          },
+          message: 'User must be 13 to register'
+        }
+      },
+      private: {
+        type: Boolean,
+        default: false
       }
     },
-    country: {
-      type: String,
-      max: 80
+    ratings: {
+      type: [
+        {
+          rating: {
+            type: Number,
+            enum: [1, 2, 3, 4, 5]
+          },
+          bookId: Number
+        }
+      ],
+      default: []
+    },
+    reviews: {
+      type: [
+        {
+          review: {
+            type: String,
+            maxlength: 8000
+          },
+          bookId: Number
+        }
+      ],
+      default: []
+    },
+    location: {
+      value: {
+        type: String,
+        maxlength: 200
+      },
+      private: {
+        type: Boolean,
+        default: false
+      }
     },
     website: {
-      type: String
+      type: String,
+      maxlength: 80,
+      validate: {
+        validator: function(val) {
+          if (val) return validator.default.isURL(val);
+        },
+        message: 'Website not a valid URL'
+      }
     },
     aboutMe: {
       type: String,
-      max: [2000, 'About me cannot exceed 2000 characters.']
+      maxlength: [2000, 'About me cannot exceed 2000 characters.']
     },
-    favGenres: [String],
-    interests: [String],
-    gender: {
+    favBooks: {
       type: String,
-      enum: ['Male', 'Female', 'Other']
+      maxlength: 400,
+      default: ''
     },
-    avatar: String,
-    photos: [String],
+    interests: {
+      type: String,
+      maxlength: 400
+    },
+    gender: {
+      value: {
+        type: String,
+        enum: ['Male', 'Female', 'Other', 'Unspecified'],
+        default: 'Unspecified'
+      },
+      private: {
+        type: Boolean,
+        default: false
+      }
+    },
+    avatar_id: {
+      type: Schema.Types.ObjectId
+    },
+    lastActive: {
+      type: Date,
+      default: Date.now
+    },
+    // photos: [String],
     social: {
-      facebook: String,
-      twitter: String,
-      instagram: String,
-      youtube: String,
-      linkedin: String
+      facebook: {
+        type: String,
+        maxlength: 80
+      },
+      twitter: {
+        type: String,
+        maxlength: 80
+      },
+      instagram: {
+        type: String,
+        maxlength: 80
+      },
+      youtube: {
+        type: String,
+        maxlength: 80
+      },
+      linkedin: {
+        type: String,
+        maxlength: 80
+      }
     },
-    date: {
+    dateCreated: {
       type: Date,
       default: Date.now()
     }
@@ -97,8 +233,53 @@ const profileSchema = new Schema(
   }
 );
 
+profileSchema.pre('save', function(next) {
+  this.wasNew = this.isNew;
+  next();
+});
+
+profileSchema.pre('findOneAndUpdate', function(next) {
+  const { website } = this._update;
+  if (
+    website &&
+    !website.startsWith('http://') &&
+    !website.startsWith('https://')
+  ) {
+    this._update.website = `https://${this._update.website}`;
+  }
+
+  next();
+});
+
+// increment and get profile id counter
+profileSchema.pre('save', function(next) {
+  if (!this.isNew) {
+    return next();
+  }
+  autoIncrementModelId('profiles', this, next);
+});
+
+profileSchema.post('save', async function(doc, next) {
+  if (this.wasNew) {
+    await mongoose
+      .model('User')
+      .findByIdAndUpdate(doc.user, { profile: doc._id });
+  }
+  next();
+});
+
 profileSchema.virtual('age').get(function() {
-  return this.birthday ? getAge(this.birthday) : undefined;
+  // return this.birthday
+  //   ? getAge(this.birthday.value)
+  //   : undefined;
+  if (this.birthday && this.birthday.value) {
+    const yearsOld = getAge(this.birthday.value);
+    const { isPrivate } = this.birthday;
+    const age = { value: yearsOld, private: isPrivate };
+
+    return age;
+  }
+  return undefined;
 });
 
 const Profile = mongoose.model('Profile', profileSchema);

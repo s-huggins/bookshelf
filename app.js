@@ -1,17 +1,46 @@
 const express = require('express');
+const cors = require('cors');
 const morgan = require('morgan');
 const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xssClean = require('xss-clean');
-const usersRouter = require('./routes/api/v1/usersRoutes');
-const profileRouter = require('./routes/api/v1/profileRoutes');
+const usersRouter = require('./routes/api/v1/users/usersRoutes');
+const profileRouter = require('./routes/api/v1/profile/profileRoutes');
+const searchRouter = require('./routes/api/v1/search/searchRoutes');
+const authorRouter = require('./routes/api/v1/author/authorRoutes');
+const bookRouter = require('./routes/api/v1/book/bookRoutes');
 const AppError = require('./utils/AppError');
 const globalErrorHandler = require('./controllers/errorController');
 
 const app = express();
 
-// Sets security HTTP headers
+// app.use((req, res, next) => {
+//   console.log(req.method);
+//   if(req.method === 'OPTIONS')
+//   next();
+// });
 app.use(helmet());
+// app.disable('etag');
+
+app.use(
+  cors({
+    origin: 'http://localhost:3000'
+  })
+);
+
+// app.options('*', cors());
+
+// app.use((req, res, next) => {
+//   res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+//   res.setHeader(
+//     'Access-Control-Allow-Methods',
+//     'DELETE, POST, GET, PATCH, OPTIONS'
+//   );
+//   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   next();
+// });
+
+// Sets security HTTP headers
 
 /**
  * // limit requests to API
@@ -37,6 +66,9 @@ app.use(xssClean());
 
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/search', searchRouter);
+app.use('/api/v1/book', bookRouter);
+app.use('/api/v1/author', authorRouter);
 
 app.all('*', (req, res, next) => {
   next(new AppError(`Can't find ${req.originalUrl}`, 404));

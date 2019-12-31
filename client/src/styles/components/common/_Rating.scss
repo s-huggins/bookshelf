@@ -1,0 +1,26 @@
+.Rating {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  align-items: center;
+
+  span {
+    cursor: pointer;
+    height: 18px;
+    width: 18px;
+    display: inline-block;
+    background-image: url(../../../img/star-off.png);
+    background-size: cover;
+
+    &:hover {
+      background-image: url(../../../img/star-on.png);
+    }
+    &:hover ~ span {
+      background-image: url(../../../img/star-on.png);
+    }
+  }
+
+  .star-on {
+    background-image: url(../../../img/star-on.png);
+    background-size: cover;
+  }
+}
