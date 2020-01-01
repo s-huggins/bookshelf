@@ -9,14 +9,12 @@ const Header = () => {
   const loadingUser = useSelector(state => state.auth.loadingUser);
 
   return (
-    <header className={`Header ${!isAuthenticated ? 'Header--expand' : ''}`}>
-      <nav>
-        <div className="container">
-          <HeaderLogo />
+    <header className={`Header${!isAuthenticated ? ' Header--expand' : ''}`}>
+      <nav className="header-contents">
+        <HeaderLogo />
 
-          {!loadingUser &&
-            (isAuthenticated ? <HeaderProfile /> : <HeaderLogin />)}
-        </div>
+        {!loadingUser &&
+          (isAuthenticated ? <HeaderProfile /> : <HeaderLogin />)}
       </nav>
     </header>
   );

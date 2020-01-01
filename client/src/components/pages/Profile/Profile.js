@@ -1,9 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import Loader from '../../common/Loader';
-
 import PrivateProfile from './PrivateProfile';
-
 import Friends from './Friends';
 import ProfileDetails from './ProfileDetails';
 import ProfileSide from './ProfileSide';
@@ -101,15 +99,11 @@ const Profile = ({ match }) => {
 
   return (
     <div className="Profile">
-      <div className="container">
-        <main>
-          <div className="profile">
-            <ProfileSide token={token} profile={buildProfileSide(profile)} />
-            <ProfileDetails profile={buildProfileDetails(profile)} />
-          </div>
-        </main>
-        <Friends />
-      </div>
+      <main className="profile">
+        <ProfileSide token={token} profile={buildProfileSide(profile)} />
+        <ProfileDetails profile={buildProfileDetails(profile)} />
+      </main>
+      <Friends />
     </div>
   );
 };

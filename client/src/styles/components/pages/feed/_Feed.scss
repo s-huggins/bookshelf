@@ -2,14 +2,14 @@
 @import '../../../mixins/middle-dot';
 
 .Feed {
-  @include green-link;
-  @include middle-dot;
+  // @include green-link;
+  // @include middle-dot;
 
   a:hover {
     text-decoration: underline;
   }
 
-  .Feed__container {
+  &__container {
     display: flex;
     justify-content: space-between;
     padding-top: 0.8rem;
@@ -20,7 +20,7 @@
       font-size: 1rem;
     }
 
-    .sidebar {
+    .sidebar--feed {
       flex-basis: 25%;
       // border: 1px solid black;
       padding: 0.4rem;
@@ -41,13 +41,13 @@
         display: none;
       }
 
-      .sidebar__panel {
+      .sidebar--feed__panel {
         border-bottom: 1px solid rgba(0, 0, 0, 0.1);
         padding: 0.75rem 0.2rem;
         padding-top: 0;
       }
 
-      .sidebar__panel-footer {
+      .sidebar--feed__panel-footer {
         margin-top: 0.5rem;
         font-size: 0.95rem;
       }
@@ -77,7 +77,7 @@
   }
 }
 
-.sidebar {
+.sidebar--feed {
   flex-basis: 25%;
   // border: 1px solid black;
   padding: 0.4rem;
@@ -88,13 +88,13 @@
     flex-basis: 24%;
   }
 
-  .sidebar__panel {
+  .sidebar--feed__panel {
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);
     padding: 0.75rem 0.2rem;
     padding-top: 0;
   }
 
-  .sidebar__panel-footer {
+  .sidebar--feed__panel-footer {
     margin-top: 0.5rem;
     font-size: 0.95rem;
   }

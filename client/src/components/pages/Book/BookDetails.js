@@ -47,7 +47,7 @@ const BookDetails = ({ data }) => {
         publication = (
           <li key="publication">
             {publication}{' '}
-            <span className="text-tiny">{`(first published ${pubDateOriginal})`}</span>
+            <span className="text-tiny first-published">{`(first published ${pubDateOriginal})`}</span>
           </li>
         );
       else publication = <li key="publication">{publication}</li>;
@@ -57,7 +57,7 @@ const BookDetails = ({ data }) => {
 
     if (physical || publication)
       return (
-        <ul className="details-physical">
+        <ul className="profile__details profile__details--book details-physical">
           {[physical, publication].filter(p => p).map(p => p)}
         </ul>
       );
@@ -75,7 +75,7 @@ const BookDetails = ({ data }) => {
     originalTitle = book.work && book.work.original_title;
     originalTitle = originalTitle && (
       <li key="title">
-        <span className="data-bold">Original Title</span>
+        <span className="text-bold">Original Title</span>
         {originalTitle}
       </li>
     );
@@ -84,26 +84,26 @@ const BookDetails = ({ data }) => {
     editionLang = editionLang.international || editionLang.native || null;
     editionLang = editionLang && (
       <li key="lang">
-        <span className="data-bold">Edition Language</span>
+        <span className="text-bold">Edition Language</span>
         {editionLang}
       </li>
     );
 
     isbn = book.isbn && (
       <li key="isbn">
-        <span className="data-bold">ISBN</span>
+        <span className="text-bold">ISBN</span>
         {book.isbn}
       </li>
     );
     isbn13 = book.isbn13 && (
       <li key="isbn13">
-        <span className="data-bold">ISBN13</span>
+        <span className="text-bold">ISBN13</span>
         {book.isbn13}
       </li>
     );
     kindleAsin = book.kindle_asin && (
       <li key="kindle">
-        <span className="data-bold">Kindle ASIN</span>
+        <span className="text-bold">Kindle ASIN</span>
         {book.kindle_asin}
       </li>
     );
@@ -117,7 +117,11 @@ const BookDetails = ({ data }) => {
     ].filter(d => d);
 
     if (metadata.length)
-      return <ul className="details-metadata">{metadata.map(d => d)}</ul>;
+      return (
+        <ul className="profile__details profile__details--book details-metadata">
+          {metadata.map(d => d)}
+        </ul>
+      );
     else return null;
   };
 

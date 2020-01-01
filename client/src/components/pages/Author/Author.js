@@ -1,117 +1,87 @@
-import React from 'react';
-import cormac from '../../../img/cormac.jpg';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import AuthorBook from './AuthorBook';
+import {
+  fetchAuthor,
+  clearFetchStatus
+} from '../../../redux/author/authorActions';
+import Loader from '../../common/Loader';
+import { Redirect, Link } from 'react-router-dom';
+import AuthorDetails from './AuthorDetails';
 
-const Author = () => {
+const Author = ({ match }) => {
+  const authorId = match.params.id;
+  const [loading, setLoading] = useState(true);
+
+  const dispatch = useDispatch();
+  const author = useSelector(state => state.author.author);
+  const fetchStatus = useSelector(state => state.author.fetchStatus);
+
+  /* Fetch author data on mount and with each route :id param change */
+  useEffect(() => {
+    setLoading(true);
+    dispatch(fetchAuthor(authorId));
+  }, [match.params.id]);
+
+  useEffect(() => {
+    if (fetchStatus !== '') {
+      setLoading(false);
+      dispatch(clearFetchStatus());
+    }
+  }, [fetchStatus]);
+
+  console.log(loading);
+  if (loading) return <Loader />;
+  console.log('after loading, fetchstatus is', fetchStatus);
+
+  if (fetchStatus === 'fail' || !author) return <Redirect to="/not-found" />;
+  if (fetchStatus === 'error')
+    return (
+      <Redirect
+        to={{ pathname: '/something-went-wrong', state: { pushTo: '/' } }}
+      />
+    );
+
+  console.log('reached auth render');
+
   return (
-    <div className="Profile">
-      <div className="container">
-        <div className="profile">
-          <div className="profile__side">
-            <div className="profile__avatar">
-              <img src={cormac} alt="author" />
-            </div>
-          </div>
-          <div className="profile__main">
-            <h1>Cormac McCarthy</h1>
-            <ul>
-              <li>Born</li>
-              <li>Website</li>
-              <li>Genre</li>
-              <li>Influences</li>
-            </ul>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Voluptatibus assumenda tempore et quasi quisquam nam id
-              repellendus quod accusantium molestias aliquam quo error deserunt,
-              nobis harum libero. Tempora dicta sapiente, numquam reprehenderit
-              odit natus itaque necessitatibus aperiam illum quam! Nulla sit
-              accusamus porro earum, praesentium neque nam id fugit quod
-              voluptate aperiam error, et ducimus sunt necessitatibus possimus
-              corrupti hic similique doloremque tenetur laudantium? Alias
-              consequatur esse qui minima voluptas enim rerum accusantium
-              veniam, est dolores facilis dolorem fugit vel omnis praesentium
-              laboriosam iusto quam voluptatem quisquam modi culpa ullam quidem
-              odio commodi. Laborum beatae molestiae quibusdam! Maxime, esse
-              illo?
-            </p>
-          </div>
+    <div className="Author">
+      <div className="profile">
+        <div className="profile__side">
+          <img className="profile__img" src={author.image_url} alt="author" />
         </div>
-        {/* <div className="Author__profile-side">
-            <img src={cormac} alt="author" />
+        <div className="profile__main">
+          <div className="profile__header">
+            <h1 className="profile__header-text">{author.name}</h1>
           </div>
-          <div className="Author__profile-main">
-            <h1 className="Author-name">Cormac McCarthy</h1>
-            <ul>
-              <li>Born</li>
-              <li>Website</li>
-              <li>Genre</li>
-              <li>Influences</li>
-            </ul>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Voluptatibus assumenda tempore et quasi quisquam nam id
-              repellendus quod accusantium molestias aliquam quo error deserunt,
-              nobis harum libero. Tempora dicta sapiente, numquam reprehenderit
-              odit natus itaque necessitatibus aperiam illum quam! Nulla sit
-              accusamus porro earum, praesentium neque nam id fugit quod
-              voluptate aperiam error, et ducimus sunt necessitatibus possimus
-              corrupti hic similique doloremque tenetur laudantium? Alias
-              consequatur esse qui minima voluptas enim rerum accusantium
-              veniam, est dolores facilis dolorem fugit vel omnis praesentium
-              laboriosam iusto quam voluptatem quisquam modi culpa ullam quidem
-              odio commodi. Laborum beatae molestiae quibusdam! Maxime, esse
-              illo?
-            </p>
+          <div className="profile__body">
+            <AuthorDetails author={author} />
+            <p
+              className="profile__description"
+              dangerouslySetInnerHTML={{ __html: author.about }}
+            ></p>
+          </div>
 
-            <div className="Author-books">
-              <h2>Cormac McCarthy's books</h2>
-              BookResult list here
-            </div>
-          </div> */}
+          <div className="Author-books">
+            <h2 className="Author-books__header">
+              {author.name.endsWith('s')
+                ? `${author.name}'`
+                : `${author.name}'s`}{' '}
+              books
+            </h2>
+            {author.books.book.map(book => (
+              <AuthorBook key={book.id} book={book} />
+            ))}
+          </div>
+          <span className="more-books green-link">
+            <Link to={`/author/${authorId}/books`}>
+              More books by {author.name}...
+            </Link>
+          </span>
+        </div>
       </div>
     </div>
   );
 };
 
 export default Author;
-
-{
-  /* <div className="Author">
-      <div className="container">
-        <div className="Author__profile">
-          <div className="Author__profile-side">
-            <img src={cormac} alt="author" />
-          </div>
-          <div className="Author__profile-main">
-            <h1 className="Author-name">Cormac McCarthy</h1>
-            <ul>
-              <li>Born</li>
-              <li>Website</li>
-              <li>Genre</li>
-              <li>Influences</li>
-            </ul>
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-              Voluptatibus assumenda tempore et quasi quisquam nam id
-              repellendus quod accusantium molestias aliquam quo error deserunt,
-              nobis harum libero. Tempora dicta sapiente, numquam reprehenderit
-              odit natus itaque necessitatibus aperiam illum quam! Nulla sit
-              accusamus porro earum, praesentium neque nam id fugit quod
-              voluptate aperiam error, et ducimus sunt necessitatibus possimus
-              corrupti hic similique doloremque tenetur laudantium? Alias
-              consequatur esse qui minima voluptas enim rerum accusantium
-              veniam, est dolores facilis dolorem fugit vel omnis praesentium
-              laboriosam iusto quam voluptatem quisquam modi culpa ullam quidem
-              odio commodi. Laborum beatae molestiae quibusdam! Maxime, esse
-              illo?
-            </p>
-
-            <div className="Author-books">
-              <h2>Cormac McCarthy's books</h2>
-              BookResult list here
-            </div>
-          </div>
-        </div>
-      </div>
-    </div> */
-}

@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import Rating from '../../common/Rating';
 import MiniRating from '../../common/MiniRating';
+import DropdownButton from '../../common/DropdownButton';
 
 const BookResult = ({
   work: {
@@ -31,31 +32,10 @@ const BookResult = ({
           <MiniRating average={4.22} />
           <span className="text-tiny">
             4.22 avg rating — 654,257 ratings — published{' '}
-            {original_publication_year} —{' '}
-            {`${books_count} edition${+books_count === 1 ? '' : 's'}`}
+            {original_publication_year}
           </span>
         </div>
-        {/* <button clas>Want to Read</button> */}
-        <div className="btn-group">
-          <button className="btn btn--green">Want to Read</button>
-          <button className="btn btn--green btn--dropdown">
-            <i className="fas fa-caret-down"></i>
-          </button>
-          <div className="btn-dropdown-pane">
-            <ul>
-              <a href="#!">
-                <li>Want to Read</li>
-              </a>
-
-              <a href="#!">
-                <li>Currently reading</li>
-              </a>
-              <a href="#!">
-                <li>Read</li>
-              </a>
-            </ul>
-          </div>
-        </div>
+        <DropdownButton />
         <div className="BookResult__rate">
           <span className="BookResult__rate-text text-tiny">
             Rate this book

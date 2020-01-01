@@ -11,6 +11,10 @@ class UrlBuilder {
     return 'https://www.goodreads.com/author/show'; // /:authorId?format=xml
   }
 
+  static get GR_API_AUTHOR_BOOKS() {
+    return 'https://www.goodreads.com/author/list'; // /:authorId?format=xml
+  }
+
   static encodeQuery(query) {
     return encodeURIComponent(query);
   }
@@ -26,6 +30,10 @@ class UrlBuilder {
 
   static buildAuthorProfile(authorId) {
     return `${UrlBuilder.GR_API_AUTHOR_PROFILE}/${authorId}?format=xml&key=${process.env.GOODREADS_KEY}`;
+  }
+
+  static buildAuthorBooks(authorId, page) {
+    return `${UrlBuilder.GR_API_AUTHOR_BOOKS}/${authorId}?format=xml&key=${process.env.GOODREADS_KEY}&page=${page}`;
   }
 }
 

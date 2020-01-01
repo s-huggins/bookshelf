@@ -14,7 +14,7 @@
  *
  * out: `William Shakespeare`
  */
-exports.removeLinks = text => {
+const removeLinks = text => {
   return text.replace(/<a[^>]*?>(.*)<\/a>/gi, '$1');
 };
 
@@ -26,7 +26,7 @@ exports.removeLinks = text => {
  * @regex /<a.*goodreads\.com.*>(.*)<\/a>/gi
  *
  */
-exports.removeGoodreadsLinks = text => {
+const removeGoodreadsLinks = text => {
   return text.replace(/<a.*goodreads\.com.*>(.*)<\/a>/gi, '$1');
 };
 
@@ -48,9 +48,32 @@ exports.removeGoodreadsLinks = text => {
  */
 
 // /https?:\/\/www\.goodreads\.com\/(author|book)\/show\/(\d+).*(?=")/gi
-exports.rewriteLinks = text => {
+const rewriteLinks = text => {
   return text.replace(
     /https?:\/\/www\.goodreads\.com\/(author|book)\/show\/(\d+).*?(?=")/gi,
     '/$1/$2'
   );
+};
+
+module.exports = class Rewriter {
+  constructor(text) {
+    this.text = text;
+  }
+
+  rewriteLinks() {
+    this.text = this.text.replace(
+      /https?:\/\/www\.goodreads\.com\/(author|book)\/show\/(\d+).*?(?=")/gi,
+      '/$1/$2'
+    );
+    return this;
+  }
+
+  removeGoodreadsLinks() {
+    this.text = this.text.replace(/<a.*goodreads\.com.*>(.*)<\/a>/gi, '$1');
+    return this;
+  }
+
+  print() {
+    return this.text;
+  }
 };

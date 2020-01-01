@@ -1,55 +1,43 @@
 import React from 'react';
 import gulag from '../../../img/gulag.jpg';
 import avatar from '../../../img/avatar.png';
+import DropdownButton from '../../common/DropdownButton';
+import Rating from '../../common/Rating';
 
 const FeedUpdate = () => {
   return (
     <div className="FeedUpdate">
-      <div className="Feed__panel">
-        <div className="Feed__panel-header">
+      <div className="Feed-panel">
+        <div className="Feed-panel__header">
           <span className="user-name">Stuart</span> wants to read
         </div>
-        <div className="Feed__panel-body">
-          <div className="Feed__panel-img">
+        <div className="Feed-panel__body">
+          <div className="Feed-panel__img">
             <img src={gulag} alt="bookcover" />
           </div>
-          <div className="Feed__panel-content">
-            <h3 className="Feed__panel-content-header--title">
+          <div className="Feed-panel__content">
+            <h3 className="Feed-panel__content-header">
               The Gulag Archipelago, 1918-1956: An Experiment in Literary
               Investigation
             </h3>
             by <span>Aleksandr Solzhenitsyn</span>
-            <div>
-              <div className="btn-group">
-                <button className="btn btn--green">Want to Read</button>
-                <button className="btn btn--green btn--dropdown">
-                  <i className="fas fa-caret-down"></i>
-                </button>
-                <div className="btn-dropdown-pane">
-                  <ul>
-                    <a href="#!">
-                      <li>Want to Read</li>
-                    </a>
-
-                    <a href="#!">
-                      <li>Currently reading</li>
-                    </a>
-                    <a href="#!">
-                      <li>Read</li>
-                    </a>
-                  </ul>
-                </div>
-              </div>
+            <div className="Feed-panel__content-actions">
+              <DropdownButton /> Rate it: <Rating />
             </div>
             <p>
               Drawing on his own incarceration and exile, as well as on evidence
               from more than 200 fellow prisoners and Soviet archives, Aleksandr
               I. Solzhenitsyn reveals the entire apparatus of Soviet repression
               -- the state within the state that ruled all-powerfully.
+              <span className="continue-reading">
+                <a href="#!" className="green-link">
+                  Continue reading
+                </a>
+              </span>
             </p>
           </div>
         </div>
-        <div className="Feed__panel-footer">
+        <div className="Feed-panel__footer">
           <a href="#!" className="green-link">
             Like
           </a>

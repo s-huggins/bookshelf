@@ -13,6 +13,7 @@ import Search from '../pages/Search/Search';
 import Book from '../pages/Book/Book';
 import WentWrong from '../pages/WentWrong';
 import Author from '../pages/Author/Author';
+import AuthorBooks from '../pages/Author/AuthorBooks';
 
 const Routes = () => {
   return (
@@ -34,6 +35,12 @@ const Routes = () => {
         <PrivateRoute exact path="/search" component={Search} />
         <PrivateRoute exact path="/book/:id" component={Book} />
         <PrivateRoute exact path="/author/:id" component={Author} />
+        <PrivateRoute exact path="/author/:id/books/" component={AuthorBooks} />
+        <PrivateRoute
+          exact
+          path="/author/:id/books/page/:pageNum?"
+          component={AuthorBooks}
+        />
         <PrivateRoute exact path="/:handle" component={Profile} />
       </Switch>
     </>

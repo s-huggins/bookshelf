@@ -17,65 +17,64 @@ const ProfileDetails = ({ profile }) => {
   return (
     <div className="profile__main">
       <div className="profile__header">
-        <h1>
+        <h1 className="profile__header-text">
           {`${profile.displayName} ${profile.handle &&
             '(' + profile.handle + ')'} `}
           {profile.ownProfile && (
-            <span>
-              <Link className="green-link" to="/user/edit">
-                (edit profile)
-              </Link>
-            </span>
+            <Link className="green-link edit-profile" to="/user/edit">
+              (edit profile)
+            </Link>
           )}
         </h1>
       </div>
       <div className="profile__body">
         {!profile.ownProfile && (
           <div className="profile__actions">
-            <button className="btn btn--dark">Add friend</button>
-            <button className="btn btn--light">Message</button>
+            <button className="btn btn--dark btn--action">Add friend</button>
+            <button className="btn btn--light btn--action">Message</button>
           </div>
         )}
-        <ul>
+        <ul className="profile__details">
           {profile.name && (
             <li>
-              <span>Name</span> {profile.name}
+              <span className="text-bold">Name</span> {profile.name}
             </li>
           )}
           {profile.details && (
             <li>
-              <span>Details</span> {profile.details}
+              <span className="text-bold">Details</span> {profile.details}
             </li>
           )}
           {profile.birthday && (
             <li>
-              <span>Birthday</span> {profile.birthday}
+              <span className="text-bold">Birthday</span> {profile.birthday}
             </li>
           )}
           {profile.website && (
             <li>
-              <span>Website</span>{' '}
+              <span className="text-bold">Website</span>{' '}
               <a href={profile.website} className="green-link">
                 {profile.website}
               </a>
             </li>
           )}
           <li>
-            <span>Activity</span> {profile.activity}
+            <span className="text-bold">Activity</span> {profile.activity}
           </li>
           {profile.interests && (
             <li>
-              <span>Interests</span> {profile.interests}
+              <span className="text-bold">Interests</span> {profile.interests}
             </li>
           )}
           {profile.favBooks && (
             <li>
-              <span>Favorite Books</span> {profile.favBooks}
+              <span className="text-bold">Favorite Books</span>{' '}
+              {profile.favBooks}
             </li>
           )}
           {profile.aboutMe && (
             <li>
-              <span>About Me</span>{' '}
+              <span className="text-bold">About Me</span>{' '}
               <p>
                 {seeMore.isNeeded && seeMore.show
                   ? profile.aboutMe.substring(0, 400) + '...'

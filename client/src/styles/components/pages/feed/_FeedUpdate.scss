@@ -1,89 +1,42 @@
-@import '../../../mixins/green-link';
-@import '../../../mixins/middle-dot';
-
-.Feed__panel {
-  @include green-link;
-  @include middle-dot;
-
+.Feed-panel {
   margin-top: 1rem;
   background-color: white;
   border: 1px solid rgba(0, 0, 0, 0.1);
-  padding: 0.8rem 2rem;
+  border-bottom: none;
+  padding: 1.2rem 2rem;
 
-  .Feed__panel-header {
+  .Feed-panel__header {
     .user-name {
       font-weight: 700;
     }
     margin-bottom: 0.8rem;
   }
 
-  .Feed__panel-body {
+  .Feed-panel__body {
     display: flex;
 
-    .Feed__panel-img {
+    .Feed-panel__img {
       max-width: 200px;
       margin-right: 1rem;
     }
 
-    .Feed__panel-content {
-      .Feed__panel-content-header--title {
+    .Feed-panel__content {
+      &-header {
         font-weight: 900;
         font-size: 0.95rem;
         font-family: $font-secondary;
         margin-bottom: 0.3rem;
-        // font-weight: bolder;
       }
 
-      .btn-group {
-        // border: 1px solid black;
-        display: inline-block;
-        position: relative;
-        margin-top: 0.4rem;
-        .btn--green {
-          font-size: 0.9rem;
-          padding: 0.4rem 0.5rem;
-          padding-right: 2rem;
+      &-actions {
+        display: flex;
+        align-items: center;
+        font-size: 0.9rem;
+        .DropdownButton {
+          margin-right: 0.8rem;
         }
-
-        .btn--dropdown {
-          padding-right: 0.6rem;
-
-          &:hover {
-            + .btn-dropdown-pane {
-              display: inline-block;
-            }
-          }
-        }
-
-        .btn-dropdown-pane {
-          font-size: 0.8rem;
-          background-color: white;
-          border: 1px solid rgba(0, 0, 0, 0.2);
-          box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.35);
-          // display: inline-block;
-          display: none;
-          // padding: 0.15rem 0.8rem;
-          position: absolute;
-          top: 98%;
-          right: 0;
-          // right: 0;
-
-          &:hover {
-            display: inline-block;
-          }
-
-          ul {
-            list-style-type: none;
-            // padding: 0.2rem 0rem;
-            a {
-              // border: 1px solid black;
-              display: block;
-              padding: 0.3rem 0.8rem;
-
-              li {
-              }
-            }
-          }
+        .Rating {
+          margin-left: 0.5rem;
         }
       }
 
@@ -92,8 +45,13 @@
         line-height: 1.4;
         margin-top: 0.75rem;
       }
+
+      .continue-reading {
+        // display: inline-block;
+        padding-left: 0.4rem;
+      }
     }
-    .Feed__panel-footer {
+    .Feed-panel-footer {
       margin-top: 0.75rem;
     }
   }

@@ -3,7 +3,7 @@ $txt-green: #00635d;
 $txt-light: #999;
 $logo-primary: #382110;
 $logo-secondary: #9e9286;
-$bg-primary: rgba(244, 241, 234, 0.502);
+$bg-primary: #f4f1ea;
 $bg-secondary: #f9f7f4;
 $bg-tertiary: #f3f3f3;
 $hover-color: #f4f1ea;
@@ -19,9 +19,8 @@ $font-secondary: 'Merriweather', serif;
 
 $header-height: 4rem;
 
-$body-width-lg: 80%;
-$body-width-md: 80%;
-$body-width-sm: 90%;
+$body-max-width: 1500px;
+$page-max-width: 1200px;
 
 $mobile-width: 600px;
 $header-login-breakpoint: 700px;

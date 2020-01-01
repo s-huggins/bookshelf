@@ -65,7 +65,7 @@ const Search = ({ location, history }) => {
       setSearching(true);
       dispatch(searchBooks(parsed.q, filter, pageNum));
     }
-  }, []);
+  }, [location.search]);
 
   useEffect(() => {
     if (searchStatus !== '') {

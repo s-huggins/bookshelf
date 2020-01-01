@@ -1,24 +1,119 @@
-// .Author {
-//   background-color: #fff;
-//   .container {
-//     padding-top: 1.5rem;
-//   }
-// }
+.Author {
+  // display: flex;
+  // justify-content: space-between;
+  padding-top: 1rem;
 
-// .Author__profile {
-//   display: flex;
+  .profile__description {
+    a {
+      @include green-link;
+    }
+  }
 
-//   &-side {
-//     margin-right: 1.5rem;
-//   }
+  .more-books {
+    float: right;
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    font-weight: bold;
+  }
+}
 
-//   &-main {
-//     .Author-name {
-//       font-size: ;
-//     }
-//   }
+.profile__details--author {
+  margin-bottom: 1.5rem;
+  font-size: 0.9rem;
 
-//   ul {
-//     list-style-type: none;
-//   }
-// }
+  .author-influences {
+    a {
+      @include green-link;
+    }
+  }
+
+  .born-date {
+    display: inline-block;
+    margin-top: 0.15rem;
+  }
+}
+
+.Author-books {
+  margin-top: 1.75rem;
+
+  &__header {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    word-spacing: 2px;
+    padding-bottom: 0.2rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+}
+
+.AuthorBook {
+  padding: 0.6rem 0.3rem;
+  border-bottom: 1.5px solid rgba(51, 51, 51, 0.1);
+  display: flex;
+  justify-content: space-between;
+
+  &__preview {
+    display: flex;
+    // flex-shrink: 1;
+    flex-basis: 70%;
+    flex-grow: 0;
+  }
+
+  &__cover {
+    img {
+      max-width: 80px;
+      max-height: 80px;
+    }
+    margin-right: 1rem;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+
+    &-header {
+      font-family: $font-secondary;
+      font-size: 0.95rem;
+      margin-bottom: 0.1rem;
+    }
+
+    &-rating {
+      margin-bottom: 0.2rem;
+    }
+
+    &-specifics {
+      margin-bottom: 0.1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      .text-tiny {
+        margin-left: 0.2rem;
+        display: inline-block;
+        margin-top: 0.15rem;
+      }
+    }
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .DropdownButton {
+      .btn--green {
+        &:first-of-type {
+          padding-right: 0.4rem;
+        }
+      }
+    }
+  }
+
+  &__rate {
+    margin-top: 0.1rem;
+
+    &-text {
+      display: inline-block;
+      margin-left: 0.15rem;
+      margin-bottom: 0.15rem;
+    }
+  }
+}
