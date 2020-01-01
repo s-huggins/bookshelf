@@ -1,0 +1,23 @@
+.AuthorDetail {
+  padding: 0.2rem;
+  display: flex;
+  align-items: center;
+  height: 120px;
+  .author-name {
+    font-size: 1rem;
+    font-family: $font-secondary;
+
+    margin-left: 1rem;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  img {
+    margin-top: 0.5rem;
+    max-width: 100px;
+    max-height: 100px;
+    border-radius: 100%;
+  }
+}

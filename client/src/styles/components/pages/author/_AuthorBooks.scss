@@ -1,0 +1,73 @@
+.AuthorBooks {
+  margin-top: 1.75rem;
+  max-width: 750px;
+
+  .header {
+    .header-text {
+      font-size: 1.5rem;
+    }
+
+    .header-author {
+      display: flex;
+    }
+
+    .author-img {
+      max-height: 100px;
+      margin-right: 0.5rem;
+    }
+
+    .author-details {
+      a,
+      .author-stats {
+        display: block;
+      }
+
+      .author-stats {
+        font-size: 0.85rem;
+        margin-top: 0.2rem;
+
+        .stats-separator {
+          padding: 0 0.1rem;
+        }
+      }
+    }
+  }
+
+  .book-list-container {
+    margin-top: 1rem;
+
+    .pagination-header {
+      font-size: 0.85rem;
+      display: flex;
+      justify-content: space-between;
+      .works-number {
+      }
+    }
+
+    .pagination {
+      .prev {
+        margin-right: 0.2rem;
+      }
+
+      .next {
+        margin-left: 0.2rem;
+      }
+    }
+
+    .book-list {
+      .DropdownButton {
+        .btn--green {
+          &:first-of-type {
+            padding-right: 1rem;
+          }
+        }
+      }
+    }
+
+    .pagination-footer {
+      margin-top: 0.4rem;
+      float: right;
+      font-size: 0.85rem;
+    }
+  }
+}

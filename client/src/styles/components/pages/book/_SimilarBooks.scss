@@ -1,0 +1,54 @@
+.SimilarBooks {
+  max-width: 250px;
+  max-height: 200px;
+  margin-bottom: 0.6rem;
+  position: relative;
+
+  &:hover {
+    .slick-arrow {
+      background-color: rgba(51, 51, 51, 0.3);
+    }
+  }
+  .slick-arrow {
+    width: 25px;
+    color: #fff;
+
+    height: 100%;
+    // opacity: 0;
+    transition: all 0.4s ease-in-out;
+    &:hover {
+      background-color: rgba(51, 51, 51, 0.6);
+    }
+  }
+  .slick-prev,
+  .slick-next {
+    position: absolute;
+    z-index: 50;
+    &::before {
+      color: #fff;
+      opacity: 1;
+    }
+  }
+  .slick-prev {
+    left: 0%;
+
+    &::before {
+      position: absolute;
+      left: 8%;
+      top: 45%;
+    }
+  }
+  .slick-next {
+    right: 0%;
+    &::before {
+      position: absolute;
+      top: 45%;
+      left: 5%;
+    }
+  }
+  img {
+    max-width: 100px;
+    height: 130px;
+    margin-top: 0.5rem;
+  }
+}
