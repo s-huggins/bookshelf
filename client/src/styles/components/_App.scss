@@ -41,7 +41,11 @@ body {
   max-width: $page-max-width;
   background-color: #fff;
   margin: 0 auto;
+  padding: 0 2rem;
 
+  @media (max-width: 1200px) {
+    padding: 0 4rem;
+  }
   @media (max-width: $mobile-width) {
     padding-top: 0;
   }
@@ -119,4 +123,10 @@ body {
   &:hover {
     background-color: darken($btn-green, 3%);
   }
+}
+
+.btn--grey {
+  background-color: #f2f2f2;
+  color: #181818;
+  border: 1px solid #ddd;
 }

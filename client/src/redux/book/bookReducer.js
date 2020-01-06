@@ -1,7 +1,8 @@
 import {
   FETCH_BOOK_SUCCESS,
   FETCH_BOOK_FAILURE,
-  CLEAR_FETCH_STATUS
+  CLEAR_FETCH_STATUS,
+  UPDATE_RATINGS
 } from './bookTypes';
 
 const initialState = {
@@ -29,6 +30,17 @@ export default (state = initialState, action) => {
       return {
         ...state,
         fetchStatus: ''
+      };
+
+    case UPDATE_RATINGS:
+      return {
+        ...state,
+        book: {
+          ...state.book,
+          // average_rating: action.payload.average_rating,
+          // ratings_count: action.payload.ratings_count
+          ...action.payload
+        }
       };
 
     default:

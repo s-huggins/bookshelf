@@ -8,16 +8,62 @@ import {
 import SearchResults from './SearchResults';
 
 const Search = ({ location, history }) => {
+  const getParams = () => {
+    // refactor into custom hook
+    const parsed = queryString.parse(location.search);
+
+    let filter = parsed['search[field]'] || 'all';
+    if (!['all', 'title', 'author'].includes(filter.toLowerCase()))
+      filter = 'all';
+
+    let pageNum = parseInt(parsed.page);
+    if (Number.isNaN(pageNum) || pageNum <= 0) pageNum = 1;
+    if (pageNum > 100) pageNum = 100;
+
+    return [parsed.q, filter, pageNum];
+  };
+
   const [formState, setFormState] = useState({
     searchString: '',
     filter: 'all'
   });
-  const [page, setPage] = useState(1);
   const [searching, setSearching] = useState(false);
+  const [page, setPage] = useState(1);
 
   const searchStatus = useSelector(state => state.search.searchStatus);
   const dispatch = useDispatch();
 
+  /* INITIAL MOUNT AND QUERY STRING CHANGE */
+  useEffect(() => {
+    const [query, filter, pageNum] = getParams();
+
+    setFormState({
+      ...formState,
+      searchString: query,
+      filter
+    });
+
+    setPage(pageNum);
+
+    if (query) {
+      setSearching(true);
+      dispatch(searchBooks(query, filter, pageNum));
+    }
+  }, [location.search]);
+
+  useEffect(() => {
+    if (searchStatus !== '') {
+      setSearching(false);
+    }
+  }, [searchStatus]);
+
+  useEffect(() => {
+    if (!searching) {
+      dispatch(clearSearchStatus());
+    }
+  }, [searching]);
+
+  // a new search always returns page 1
   const handleSearch = e => {
     e.preventDefault();
     history.push(
@@ -28,7 +74,7 @@ const Search = ({ location, history }) => {
 
     // make API call for results
     setSearching(true);
-    dispatch(searchBooks(formState.searchString, formState.filter, page));
+    dispatch(searchBooks(formState.searchString, formState.filter, 1));
   };
 
   const handleQueryChange = e => {
@@ -43,36 +89,6 @@ const Search = ({ location, history }) => {
       filter: e.target.value
     });
   };
-
-  /* INITIAL MOUNT */
-  useEffect(() => {
-    const parsed = queryString.parse(location.search);
-
-    let filter = parsed['search[field]'] || 'all';
-    if (!['all', 'title', 'author'].includes(filter.toLower)) filter = 'all';
-
-    setFormState({
-      ...formState,
-      searchString: parsed.q,
-      filter
-    });
-
-    let pageNum = parseInt(parsed.page);
-    if (Number.isNaN(pageNum) || pageNum <= 0) pageNum = 1;
-    setPage(pageNum);
-
-    if (parsed.q) {
-      setSearching(true);
-      dispatch(searchBooks(parsed.q, filter, pageNum));
-    }
-  }, [location.search]);
-
-  useEffect(() => {
-    if (searchStatus !== '') {
-      setSearching(false);
-      dispatch(clearSearchStatus());
-    }
-  }, [searchStatus]);
 
   return (
     <div className="Search">
@@ -121,7 +137,12 @@ const Search = ({ location, history }) => {
             <label htmlFor="filter-author">author</label>
           </div>
         </form>
-        <SearchResults searching={searching} page={page} />
+        <SearchResults
+          searching={searching}
+          page={page}
+          searchString={formState.searchString}
+          filter={formState.filter}
+        />
       </div>
     </div>
   );

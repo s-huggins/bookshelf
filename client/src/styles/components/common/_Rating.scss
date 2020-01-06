@@ -24,3 +24,22 @@
     background-size: cover;
   }
 }
+
+.Rating-fixed {
+  display: inline-flex;
+  align-items: center;
+
+  span {
+    height: 18px;
+    width: 18px;
+    display: inline-block;
+    background-image: url(../../../img/star-off.png);
+    background-size: cover;
+  }
+
+  .star-on {
+    // background-image: url(../../../img/star-on.png);
+    background-image: url(../../../img/star-full.png);
+    background-size: cover;
+  }
+}

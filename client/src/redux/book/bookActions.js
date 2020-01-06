@@ -2,7 +2,8 @@ import store from '../../redux/store';
 import {
   FETCH_BOOK_SUCCESS,
   FETCH_BOOK_FAILURE,
-  CLEAR_FETCH_STATUS
+  CLEAR_FETCH_STATUS,
+  UPDATE_RATINGS
 } from './bookTypes';
 
 export const fetchBook = bookId => async dispatch => {
@@ -18,7 +19,7 @@ export const fetchBook = bookId => async dispatch => {
   });
 
   const json = await res.json();
-
+  console.log(json);
   if (json.status === 'success') {
     dispatch({
       type: FETCH_BOOK_SUCCESS,
@@ -30,6 +31,55 @@ export const fetchBook = bookId => async dispatch => {
       payload: json.status
     });
   }
+};
+
+export const updateRating = (oldUserRating, newUserRating) => {
+  const { average_rating, ratings_count } = store.getState().book.book;
+  const sumRatings = average_rating * ratings_count;
+
+  // if book was not previously rated by user
+  if (!oldUserRating) {
+    const newSumRatings = sumRatings + newUserRating;
+    const new_ratings_count = ratings_count + 1;
+    const new_average_rating = newSumRatings / new_ratings_count;
+
+    return {
+      type: UPDATE_RATINGS,
+      payload: {
+        average_rating: new_average_rating,
+        ratings_count: new_ratings_count
+      }
+    };
+  }
+
+  // if here, the user changed an existing rating
+
+  // if user changed their rating's star count without unrating
+  if (newUserRating) {
+    const newSumRatings = sumRatings - oldUserRating + newUserRating;
+    const new_average_rating = newSumRatings / ratings_count;
+
+    return {
+      type: UPDATE_RATINGS,
+      payload: {
+        average_rating: new_average_rating,
+        ratings_count
+      }
+    };
+  }
+
+  // else the user removed their rating
+  const newSumRatings = sumRatings - oldUserRating;
+  const new_ratings_count = ratings_count - 1;
+  const new_average_rating =
+    new_ratings_count !== 0 ? newSumRatings / new_ratings_count : 0;
+  return {
+    type: UPDATE_RATINGS,
+    payload: {
+      average_rating: new_average_rating,
+      ratings_count: new_ratings_count
+    }
+  };
 };
 
 export const clearFetchStatus = () => ({ type: CLEAR_FETCH_STATUS });

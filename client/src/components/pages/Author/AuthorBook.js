@@ -22,7 +22,7 @@ const AuthorBook = ({ book }) => {
     <div className="AuthorBook">
       <div className="AuthorBook__preview">
         <div className="AuthorBook__cover">
-          <Link to={`/book/`}>
+          <Link to={`/book/${book.id}`}>
             <img src={book.image_url} alt="bookcover" />
           </Link>
         </div>

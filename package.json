@@ -8,7 +8,7 @@
     "start": "node server.js",
     "server": "nodemon server.js",
     "client": "npm start --prefix client",
-    "dev": "concurrently \"npm run server\" \"npm run client\""
+    "dev": "concurrently -n 'server,client' -c 'red,blue' \"npm run server\" \"npm run client\""
   },
   "author": "Stuart Huggins",
   "license": "MIT",

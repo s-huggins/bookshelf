@@ -1,9 +1,10 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 function HeaderLogo() {
   return (
     <span className="Header__brand">
-      <a href="/">
+      <Link to="/">
         <div className="logo">
           <i className="fas fa-book-open logo-icon"></i>
           <span className="logo-text">
@@ -11,7 +12,7 @@ function HeaderLogo() {
             <span className="logo-text__right">shelf</span>
           </span>
         </div>
-      </a>
+      </Link>
     </span>
   );
 }

@@ -28,9 +28,19 @@ exports.uploadAvatar = catchAsync(async (req, res) => {
     { new: true }
   );
 
-  res
-    .status(200)
-    .json({ status: 'success', data: { profile: updatedProfile } });
+  const updatedUser = {
+    ...req.user,
+    profile: {
+      ...req.user.profile._doc,
+      // handle: updatedProfile.handle,
+      avatar_id: updatedProfile.avatar_id
+    }
+  };
+
+  res.status(200).json({
+    status: 'success',
+    data: { profile: updatedProfile, user: updatedUser }
+  });
 });
 
 exports.deleteAvatar = catchAsync(async (req, res) => {
@@ -54,9 +64,19 @@ exports.deleteAvatar = catchAsync(async (req, res) => {
     { new: true }
   );
 
-  res
-    .status(200)
-    .json({ status: 'success', data: { profile: updatedProfile } });
+  const updatedUser = {
+    ...req.user,
+    profile: {
+      ...req.user.profile._doc,
+      // handle: updatedProfile.handle,
+      avatar_id: updatedProfile.avatar_id
+    }
+  };
+
+  res.status(200).json({
+    status: 'success',
+    data: { profile: updatedProfile, user: updatedUser }
+  });
 });
 
 exports.getAvatar = catchAsync(async (req, res) => {

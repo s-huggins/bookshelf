@@ -2,6 +2,25 @@
   display: flex;
   justify-content: space-between;
   padding-top: 1rem;
+
+  .profile--book {
+    // flex-grow: 1;
+    // max-width: 50%;
+    // border: 1px solid purple;
+
+    .profile__side--book {
+      flex-grow: 1;
+      flex-basis: 25%;
+      margin-right: 1rem;
+      // border: 1px solid red;
+    }
+
+    .profile__main--book {
+      // flex-grow: 0;
+      max-width: 600px;
+      // padding-right: 3rem;
+    }
+  }
 }
 
 .rating-container {

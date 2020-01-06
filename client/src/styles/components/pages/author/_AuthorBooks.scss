@@ -1,6 +1,8 @@
+@import '../../../mixins/green-link';
+
 .AuthorBooks {
   margin-top: 1.75rem;
-  max-width: 750px;
+  max-width: 700px;
 
   .header {
     .header-text {
@@ -9,6 +11,12 @@
 
     .header-author {
       display: flex;
+
+      a {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
     }
 
     .author-img {
@@ -20,6 +28,11 @@
       a,
       .author-stats {
         display: block;
+      }
+
+      .author-name {
+        font-family: $font-secondary;
+        font-size: 0.95rem;
       }
 
       .author-stats {
@@ -40,18 +53,6 @@
       font-size: 0.85rem;
       display: flex;
       justify-content: space-between;
-      .works-number {
-      }
-    }
-
-    .pagination {
-      .prev {
-        margin-right: 0.2rem;
-      }
-
-      .next {
-        margin-left: 0.2rem;
-      }
     }
 
     .book-list {

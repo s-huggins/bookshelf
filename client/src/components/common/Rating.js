@@ -1,15 +1,49 @@
 import React, { useState } from 'react';
-// import starOn from '../../img/star-on.png';
-// import starOff from '../../img/star-off.png';
+import { useDispatch, useSelector } from 'react-redux';
+import { rateBook } from '../../redux/profile/profileActions';
+import { updateRating } from '../../redux/book/bookActions';
+import { useEffect } from 'react';
 
-const Rating = () => {
+const Rating = ({ book }) => {
   const [rating, setRating] = useState(0);
+  const dispatch = useDispatch();
+  const ratings = useSelector(state => state.auth.user.profile.ratings);
 
   const handleRating = e => {
     const starNumClicked = +e.nativeEvent.target.dataset.star;
-    if (rating === starNumClicked) setRating(0);
-    else setRating(starNumClicked);
+    const oldRating = rating;
+    let newRating;
+    // clicking the star again disables the rating
+    if (starNumClicked === rating) {
+      setRating(0);
+      newRating = 0;
+    } else {
+      setRating(starNumClicked);
+      newRating = starNumClicked;
+    }
+
+    if (!book) return; // TODO: remove this eventually
+
+    const bookData = {
+      bookId: +book.id,
+      title: book.title,
+      authors: Array.isArray(book.authors.author)
+        ? book.authors.author
+        : [book.authors.author],
+      image_url: book.image_url
+    };
+    dispatch(updateRating(oldRating, newRating)); // updates book in store for fast view update
+    dispatch(rateBook(bookData, newRating)); // persists profile & book updates to db
   };
+
+  // on mount, we must fetch the user's own rating
+  useEffect(() => {
+    if (!book) return;
+    const userRating = ratings.find(ratingEl => ratingEl.bookId === +book.id);
+    if (userRating) setRating(userRating.rating);
+  }, []);
+
+  // in the MiniRating component, we must fetch avg
 
   const getClass = starNum => {
     return rating >= starNum ? 'star-on' : '';

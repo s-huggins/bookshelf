@@ -4,6 +4,7 @@ const rpn = require('request-promise-native');
 const xml2js = require('xml2js');
 const UrlBuilder = require('../utils/UrlBuilder');
 const fetchImage = require('../utils/fetchSourceImage');
+const Book = require('../models/Book');
 
 exports.getBookProfile = async (req, res) => {
   const apiEndPoint = UrlBuilder.buildBookProfile(req.params.bookId);
@@ -19,7 +20,22 @@ exports.getBookProfile = async (req, res) => {
 
     const data = json.GoodreadsResponse.book;
 
+    delete data.reviews_widget;
+    delete data.series_works;
+    delete data.book_links;
+    delete data.buy_links;
+    delete data.popular_shelves;
+
     data.image_url = await fetchImage(data.image_url);
+
+    const dbBook = await Book.findById(+data.id);
+    if (dbBook) {
+      data.ratings_count = dbBook.ratings.length;
+      data.average_rating = dbBook.average_rating;
+    } else {
+      data.ratings_count = 0;
+      data.average_rating = 0;
+    }
 
     // this takes too long to use
     // const previews = await getAuthorPreviews(buildAuthorsArray(data.authors));
@@ -55,6 +71,8 @@ const buildAuthorsArray = authors => {
 
   return authors.author;
 };
+
+// TODO: ARE WE PENALIZED FOR QUERYING MORE THAN 1 TIMES PER SECOND? TEST WITH A TIMEOUT INSTEAD
 
 const getAuthorPreviews = async authorsArray => {
   const authorIds = authorsArray.map(auth => auth.id); // array of string ints, e.g. ['1223', '73']

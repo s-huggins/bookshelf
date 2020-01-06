@@ -7,9 +7,6 @@ const EditAccount = ({ profile, user, setLoadingEdit }) => {
   const [formState, setFormState] = useState({
     profilePrivacy: ''
   });
-  // const [loadingEdit, setLoadingEdit] = useState(false);
-  // const editStatus = useSelector(state => state.profile.editStatus);
-  // const [alert, setAlert] = useState(null);
 
   const dispatch = useDispatch();
 
@@ -34,8 +31,6 @@ const EditAccount = ({ profile, user, setLoadingEdit }) => {
     dispatch(editProfile({ isPublic }));
   };
 
-  // if(loadingEdit) return <Loader />
-
   return (
     <div className="form-control--edit">
       <form
@@ -44,7 +39,7 @@ const EditAccount = ({ profile, user, setLoadingEdit }) => {
         onSubmit={handleSubmit}
       >
         <div className="form-control--edit__field field-email">
-          <label>Email Address</label>
+          <span className="form-control--edit__label">Email Address</span>
           <span>{user.email}</span>
           <Link className="green-link" to="/change-email">
             Change email address
@@ -52,7 +47,7 @@ const EditAccount = ({ profile, user, setLoadingEdit }) => {
         </div>
 
         <div className="form-control--edit__field field-password">
-          <label>Password</label>
+          <span className="form-control--edit__label">Password</span>
           <span>********</span>
           <Link className="green-link" to="/change-password">
             Change password
@@ -96,6 +91,12 @@ const EditAccount = ({ profile, user, setLoadingEdit }) => {
         <button className="btn btn--light" type="submit">
           Submit
         </button>
+
+        <div className="form-control--edit__field field-delete">
+          <Link className="green-link" to="/delete-account">
+            delete my account
+          </Link>
+        </div>
       </form>
     </div>
   );

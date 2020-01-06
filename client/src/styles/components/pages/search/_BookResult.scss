@@ -12,6 +12,9 @@
     &-header {
       font-family: $font-secondary;
       font-size: 1.1rem;
+      &:hover a {
+        text-decoration: underline;
+      }
     }
 
     &-by {
@@ -22,6 +25,9 @@
     &-author {
       font-family: $font-secondary;
       font-size: 0.9rem;
+      &:hover a {
+        text-decoration: underline;
+      }
     }
 
     &-specifics {

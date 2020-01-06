@@ -1,13 +1,7 @@
-.Profile {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 1rem;
-}
-
 .profile {
   display: flex;
-  flex-grow: 1;
-  max-width: 70%;
+  // flex-grow: 1;
+  // max-width: 70%;
   padding: 0 0.5rem;
 
   &__side {
@@ -56,11 +50,6 @@
       font-family: $font-secondary;
       font-size: 1.5rem;
       padding: 0.4rem 0;
-    }
-
-    .edit-profile {
-      font-family: $font-primary;
-      font-size: 0.75rem;
     }
 
     border-bottom: 1px solid rgba(0, 0, 0, 0.1);

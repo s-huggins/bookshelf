@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { signIn } from '../../redux/auth/authActions';
 import Loader from '../common/Loader';
@@ -77,7 +77,7 @@ function Signin({ history }) {
               <div className="btn-container">
                 <button className="btn btn--register">Sign in</button>
                 <span>
-                  <a href="#!">Forgot password</a>
+                  <Link to="forgot-password">Forgot password</Link>
                 </span>
               </div>
             </form>
@@ -85,7 +85,7 @@ function Signin({ history }) {
               <span>
                 Not a member?{' '}
                 <span>
-                  <a href="#!">Sign up</a>
+                  <Link to="/register">Sign up</Link>
                 </span>
               </span>
             </div>

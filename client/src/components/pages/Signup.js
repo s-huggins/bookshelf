@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { signUp } from '../../redux/auth/authActions';
 import Loader from '../common/Loader';
@@ -43,11 +43,10 @@ function Signup({ history }) {
             <h1>Sign up for bookshelf</h1>
             <p>
               Sign up to see what your friends are reading, get book
-              recommendations, and join the world’s largest community of
-              readers.
+              recommendations, and join our large community of readers.
             </p>
             <hr />
-            {failedSignUp && (
+            {failedSignUp && errors && (
               <div className="errors">
                 {Object.entries(errors).map(([k, e]) => (
                   <p key={k}>{e}</p>
@@ -59,7 +58,7 @@ function Signup({ history }) {
               <label htmlFor="name">Name</label>
               <input
                 className={`form-control form-control--register ${
-                  errors.name ? 'input-error' : ''
+                  errors && errors.name ? 'input-error' : ''
                 }`}
                 type="text"
                 name="name"
@@ -71,7 +70,7 @@ function Signup({ history }) {
               <label htmlFor="email">Email</label>
               <input
                 className={`form-control form-control--register ${
-                  errors.email ? 'input-error' : ''
+                  errors && errors.email ? 'input-error' : ''
                 }`}
                 type="text"
                 name="email"
@@ -83,7 +82,7 @@ function Signup({ history }) {
               <label htmlFor="password">Password</label>
               <input
                 className={`form-control form-control--register ${
-                  errors.password ? 'input-error' : ''
+                  errors && errors.password ? 'input-error' : ''
                 }`}
                 type="password"
                 name="password"
@@ -97,7 +96,7 @@ function Signup({ history }) {
                   Sign up
                 </button>
                 <span>
-                  Already a member? <a href="#!">Sign in</a>
+                  Already a member? <Link to="/login">Sign in</Link>
                 </span>
               </div>
             </form>

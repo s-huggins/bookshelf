@@ -9,6 +9,7 @@ import BookDetails from './BookDetails';
 import AuthorDetail from './AuthorDetail';
 import SimilarBooks from './SimilarBooks';
 import DropdownButton from '../../common/DropdownButton';
+import pluralize from '../../../util/pluralize';
 
 const Book = ({ match }) => {
   const bookId = match.params.id; // check it is an int
@@ -68,16 +69,16 @@ const Book = ({ match }) => {
 
   return (
     <div className="Book">
-      <div className="profile">
-        <div className="profile__side">
+      <div className="profile profile--book">
+        <div className="profile__side profile__side--book">
           <img className="profile__img" src={book.image_url} alt="bookcover" />
-          <DropdownButton />
+          <DropdownButton book={book} />
           <div className="rating-container">
             <span>Rate this book</span>
-            <Rating />
+            <Rating book={book} />
           </div>
         </div>
-        <div className="profile__main">
+        <div className="profile__main profile__main--book">
           <div className="profile__header">
             <h1 className="profile__header-text">{book.title}</h1>
             <span className="by-author">
@@ -86,9 +87,11 @@ const Book = ({ match }) => {
           </div>
           <div className="profile__body">
             <div className="minirating-container">
-              <MiniRating average={4.22} />
+              <MiniRating average={book.average_rating} />
               <span className="middle-dot">&#183;</span>
-              <span className="green-link">0 ratings</span>
+              <span className="green-link">
+                {book.ratings_count} {pluralize('rating', book.ratings_count)}
+              </span>
               <span className="middle-dot">&#183;</span>
               <span className="green-link">0 reviews</span>
             </div>

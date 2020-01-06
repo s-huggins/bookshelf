@@ -2,23 +2,10 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
 const autoIncrementModelId = require('./Counter');
-
-// const User = require('./User');
+const Book = require('./Book');
+const Avatar = require('./Avatar');
 
 const { Schema } = mongoose;
-
-// handle: {
-//   type: String,
-//   required: [true, 'Handle is required'],
-//   min: 1,
-//   max: 40
-// },
-
-// age: {
-//   type: Number,
-//   min: 13,
-//   max: 130
-// } TODO: use a virtual prop
 
 // Expects birthday as a Date
 function getAge(birthday) {
@@ -33,7 +20,7 @@ function getAge(birthday) {
   return yearsDiff;
 }
 
-const profileSchema = new Schema(
+const ProfileSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
@@ -97,16 +84,28 @@ const profileSchema = new Schema(
     },
     handle: {
       type: String,
-      unique: true,
+      index: {
+        unique: true,
+        partialFilterExpression: { handle: { $ne: '' } }
+      },
       maxlength: 40,
-      minlength: 1,
+      // minlength: 1,
       validate: {
         validator: function(handle) {
+          if (!handle) return true;
+
           return /^[a-zA-Z][a-zA-Z0-9-]*$/.test(handle);
         },
         message:
           'Handle must begin with a letter and consist of only alphanumeric characters and dashes.'
       }
+    },
+    avatar_id: {
+      type: Schema.Types.ObjectId
+    },
+    lastActive: {
+      type: Date,
+      default: Date.now
     },
     birthday: {
       value: {
@@ -114,16 +113,40 @@ const profileSchema = new Schema(
         // required: [true, 'User must confirm their age'],
         validate: {
           validator: function(birthday) {
-            return getAge(birthday) >= 13;
+            if (birthday) return getAge(birthday) >= 13;
           },
-          message: 'User must be 13 to register'
+          message: 'User must be 13 to register.'
         }
       },
       private: {
         type: Boolean,
-        default: false
+        default: true
       }
     },
+
+    books: {
+      type: [
+        {
+          bookId: {
+            type: Number,
+            ref: 'Book',
+            index: true,
+            required: [true, 'A shelved book must have a bookId field.']
+          },
+          primaryShelf: {
+            type: String,
+            enum: ['to-read', 'reading', 'read'],
+            required: [true, 'A shelved book must have a primaryShelf field.']
+          },
+          dateShelved: {
+            type: Date,
+            default: Date.now,
+            required: [true, 'A shelved date is required.']
+          }
+        }
+      ]
+    },
+
     ratings: {
       type: [
         {
@@ -131,23 +154,31 @@ const profileSchema = new Schema(
             type: Number,
             enum: [1, 2, 3, 4, 5]
           },
-          bookId: Number
+          bookId: {
+            type: Number,
+            ref: 'Book'
+          }
         }
-      ],
-      default: []
+      ]
     },
-    reviews: {
-      type: [
-        {
-          review: {
-            type: String,
-            maxlength: 8000
-          },
-          bookId: Number
-        }
-      ],
-      default: []
-    },
+    // reviews: {
+    //   type: [
+    //     {
+    //       review: {
+    //         type: String,
+    //         maxlength: 8000
+    //       },
+    //       bookId: Number
+    //     }
+    //   ],
+    //   default: []
+    // },
+    reviews: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Review'
+      }
+    ],
     location: {
       value: {
         type: String,
@@ -155,7 +186,7 @@ const profileSchema = new Schema(
       },
       private: {
         type: Boolean,
-        default: false
+        default: true
       }
     },
     website: {
@@ -184,21 +215,15 @@ const profileSchema = new Schema(
     gender: {
       value: {
         type: String,
-        enum: ['Male', 'Female', 'Other', 'Unspecified'],
-        default: 'Unspecified'
+        enum: ['Male', 'Female', 'Other', 'Unspecified']
+        // default: 'Unspecified'
       },
       private: {
         type: Boolean,
-        default: false
+        default: true
       }
     },
-    avatar_id: {
-      type: Schema.Types.ObjectId
-    },
-    lastActive: {
-      type: Date,
-      default: Date.now
-    },
+
     // photos: [String],
     social: {
       facebook: {
@@ -224,21 +249,22 @@ const profileSchema = new Schema(
     },
     dateCreated: {
       type: Date,
-      default: Date.now()
+      default: Date.now
     }
   },
   {
     toJSON: { virtuals: true },
-    toObject: { virtuals: true }
+    toObject: { virtuals: true },
+    id: false
   }
 );
 
-profileSchema.pre('save', function(next) {
+ProfileSchema.pre('save', function(next) {
   this.wasNew = this.isNew;
   next();
 });
 
-profileSchema.pre('findOneAndUpdate', function(next) {
+ProfileSchema.pre('findOneAndUpdate', function(next) {
   const { website } = this._update;
   if (
     website &&
@@ -252,23 +278,57 @@ profileSchema.pre('findOneAndUpdate', function(next) {
 });
 
 // increment and get profile id counter
-profileSchema.pre('save', function(next) {
+ProfileSchema.pre('save', function(next) {
   if (!this.isNew) {
     return next();
   }
   autoIncrementModelId('profiles', this, next);
 });
 
-profileSchema.post('save', async function(doc, next) {
+ProfileSchema.post('save', async function(doc, next) {
   if (this.wasNew) {
-    await mongoose
+    const newUser = await mongoose
       .model('User')
-      .findByIdAndUpdate(doc.user, { profile: doc._id });
+      .findByIdAndUpdate(doc.user, { profile: doc._id }, { new: true })
+      .populate('profile');
+    mongoose.model('User').emit('profileWasCreated', newUser);
   }
   next();
 });
 
-profileSchema.virtual('age').get(function() {
+// remove all avatar files chunks
+ProfileSchema.post('remove', async function(doc, next) {
+  const avatar = await Avatar.findOne({ 'metadata.profile_id': doc._id });
+  if (avatar) {
+    await mongoose.connection.db
+      .collection('avatars.chunks')
+      .deleteMany({ files_id: avatar._id });
+
+    await avatar.remove();
+  }
+
+  next();
+});
+
+// remove all reviews, ratings, etc
+ProfileSchema.post('remove', async function(doc, next) {
+  const removalTasks = [];
+
+  for (let i = 0; i < doc.ratings.length; i += 1) {
+    const rating = doc.ratings[i];
+    removalTasks.push(
+      Book.findByIdAndUpdate(rating.bookId, {
+        $pull: { ratings: { profileId: doc.id } }
+      })
+    );
+  }
+
+  await Promise.all(removalTasks);
+
+  next();
+});
+
+ProfileSchema.virtual('age').get(function() {
   // return this.birthday
   //   ? getAge(this.birthday.value)
   //   : undefined;
@@ -282,6 +342,6 @@ profileSchema.virtual('age').get(function() {
   return undefined;
 });
 
-const Profile = mongoose.model('Profile', profileSchema);
+const Profile = mongoose.model('Profile', ProfileSchema);
 
 module.exports = Profile;

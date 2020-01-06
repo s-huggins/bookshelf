@@ -4,6 +4,7 @@ const validator = require('validator');
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 const Profile = require('./Profile');
+const Avatar = require('./Avatar');
 
 const { Schema } = mongoose;
 
@@ -14,32 +15,32 @@ const userSchema = new Schema({
   },
   name: {
     type: String,
-    required: [true, 'User must have a name'],
-    maxlength: 40
+    required: [true, 'A name is required.'],
+    maxlength: [40, 'Your name cannot be greater than 40 characters.']
   },
 
   email: {
     type: String,
-    required: [true, 'User must have an email'],
+    required: [true, 'You must have an email to register.'],
     unique: true,
     validate: [validator.default.isEmail, 'Email is invalid'],
-    maxlength: 100
+    maxlength: [100, 'Your email cannot be greater than 100 characters.']
   },
   password: {
     type: String,
-    required: [true, 'User must have a password'],
-    minlength: 8,
-    maxlength: 40,
+    required: [true, 'Your account must have a password'],
+    minlength: [8, 'Your password must be at least 8 characters.'],
+    maxlength: [40, 'Your password cannot be greater than 40 characters.'],
     select: false
   },
   passwordConfirm: {
     type: String,
-    required: [true, 'Password confirmation needed'],
+    required: [true, 'Password confirmation needed.'],
     validate: {
       validator: function(pwc) {
         return pwc === this.password;
       },
-      message: "Passwords don't match"
+      message: "Your passwords don't match."
     },
     select: false
   },
@@ -90,8 +91,8 @@ userSchema.post('save', async function(doc, next) {
 });
 
 userSchema.post('remove', async function(doc, next) {
-  // TODO: test this
-  await Profile.findByIdAndRemove(doc.profile);
+  const profile = await Profile.findById(doc.profile);
+  profile.remove();
   next();
 });
 

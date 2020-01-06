@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { signIn } from '../../../redux/auth/authActions';
 
@@ -52,7 +52,7 @@ const HeaderLogin = ({ history }) => {
         <div className="input-container__footer">
           <span>{/*Remember me*/}</span>
           <span className="forgot-password">
-            <a href="#!">Forgot it?</a>
+            <Link to="forgot-password">Forgot it?</Link>
           </span>
         </div>
       </form>

@@ -7,7 +7,7 @@ import ResultsPreview from './ResultsPreview';
 
 /**
  * An onKeyUp handler to fetch a few books to be displayed.
- * This is intended as an inline search and is debounced below.
+ * This is intended for an inline search and is debounced below.
  */
 const fetchBooks = (searchString, setSearching, cancelSearch) => {
   if (searchString.trim() === '') return Promise.resolve(null);
@@ -59,6 +59,7 @@ const HeaderSearch = ({ history }) => {
   const searchField = useRef(null);
 
   const handleTyping = e => {
+    // enter key
     if (e.keyCode === 13) {
       cancelSearch.current = true;
       setSearching(false);
@@ -67,10 +68,12 @@ const HeaderSearch = ({ history }) => {
       searchField.current.blur();
       return;
     }
+    // up/down arrows
     if (e.keyCode === 40 || e.keyCode === 38) {
       return;
     }
 
+    setPreviewInFocus(null);
     setSearchQuery(e.target.value);
     runFetchBooks(e.target.value, setSearching, cancelSearch)
       .then(data => {
@@ -111,10 +114,6 @@ const HeaderSearch = ({ history }) => {
 
   const handleSearch = e => {
     e.preventDefault();
-    // searchField.current.blur();
-    // setSearching(false);
-    // cancelSearch.current = true;
-    if (searchQuery.trim() === '') return;
 
     if (previewInFocus) {
       const id = books[previewInFocus - 1].id;
@@ -122,6 +121,8 @@ const HeaderSearch = ({ history }) => {
       setSearchQuery('');
       return;
     }
+
+    if (searchQuery.trim() === '') return;
 
     history.push(`/search?q=${searchQuery}`);
   };
@@ -139,6 +140,7 @@ const HeaderSearch = ({ history }) => {
           onKeyDown={handleArrowPress}
           onBlur={handleBlur}
           onFocus={() => setInFocus(true)}
+          onClick={() => setPreviewInFocus(null)}
           ref={searchField}
         />
         <button

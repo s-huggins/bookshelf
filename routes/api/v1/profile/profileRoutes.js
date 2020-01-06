@@ -3,7 +3,8 @@ const profileController = require('../../../../controllers/profileController');
 const authController = require('../../../../controllers/authController');
 const avatarRouter = require('./avatarRoutes');
 
-const { protect, restrictTo } = authController;
+// const { protect, restrictTo } = authController;
+const { protect } = authController;
 
 // nested route: api/v1/users/:userId/profile
 const router = express.Router({ mergeParams: true });
@@ -15,17 +16,20 @@ const fromUsersRoute = (req, res, next) => {
   next();
 };
 
-router
-  .route('/:id?')
-  .all(fromUsersRoute, protect)
-  .get(profileController.getProfile)
-  .patch(profileController.updateProfile);
+router.patch('/bookshelves', protect, profileController.updateBookshelves);
+router.patch('/rating', protect, profileController.handleRating);
 
 router.get(
   '/handleCheck/:handle?',
   protect,
   profileController.checkHandleAvailability
 );
+
+router
+  .route('/:id?')
+  .all(fromUsersRoute, protect)
+  .get(profileController.getProfile)
+  .patch(profileController.updateProfile);
 
 // for getting a public profile, using the autoincrementing Profile id field (not _id)
 // // @/api/v1/profile/:id
@@ -35,10 +39,8 @@ router.get(
 //   .get(profileController.getProfile);
 
 // if arriving through /users/:userId/profile
-router
-  .route('/')
-  .get(profileController.getProfileByUserId)
-  .patch(protect, restrictTo('admin'), profileController.updateProfileByUserId);
+// router.route('/').get(profileController.getProfileByUserId);
+// .patch(protect, restrictTo('admin'), profileController.updateProfileByUserId);
 
 // router
 //   .route('friendRequests/out')

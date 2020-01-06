@@ -2,11 +2,18 @@ export default new Set([
   'user',
   'register',
   'login',
+  'forgot-password',
+  'reset-password',
   'not-found',
   'change-email',
   'change-password',
+  'delete-account',
   'search',
   'book',
   'author',
-  'something-went-wrong'
+  'something-went-wrong',
+  'bookshelves',
+  'avatar',
+  'handleCheck',
+  'rating'
 ]);

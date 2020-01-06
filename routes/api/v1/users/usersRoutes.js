@@ -37,14 +37,14 @@ router.patch('/updateEmail', protect, authController.updateEmail);
 router.post('/emailCheck', protect, authController.checkEmailAvailability);
 router.patch('/updatePassword', protect, authController.updatePassword);
 
-router.post('/forgotPassword', protect, authController.forgotPassword);
+router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
 // patch and delete for admin use
-router
-  .route('/:userId')
-  .get(usersController.getUserById)
-  .patch(protect, restrictTo('admin'), usersController.updateUserAdmin)
-  .delete(protect, restrictTo('admin'), usersController.deleteUserAdmin);
+// router
+//   .route('/:userId')
+//   .get(usersController.getUserById)
+//   .patch(protect, restrictTo('admin'), usersController.updateUserAdmin)
+//   .delete(protect, restrictTo('admin'), usersController.deleteUserAdmin);
 
 module.exports = router;

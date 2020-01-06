@@ -20,7 +20,6 @@ export const fetchAuthor = authorId => async dispatch => {
   });
 
   const json = await res.json();
-  console.log(json);
 
   if (json.status === 'success') {
     dispatch({
@@ -35,8 +34,14 @@ export const fetchAuthor = authorId => async dispatch => {
   }
 };
 
-export const fetchAuthorBooks = (authorId, page) => async dispatch => {
+export const fetchAuthorBooks = (
+  authorId,
+  page,
+  withAuthorImage
+) => async dispatch => {
   let uri = `http://localhost:5000/api/v1/author/${authorId}/books?page=${page}`;
+  uri = withAuthorImage ? uri + '&image=true' : uri;
+
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {
@@ -48,7 +53,6 @@ export const fetchAuthorBooks = (authorId, page) => async dispatch => {
   });
 
   const json = await res.json();
-  console.log(json);
 
   if (json.status === 'success') {
     dispatch({

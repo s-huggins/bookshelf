@@ -129,7 +129,7 @@ const EditTextInput = ({
 
   return (
     <div className="form-control--edit__field">
-      <label htmlFor={fieldName}>
+      <label className="form-control--edit__label" htmlFor={fieldName}>
         {labelText}{' '}
         {required && (
           <span className={`red-star${error ? ' red-star--active' : ''}`}>

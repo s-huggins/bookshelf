@@ -2,12 +2,15 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import Loader from '../../common/Loader';
 import PrivateProfile from './PrivateProfile';
-import Friends from './Friends';
+import FriendsSidebar from './FriendsSidebar';
 import ProfileDetails from './ProfileDetails';
 import ProfileSide from './ProfileSide';
 import { getMonth, lastActive } from '../../../util/lastActive';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 import useLoadProfile from './Hooks/useLoadProfile';
+import apostrophize from '../../../util/apostrophize';
+import CurrentRead from './CurrentRead';
+import WantRead from './WantRead';
 
 const Profile = ({ match }) => {
   const { user, token } = useSelector(state => state.auth);
@@ -41,14 +44,20 @@ const Profile = ({ match }) => {
     const lastName = profile.lastName ? profile.lastName.value : '';
     profileDetails.name = [firstName, lastName].filter(v => !!v).join(' ');
 
-    const age = profile.age ? profile.age.value : '';
-    const gender = profile.gender ? profile.gender.value : '';
-    const location = profile.location ? profile.location.value : '';
+    const age =
+      profile.age && profile.age.value ? 'Age ' + profile.age.value : '';
+    const gender =
+      profile.gender && profile.gender.value ? profile.gender.value : '';
+    const location =
+      profile.location && profile.location.value ? profile.location.value : '';
     profileDetails.details = [age, gender, location]
       .filter(v => !!v)
       .join(', ');
 
-    const birthday = profile.birthday ? new Date(profile.birthday.value) : '';
+    const birthday =
+      profile.birthday && profile.birthday.value
+        ? new Date(profile.birthday.value)
+        : '';
     profileDetails.birthday = birthday
       ? `${getMonth(birthday.getMonth())} ${birthday.getDate()}`
       : '';
@@ -97,13 +106,78 @@ const Profile = ({ match }) => {
     return <PrivateProfile profile={profile} />;
   }
 
+  const countShelf = (books, shelf) =>
+    books.filter(book => book.primaryShelf === shelf).length;
+
   return (
     <div className="Profile">
-      <main className="profile">
-        <ProfileSide token={token} profile={buildProfileSide(profile)} />
-        <ProfileDetails profile={buildProfileDetails(profile)} />
+      <main>
+        <div className="profile">
+          <ProfileSide token={token} profile={buildProfileSide(profile)} />
+          <ProfileDetails profile={buildProfileDetails(profile)} />
+        </div>
+        <div className="panel panel--bookshelves">
+          <div className="panel__header">
+            <h2 className="panel__header-text">
+              {apostrophize(profile.displayName)} bookshelves
+            </h2>
+          </div>
+          <div className="panel__body">
+            <ul className="shelves">
+              <li>
+                <Link to="#!">read ({countShelf(profile.books, 'read')})</Link>{' '}
+              </li>
+              <li>
+                <Link to="#!">
+                  currently reading ({countShelf(profile.books, 'reading')})
+                </Link>
+              </li>
+              <li>
+                <Link to="#!">
+                  to read ({countShelf(profile.books, 'to-read')})
+                </Link>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel__header">
+            <h2 className="panel__header-text">
+              {profile.displayName} is currently reading
+            </h2>
+          </div>
+          <div className="panel__body">
+            <CurrentRead />
+            <CurrentRead />
+            <CurrentRead />
+          </div>
+          <div className="panel__footer">
+            <Link to="#!" className="see-all-reading green-link">
+              See all 12 books that Stuart is reading...
+            </Link>
+          </div>
+        </div>
+
+        <div className="panel">
+          <div className="panel__header">
+            <h2 className="panel__header-text">
+              {apostrophize(profile.displayName)} recent updates
+            </h2>
+          </div>
+          <div className="panel__body">
+            <WantRead />
+          </div>
+          <div className="panel__footer">
+            <Link to="#!" className="see-all-books green-link">
+              More of {apostrophize(profile.displayName)} books...
+            </Link>
+          </div>
+        </div>
       </main>
-      <Friends />
+      <aside>
+        <FriendsSidebar />
+      </aside>
     </div>
   );
 };

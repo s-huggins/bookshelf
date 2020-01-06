@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import Landing from '../Landing/Landing';
 import Feed from '../Feed/Feed';
 import Loader from '../../common/Loader';
+import PrivateRoute from '../../common/PrivateRoute';
 
 const Home = ({ history }) => {
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
@@ -17,7 +18,17 @@ const Home = ({ history }) => {
     return <Loader />;
   }
 
-  return <>{isAuthenticated ? <Feed /> : <Landing history={history} />}</>;
+  // return <>{isAuthenticated ? <Feed /> : <Landing history={history} />}</>;
+  return (
+    <>
+      {isAuthenticated ? (
+        // <PrivateRoute exact path="/" component={Feed} />
+        <Feed />
+      ) : (
+        <Landing history={history} />
+      )}
+    </>
+  );
 };
 
 export default Home;

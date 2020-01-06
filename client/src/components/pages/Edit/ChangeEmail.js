@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import EditTextInput from './EditTextInput';
 import validator from 'validator';
@@ -149,7 +150,13 @@ const ChangeEmail = () => {
             handleDismiss={() => setAlert(null)}
           />
         )}
-        <h1>Change Email</h1>
+
+        <div className="edit-header">
+          <h1>Change Email</h1>{' '}
+          <Link to="/user/edit" className="btn btn--light back-link">
+            Back to Settings
+          </Link>
+        </div>
         <div className="form-control--edit">
           <form
             className="form-control--edit__fields"

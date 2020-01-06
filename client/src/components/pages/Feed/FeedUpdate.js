@@ -84,12 +84,17 @@ const FeedUpdate = () => {
           <div className="Comments__input-avatar">
             <img src={avatar} alt="avatar" />
           </div>
-          <textarea
-            name="comment"
-            rows="1"
-            className="form-control"
-            placeholder="Write a comment..."
-          ></textarea>
+          <div className="form-container">
+            <form>
+              <textarea
+                name="comment"
+                rows="1"
+                className="form-control"
+                placeholder="Write a comment..."
+              ></textarea>
+              <button className="btn btn--light">Comment</button>
+            </form>
+          </div>
         </div>
       </div>
     </div>

@@ -26,15 +26,18 @@ const Author = ({ match }) => {
   useEffect(() => {
     if (fetchStatus !== '') {
       setLoading(false);
-      dispatch(clearFetchStatus());
     }
   }, [fetchStatus]);
 
-  console.log(loading);
-  if (loading) return <Loader />;
-  console.log('after loading, fetchstatus is', fetchStatus);
+  useEffect(() => {
+    if (!loading) {
+      dispatch(clearFetchStatus());
+    }
+  }, [loading]);
 
-  if (fetchStatus === 'fail' || !author) return <Redirect to="/not-found" />;
+  if (loading) return <Loader />;
+  // if (fetchStatus === 'fail' || !author) return <Redirect to="/not-found" />;
+  if (fetchStatus === 'fail') return <Redirect to="/not-found" />;
   if (fetchStatus === 'error')
     return (
       <Redirect
@@ -42,11 +45,9 @@ const Author = ({ match }) => {
       />
     );
 
-  console.log('reached auth render');
-
   return (
     <div className="Author">
-      <div className="profile">
+      <div className="profile profile--author">
         <div className="profile__side">
           <img className="profile__img" src={author.image_url} alt="author" />
         </div>

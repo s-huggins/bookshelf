@@ -5,9 +5,11 @@ import {
   LOAD_PROFILE_FAILURE,
   EDIT_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
-  CLEAR_EDIT_STATUS
+  CLEAR_EDIT_STATUS,
+  SHELVE_BOOK
 } from './profileTypes';
 import store from '../../redux/store';
+import { PROFILE_WAS_UPDATED } from '../auth/authTypes';
 
 export const prepareGetProfile = () => ({
   type: PREPARE_LOAD_PROFILE
@@ -15,45 +17,9 @@ export const prepareGetProfile = () => ({
 export const clearProfile = () => ({
   type: CLEAR_PROFILE
 });
-
-// const fetchProfile = async profileId => {
-//   let uri = 'http://localhost:5000/api/v1/profile';
-//   if (profileId) {
-//     uri = `${uri}/${profileId}`;
-//   }
-//   const token = store.getState().auth.token;
-
-//   const res = await fetch(uri, {
-//     method: 'GET',
-//     headers: {
-//       Accept: 'application/json',
-//       Authorization: `Bearer ${token}`
-//     }
-//   });
-//   const json = await res.json();
-
-//   return json;
-// };
-
-// const fetchAvatar = async profile_id => {
-//   const uri = `http://localhost:5000/api/v1/profile/avatar/${profile_id}`;
-//   const token = store.getState().auth.token;
-//   const res = await fetch(uri, {
-//     method: 'GET',
-//     headers: {
-//       Authorization: `Bearer ${token}`
-//     }
-//   });
-
-//   if (res.status === 'fail' || res.status === 'error') {
-//     return '';
-//   }
-
-//   const blob = await res.blob();
-//   const blobUrl = URL.createObjectURL(blob);
-
-//   return blobUrl;
-// };
+export const clearEditStatus = () => ({
+  type: CLEAR_EDIT_STATUS
+});
 
 // profileId optional
 export const getProfile = profileId => async dispatch => {
@@ -85,26 +51,39 @@ export const getProfile = profileId => async dispatch => {
   }
 };
 
-// profileId the default _id mongoDB field
-// USING THIS??????????????????????????????????
-export const getAvatar = profileId => async dispatch => {
-  const uri = `http://localhost:5000/api/v1/profile/avatar/${profileId}`;
+export const editProfile = updatedProfile => async dispatch => {
+  // make call to api
+  // dispatch success or failure, depending upon backend validation
+
+  const uri = 'http://localhost:5000/api/v1/profile';
   const token = store.getState().auth.token;
+
   const res = await fetch(uri, {
-    method: 'GET',
+    method: 'PATCH',
     headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
-    }
+    },
+    body: JSON.stringify(updatedProfile)
   });
+  const json = await res.json();
+  if (json.status === 'success') {
+    dispatch({
+      type: PROFILE_WAS_UPDATED,
+      payload: json.data.user
+    });
 
-  if (res.status === 'fail' || res.status === 'error') {
-    // dispatch({ type: AVATAR_NOT_FOUND, payload: { profileId } });
+    dispatch({
+      type: EDIT_PROFILE_SUCCESS,
+      payload: json.data.profile
+    });
+  } else {
+    dispatch({
+      type: EDIT_PROFILE_FAILURE,
+      payload: json
+    });
   }
-
-  const blob = await res.blob();
-  const blobUrl = URL.createObjectURL(blob);
-
-  // dispatch({ type: AVATAR_FOUND, payload: { blobUrl, profileId } });
 };
 
 export const editAvatar = formData => async dispatch => {
@@ -121,6 +100,10 @@ export const editAvatar = formData => async dispatch => {
   const json = await res.json();
 
   if (json.status === 'success') {
+    dispatch({
+      type: PROFILE_WAS_UPDATED,
+      payload: json.data.user
+    });
     dispatch({
       type: EDIT_PROFILE_SUCCESS,
       payload: json.data.profile
@@ -147,6 +130,10 @@ export const deleteAvatar = () => async dispatch => {
 
   if (json.status === 'success') {
     dispatch({
+      type: PROFILE_WAS_UPDATED,
+      payload: json.data.user
+    });
+    dispatch({
       type: EDIT_PROFILE_SUCCESS,
       payload: json.data.profile
     });
@@ -158,35 +145,41 @@ export const deleteAvatar = () => async dispatch => {
   }
 };
 
-export const editProfile = updatedProfile => async dispatch => {
-  // make call to api
-  // dispatch success or failure, depending upon backend validation
-  const uri = 'http://localhost:5000/api/v1/profile';
-  const token = store.getState().auth.token;
+export const shelveBook = (bookData, shelf) => async dispatch => {
+  const body = { shelf, ...bookData };
 
-  const res = await fetch(uri, {
+  const token = store.getState().auth.token;
+  const res = await fetch('http://localhost:5000/api/v1/profile/bookshelves', {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`
     },
-    body: JSON.stringify(updatedProfile)
+    body: JSON.stringify(body)
   });
+
+  // console.log(bookData, shelf);
+
   const json = await res.json();
-  if (json.status === 'success') {
-    dispatch({
-      type: EDIT_PROFILE_SUCCESS,
-      payload: json.data.profile
-    });
-  } else {
-    dispatch({
-      type: EDIT_PROFILE_FAILURE,
-      payload: json
-    });
-  }
 };
 
-export const clearEditStatus = () => ({
-  type: CLEAR_EDIT_STATUS
-});
+export const rateBook = (bookData, rating) => async dispatch => {
+  const body = { rating, ...bookData };
+
+  const token = store.getState().auth.token;
+  const res = await fetch('http://localhost:5000/api/v1/profile/rating', {
+    method: 'PATCH',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(body)
+  });
+
+  // console.log(bookData, shelf);
+
+  const json = await res.json();
+  console.log(json);
+};

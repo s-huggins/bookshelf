@@ -12,7 +12,9 @@ import {
   LOADING_USER,
   EDIT_USER_SUCCESS,
   EDIT_USER_FAILURE,
-  CLEAR_EDIT_STATUS
+  CLEAR_EDIT_STATUS,
+  DELETE_ACCOUNT,
+  PROFILE_WAS_UPDATED
 } from './authTypes';
 
 const initialState = {
@@ -46,6 +48,7 @@ export default (state = initialState, action) => {
         signUpErrors: {},
         signInErrors: {},
         loadingUser: false
+        // loadingUser: true
       };
 
     case SIGN_UP_FAIL:
@@ -135,6 +138,13 @@ export default (state = initialState, action) => {
         editStatus: action.payload.status,
         errorMessage: action.payload.message
       };
+
+    case PROFILE_WAS_UPDATED:
+      return {
+        ...state,
+        user: action.payload
+      };
+
     case CLEAR_EDIT_STATUS:
       return {
         ...state,
@@ -146,6 +156,11 @@ export default (state = initialState, action) => {
       return {
         ...state,
         loadingUser: action.payload
+      };
+
+    case DELETE_ACCOUNT:
+      return {
+        ...initialState
       };
 
     default:

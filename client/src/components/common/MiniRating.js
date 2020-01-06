@@ -5,6 +5,8 @@ const MiniRating = ({ average }) => {
   const fraction = average - fillNum;
 
   const getClass = starNum => {
+    if (fillNum === 0) return '';
+
     if (starNum <= fillNum) return 'on';
 
     if (starNum === fillNum + 1) {

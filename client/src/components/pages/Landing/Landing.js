@@ -37,8 +37,8 @@ const Landing = ({ history }) => {
               <div className="highlight">
                 <h3>Are you an author or a publisher?</h3>
                 <p>
-                  Gain access to a massive audience of more than 90 million book
-                  lovers. Goodreads is a great place to promote your books.
+                  Gain access to a massive audience of bookworms like yourself.
+                  bookshelf is a great place to promote your books.
                 </p>
               </div>
             </div>

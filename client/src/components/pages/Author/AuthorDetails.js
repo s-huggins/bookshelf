@@ -31,9 +31,7 @@ const AuthorDetails = ({ author = {} }) => {
         <span>
           {hometown}
           <br />
-          <span className="born-date">
-            {moment('0070-10-23').format('MMMM Do, YYYY')}
-          </span>
+          <span className="born-date">{birthDate}</span>
         </span>
       );
     } else if (hometown && !birthDate) {

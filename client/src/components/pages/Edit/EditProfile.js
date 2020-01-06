@@ -29,6 +29,7 @@ const handleValidator = handle => {
   }
   if (
     handle &&
+    store.getState().profile.loadedProfile.handle &&
     !(
       handle.toLowerCase() ===
       store.getState().profile.loadedProfile.handle.toLowerCase()
