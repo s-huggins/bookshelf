@@ -5,14 +5,18 @@ import {
   LOAD_PROFILE_FAILURE,
   EDIT_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
-  CLEAR_EDIT_STATUS
+  CLEAR_EDIT_STATUS,
+  EDIT_AVATAR_SUCCESS,
+  EDIT_AVATAR_FAILURE,
+  CLEAR_EDIT_AVATAR_STATUS
 } from './profileTypes';
 
 /* editStatus one of '', 'success', 'fail' */
 const initialState = {
   loadedProfile: null,
   profileHasLoaded: false,
-  editStatus: ''
+  editStatus: '',
+  editAvatarStatus: ''
 };
 
 export default (state = initialState, action) => {
@@ -52,11 +56,35 @@ export default (state = initialState, action) => {
         profileHasLoaded: true,
         editStatus: 'fail'
       };
+
     case CLEAR_EDIT_STATUS:
       return {
         ...state,
         editStatus: ''
       };
+
+    case EDIT_AVATAR_SUCCESS:
+      return {
+        ...state,
+        loadedProfile: action.payload,
+        profileHasLoaded: true,
+        editAvatarStatus: 'success'
+      };
+
+    case EDIT_AVATAR_FAILURE:
+      return {
+        ...state,
+        // loadedProfile: null,
+        profileHasLoaded: true,
+        editAvatarStatus: 'fail'
+      };
+
+    case CLEAR_EDIT_AVATAR_STATUS:
+      return {
+        ...state,
+        editAvatarStatus: ''
+      };
+
     default:
       return state;
   }

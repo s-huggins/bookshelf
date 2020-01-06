@@ -6,9 +6,13 @@ import {
   EDIT_PROFILE_SUCCESS,
   EDIT_PROFILE_FAILURE,
   CLEAR_EDIT_STATUS,
+  EDIT_AVATAR_SUCCESS,
+  EDIT_AVATAR_FAILURE,
+  CLEAR_EDIT_AVATAR_STATUS,
   SHELVE_BOOK
 } from './profileTypes';
 import store from '../../redux/store';
+
 import { PROFILE_WAS_UPDATED } from '../auth/authTypes';
 
 export const prepareGetProfile = () => ({
@@ -19,6 +23,9 @@ export const clearProfile = () => ({
 });
 export const clearEditStatus = () => ({
   type: CLEAR_EDIT_STATUS
+});
+export const clearEditAvatarStatus = () => ({
+  type: CLEAR_EDIT_AVATAR_STATUS
 });
 
 // profileId optional
@@ -105,12 +112,12 @@ export const editAvatar = formData => async dispatch => {
       payload: json.data.user
     });
     dispatch({
-      type: EDIT_PROFILE_SUCCESS,
+      type: EDIT_AVATAR_SUCCESS,
       payload: json.data.profile
     });
   } else {
     dispatch({
-      type: EDIT_PROFILE_FAILURE,
+      type: EDIT_AVATAR_FAILURE,
       payload: json
     });
   }
@@ -134,12 +141,12 @@ export const deleteAvatar = () => async dispatch => {
       payload: json.data.user
     });
     dispatch({
-      type: EDIT_PROFILE_SUCCESS,
+      type: EDIT_AVATAR_SUCCESS,
       payload: json.data.profile
     });
   } else {
     dispatch({
-      type: EDIT_PROFILE_FAILURE,
+      type: EDIT_AVATAR_FAILURE,
       payload: json
     });
   }

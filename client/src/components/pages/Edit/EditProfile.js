@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import LocationDropdown from './LocationDropdown';
 import DoBDropdown from './DoBDropdown';
 import EditTextInput from './EditTextInput';
@@ -9,10 +9,12 @@ import store from '../../../redux/store';
 import {
   editProfile,
   editAvatar,
-  deleteAvatar
+  deleteAvatar,
+  clearEditAvatarStatus
 } from '../../../redux/profile/profileActions';
 import debounce from 'debounce-async';
 import Avatar from '../Profile/Avatar';
+import Loader from '../../common/Loader';
 
 /* USERNAME/HANDLE VALIDATOR TO BE DEBOUNCED */
 const handleValidator = handle => {
@@ -103,8 +105,12 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
     }
   });
 
-  const dispatch = useDispatch();
   const [formValidity, setFormValidity] = useState(true);
+  const [avatarAction, setAvatarAction] = useState('');
+  const [avatarMessage, setAvatarMessage] = useState('');
+
+  const dispatch = useDispatch();
+  const editAvatarStatus = useSelector(state => state.profile.editAvatarStatus);
 
   const calculateFormValidity = () => {
     return Object.values(formState)
@@ -196,6 +202,22 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
     }
   }, [formState, profile]);
 
+  useEffect(() => {
+    if (editAvatarStatus !== '') {
+      if (editAvatarStatus !== 'success') {
+        if (avatarAction === 'upload') setAvatarMessage('Upload failed.');
+        else if (avatarAction === 'remove') setAvatarMessage('Delete failed.');
+        else setAvatarMessage('Failed.');
+      } else {
+        setAvatarMessage('');
+      }
+
+      // setAvatarUploading(false);
+      setAvatarAction('');
+      dispatch(clearEditAvatarStatus());
+    }
+  }, [editAvatarStatus]);
+
   /* HANDLERS */
 
   // only for inputs and textareas
@@ -273,14 +295,15 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
     e.preventDefault();
     if (avatarInput.current.files.length === 0) return;
 
-    setLoadingEdit(true);
+    setAvatarAction('upload');
     const formData = new FormData();
     formData.append('img', avatarInput.current.files[0]);
     dispatch(editAvatar(formData));
   };
 
   const removeAvatar = async e => {
-    setLoadingEdit(true);
+    if (!profile.avatar_id) return;
+    setAvatarAction('remove');
     dispatch(deleteAvatar());
   };
 
@@ -595,13 +618,27 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
         <Avatar avatar_id={profile.avatar_id} />
         <input type="file" name="avatar" id="avatar" ref={avatarInput} />
         <span className="example">JPEG/PNG under 3MB only</span>
-        <button className="btn btn--light" type="submit">
-          Upload avatar
-        </button>
 
-        <button className="btn btn--light" type="button" onClick={removeAvatar}>
-          Remove avatar
-        </button>
+        <span className="avatar-loader">
+          {avatarAction !== '' && <Loader />}
+        </span>
+
+        {avatarMessage && (
+          <span className="avatar-message">{avatarMessage}</span>
+        )}
+        <div className="avatar-btn-container">
+          <button className="btn btn--light" type="submit">
+            Upload avatar
+          </button>
+
+          <button
+            className="btn btn--light"
+            type="button"
+            onClick={removeAvatar}
+          >
+            Remove avatar
+          </button>
+        </div>
       </form>
     </div>
   );

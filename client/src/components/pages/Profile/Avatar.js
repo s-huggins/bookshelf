@@ -29,7 +29,7 @@ const Avatar = ({ avatar_id }) => {
 
   useEffect(() => {
     fetchAvatar();
-  }, []);
+  }, [avatar_id]);
 
   return (
     <>
