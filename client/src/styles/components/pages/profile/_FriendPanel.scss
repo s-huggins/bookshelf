@@ -1,0 +1,30 @@
+.FriendPanel {
+  display: flex;
+  margin: 0.6rem 0;
+
+  &__avatar {
+    max-height: 65px;
+    max-width: 50px;
+    margin-right: 0.5rem;
+  }
+
+  &__content {
+    font-size: 0.8rem;
+
+    .friend-name {
+      display: block;
+      font-size: 0.9rem;
+    }
+
+    .details {
+      display: flex;
+      align-items: center;
+    }
+
+    .divider {
+      font-size: 1rem;
+      padding: 0 0.25rem;
+      opacity: 0.5;
+    }
+  }
+}

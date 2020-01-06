@@ -1,0 +1,134 @@
+.Bookshelves {
+  padding-top: 1rem;
+
+  &__header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 0.5rem;
+
+    .breadcrumb {
+      padding: 0 0.3rem;
+    }
+    &-text {
+      font-size: 1.4rem;
+      padding: 0;
+    }
+  }
+
+  &__content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+  }
+
+  &__shelves-nav {
+    width: 22%;
+    font-size: 0.95rem;
+    margin-top: 0.8rem;
+    margin-right: 2rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    .list-header {
+      font-weight: bold;
+      margin-bottom: 0.4rem;
+    }
+    li {
+      margin: 0.2rem 0;
+      a {
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
+  &__list {
+    margin-top: 2rem;
+    flex-grow: 1;
+
+    .pagination-head,
+    .pagination-foot {
+      display: flex;
+      padding: 0 2rem;
+
+      align-items: center;
+    }
+
+    .pagination-head {
+      justify-content: flex-end;
+      margin-bottom: 1.2rem;
+    }
+    .pagination-foot {
+      justify-content: space-between;
+      margin-top: 0.6rem;
+    }
+
+    .pagination-settings {
+      .pagination-per-page {
+        margin-right: 1rem;
+      }
+      .pagination-sort {
+      }
+    }
+
+    table {
+      border-collapse: collapse;
+    }
+
+    &-header {
+      padding: 0 0.8rem;
+      border-bottom: 2px solid rgba(0, 0, 0, 0.1);
+      th {
+        padding: 0.2rem 0.5rem;
+        font-size: 0.95rem;
+        text-align: left;
+      }
+    }
+
+    &-book {
+      td {
+        padding: 0 0.5rem;
+        padding-top: 0.8rem;
+        padding-bottom: 0.4rem;
+
+        vertical-align: top;
+        text-align: center;
+        text-align: left;
+      }
+
+      .title {
+        width: 35%;
+      }
+      .author {
+        width: 15%;
+      }
+
+      .avg-rating {
+        width: 10%;
+      }
+
+      .friend-rating,
+      .my-rating {
+        width: 15%;
+        .Rating,
+        .Rating-fixed {
+          span {
+            height: 16px;
+            width: 16px;
+          }
+        }
+      }
+
+      .date-shelved {
+        width: 10%;
+      }
+
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+      img {
+        max-width: 60px;
+        max-height: 80px;
+      }
+    }
+  }
+}

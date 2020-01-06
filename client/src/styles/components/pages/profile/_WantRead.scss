@@ -1,0 +1,29 @@
+.WantRead {
+  display: flex;
+  flex-direction: column;
+
+  &__content {
+    display: flex;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .rate-text {
+      margin: 0.2rem 0;
+    }
+
+    .DropdownButton {
+      .btn--green {
+        &:first-of-type {
+          padding-right: 1rem;
+        }
+      }
+
+      a {
+        color: #333;
+      }
+    }
+  }
+}

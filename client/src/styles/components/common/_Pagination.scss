@@ -1,0 +1,22 @@
+.pagination {
+  a {
+    @include green-link;
+  }
+
+  &__page-number {
+    padding: 0.1rem;
+  }
+
+  &__ellipsis {
+    padding: 0.1rem;
+    letter-spacing: 1px;
+  }
+
+  &__prev {
+    margin-right: 0.2rem;
+  }
+
+  &__next {
+    margin-left: 0.2rem;
+  }
+}

@@ -1,0 +1,124 @@
+.book-panel {
+  padding: 0.5rem 0;
+
+  &--want-read {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &--current-read {
+    display: flex;
+  }
+
+  &__header {
+    margin-bottom: 0.5rem;
+  }
+  &__footer {
+    margin-top: 0.4rem;
+  }
+
+  &__content {
+    &--want-read {
+      display: flex;
+      // justify-content: space-between;
+    }
+  }
+
+  &__details {
+    font-size: 0.95rem;
+    flex-grow: 1;
+
+    &--current-read {
+      display: flex;
+      flex-direction: column;
+    }
+
+    &-footer {
+      margin-top: 1rem;
+    }
+  }
+
+  &__cover {
+    img {
+      max-width: 60px;
+    }
+
+    margin-right: 1rem;
+  }
+
+  &__title {
+    font-family: $font-secondary;
+    font-size: 1.1rem;
+    margin: 0.1rem 0;
+    margin-top: 0.4rem;
+  }
+
+  &__author-name {
+    font-family: $font-secondary;
+    font-size: 0.9rem;
+  }
+
+  &__date {
+    color: #999;
+    word-spacing: 1px;
+  }
+
+  &__actions {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    .rate-text {
+      margin: 0.2rem 0;
+    }
+
+    .DropdownButton {
+      .btn--green {
+        &:first-of-type {
+          padding-right: 1rem;
+        }
+      }
+
+      a {
+        color: #333;
+      }
+    }
+  }
+}
+
+.Comments--book-panel {
+  margin-top: 0.4rem;
+  width: 75%;
+  font-size: 0.95rem;
+  .Comment--book-panel {
+    padding: 0.6rem 0.6rem;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  }
+
+  .Comment--book-panel__avatar,
+  .Comments--book-panel__input-avatar {
+    width: 35px;
+    min-width: 35px;
+    height: 40px;
+    min-height: 40px;
+    // border: 1px solid red;
+
+    img {
+      width: 100%;
+      height: 100%;
+    }
+
+    border-radius: 0%;
+    margin-right: 0.4rem;
+  }
+
+  .Comments--book-panel__input {
+    padding: 0.6rem 0.6rem;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+    textarea {
+      margin: 0;
+    }
+  }
+}
