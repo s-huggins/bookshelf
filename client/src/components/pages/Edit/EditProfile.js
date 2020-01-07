@@ -164,11 +164,15 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
             ? 'friends'
             : 'everyone'
           : 'friends',
-        birthday: profile.birthday
-          ? profile.birthday.value
+        // birthday: profile.birthday
+        //   ? profile.birthday.value
+        //     ? profile.birthday.value
+        //     : '2000-01-01'
+        //   : '2000-01-01',
+        birthday:
+          profile.birthday && profile.birthday.value
             ? profile.birthday.value
-            : '2000-01-01'
-          : '2000-01-01',
+            : '',
         birthdayPrivacy: profile.birthday
           ? profile.birthday.private
             ? 'friends'

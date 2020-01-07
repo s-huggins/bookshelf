@@ -47,7 +47,11 @@ const Profile = ({ match }) => {
     const age =
       profile.age && profile.age.value ? 'Age ' + profile.age.value : '';
     const gender =
-      profile.gender && profile.gender.value ? profile.gender.value : '';
+      profile.gender &&
+      profile.gender.value &&
+      profile.gender.value !== 'Unspecified'
+        ? profile.gender.value
+        : '';
     const location =
       profile.location && profile.location.value ? profile.location.value : '';
     profileDetails.details = [age, gender, location]
@@ -108,6 +112,8 @@ const Profile = ({ match }) => {
 
   const countShelf = (books, shelf) =>
     books.filter(book => book.primaryShelf === shelf).length;
+
+  console.log(profile);
 
   return (
     <div className="Profile">
