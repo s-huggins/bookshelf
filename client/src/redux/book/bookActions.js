@@ -6,6 +6,8 @@ import {
   UPDATE_RATINGS
 } from './bookTypes';
 
+export const clearFetchStatus = () => ({ type: CLEAR_FETCH_STATUS });
+
 export const fetchBook = bookId => async dispatch => {
   let uri = `http://localhost:5000/api/v1/book/${bookId}`;
   const token = store.getState().auth.token;
@@ -19,7 +21,7 @@ export const fetchBook = bookId => async dispatch => {
   });
 
   const json = await res.json();
-  console.log(json);
+
   if (json.status === 'success') {
     dispatch({
       type: FETCH_BOOK_SUCCESS,
@@ -33,8 +35,14 @@ export const fetchBook = bookId => async dispatch => {
   }
 };
 
-export const updateRating = (oldUserRating, newUserRating) => {
-  const { average_rating, ratings_count } = store.getState().book.book;
+/** For updating the rating of a loaded book, from the book's profile page */
+export const updateRating = (
+  oldUserRating,
+  newUserRating,
+  average_rating,
+  ratings_count
+) => {
+  // const { average_rating, ratings_count } = store.getState().book.book;
   const sumRatings = average_rating * ratings_count;
 
   // if book was not previously rated by user
@@ -81,5 +89,3 @@ export const updateRating = (oldUserRating, newUserRating) => {
     }
   };
 };
-
-export const clearFetchStatus = () => ({ type: CLEAR_FETCH_STATUS });

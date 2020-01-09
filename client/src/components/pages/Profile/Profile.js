@@ -6,13 +6,13 @@ import FriendsSidebar from './FriendsSidebar';
 import ProfileDetails from './ProfileDetails';
 import ProfileSide from './ProfileSide';
 import { getMonth, lastActive } from '../../../util/lastActive';
-import { Redirect, Link } from 'react-router-dom';
+import { Redirect } from 'react-router-dom';
 import useLoadProfile from './Hooks/useLoadProfile';
-import apostrophize from '../../../util/apostrophize';
-import CurrentRead from './CurrentRead';
-import WantRead from './WantRead';
+import BookshelvesPanel from './BookshelvesPanel';
+import CurrentlyReadingPanel from './CurrentlyReadingPanel';
+import RecentUpdatesPanel from './RecentUpdatesPanel';
 
-const Profile = ({ match }) => {
+const Profile = ({ match, location }) => {
   const { user, token } = useSelector(state => state.auth);
   const profile = useSelector(state => state.profile.loadedProfile);
 
@@ -27,8 +27,11 @@ const Profile = ({ match }) => {
    * return a limited snapshot when it is private and not a friend.
    */
   /* PROFILE FETCH HOOK */
+  // const profileId = match.params.id || match.params.handle || '';
+  // const loadingProfile = useLoadProfile(profileId);
+
   const profileId = match.params.id || match.params.handle || '';
-  const loadingProfile = useLoadProfile(profileId);
+  const loadingProfile = useLoadProfile(profileId, match);
 
   /**
    * The server does not return private fields of non-friends.
@@ -98,10 +101,17 @@ const Profile = ({ match }) => {
     };
   };
 
+  const buildBookshelfLink = shelf => {
+    if (shelf) return `${location.pathname}/bookshelves?shelf=${shelf}`;
+    else return `${location.pathname}/bookshelves`;
+  };
+
+  const countShelf = (books, shelf) =>
+    books.filter(book => book.primaryShelf === shelf).length;
+
   if (loadingProfile) {
     return <Loader />;
   }
-
   // if (profileHasLoaded && profile == null) return <Redirect to="/not-found" />;
   if (profile == null) return <Redirect to="/not-found" />;
 
@@ -110,10 +120,7 @@ const Profile = ({ match }) => {
     return <PrivateProfile profile={profile} />;
   }
 
-  const countShelf = (books, shelf) =>
-    books.filter(book => book.primaryShelf === shelf).length;
-
-  console.log(profile);
+  // const ownProfile = profile.user === user._id;
 
   return (
     <div className="Profile">
@@ -122,64 +129,29 @@ const Profile = ({ match }) => {
           <ProfileSide token={token} profile={buildProfileSide(profile)} />
           <ProfileDetails profile={buildProfileDetails(profile)} />
         </div>
-        <div className="panel panel--bookshelves">
-          <div className="panel__header">
-            <h2 className="panel__header-text">
-              {apostrophize(profile.displayName)} bookshelves
-            </h2>
-          </div>
-          <div className="panel__body">
-            <ul className="shelves">
-              <li>
-                <Link to="#!">read ({countShelf(profile.books, 'read')})</Link>{' '}
-              </li>
-              <li>
-                <Link to="#!">
-                  currently reading ({countShelf(profile.books, 'reading')})
-                </Link>
-              </li>
-              <li>
-                <Link to="#!">
-                  to read ({countShelf(profile.books, 'to-read')})
-                </Link>
-              </li>
-            </ul>
-          </div>
-        </div>
 
-        <div className="panel">
-          <div className="panel__header">
-            <h2 className="panel__header-text">
-              {profile.displayName} is currently reading
-            </h2>
-          </div>
-          <div className="panel__body">
-            <CurrentRead />
-            <CurrentRead />
-            <CurrentRead />
-          </div>
-          <div className="panel__footer">
-            <Link to="#!" className="see-all-reading green-link">
-              See all 12 books that Stuart is reading...
-            </Link>
-          </div>
-        </div>
+        <BookshelvesPanel
+          books={profile.books}
+          displayName={profile.displayName}
+          ownProfile={profile.user === user._id}
+          buildBookshelfLink={buildBookshelfLink}
+          countShelf={countShelf}
+        />
 
-        <div className="panel">
-          <div className="panel__header">
-            <h2 className="panel__header-text">
-              {apostrophize(profile.displayName)} recent updates
-            </h2>
-          </div>
-          <div className="panel__body">
-            <WantRead />
-          </div>
-          <div className="panel__footer">
-            <Link to="#!" className="see-all-books green-link">
-              More of {apostrophize(profile.displayName)} books...
-            </Link>
-          </div>
-        </div>
+        <CurrentlyReadingPanel
+          books={profile.books}
+          displayName={profile.displayName}
+          ownProfile={profile.user === user._id}
+          buildBookshelfLink={buildBookshelfLink}
+          bookCount={countShelf(profile.books, 'reading')}
+        />
+
+        <RecentUpdatesPanel
+          books={profile.books}
+          displayName={profile.displayName}
+          ownProfile={profile.user === user._id}
+          buildBookshelfLink={buildBookshelfLink}
+        />
       </main>
       <aside>
         <FriendsSidebar />

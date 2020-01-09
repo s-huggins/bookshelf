@@ -8,7 +8,8 @@ import {
   CLEAR_EDIT_STATUS,
   EDIT_AVATAR_SUCCESS,
   EDIT_AVATAR_FAILURE,
-  CLEAR_EDIT_AVATAR_STATUS
+  CLEAR_EDIT_AVATAR_STATUS,
+  UPDATE_PROFILE_RATINGS
 } from './profileTypes';
 
 /* editStatus one of '', 'success', 'fail' */

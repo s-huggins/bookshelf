@@ -16,8 +16,14 @@ const BookSchema = new Schema(
     authors: {
       type: [
         {
-          name: String,
-          author_id: Number
+          name: {
+            type: String,
+            required: ['An author must have a name.']
+          },
+          role: String,
+          authorId: Number,
+          image_url: String,
+          small_image_url: String
         }
       ],
 
@@ -60,6 +66,9 @@ BookSchema.virtual('average_rating').get(function() {
       return acc + next.rating;
     }, 0) / this.ratings.length
   );
+});
+BookSchema.virtual('ratings_count').get(function() {
+  return this.ratings.length;
 });
 
 const Book = mongoose.model('Book', BookSchema);

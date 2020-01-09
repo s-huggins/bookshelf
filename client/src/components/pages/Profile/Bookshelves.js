@@ -1,40 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link, Redirect } from 'react-router-dom';
-import BookshelfBook from './BookshelfBook';
 import useLoadProfile from './Hooks/useLoadProfile';
 import Loader from '../../common/Loader';
 import PrivateProfile from './PrivateProfile';
+import BookshelvesNav from './BookshelvesNav';
+import Bookshelf from './Bookshelf';
+import queryString from 'query-string';
 
 const Bookshelves = ({ match, location }) => {
   const { user } = useSelector(state => state.auth);
   const profile = useSelector(state => state.profile.loadedProfile);
 
-  const ownBookshelves = match => {
-    if (match.params.id) {
-      // return match.params.id === `${user.profile.id}`;
-      return +match.params.id === user.profile.id;
-    } else if (match.params.handle) {
-      return match.params.handle === user.profile.handle;
-    } else {
-      return true;
-    }
-  };
-
   /* PROFILE FETCH HOOK */
   const profileId = match.params.id || match.params.handle || '';
   const loadingProfile = useLoadProfile(profileId);
 
-  useEffect(() => {
-    /**
-     *
-     * params available on match prop
-     *
-     * query string on location.search, to be parsed by query-string
-     */
-  }, []);
+  const [activeShelf, setActiveShelf] = useState('');
 
-  console.log(profile);
+  useEffect(() => {
+    const { shelf = '' } = queryString.parse(location.search);
+    setActiveShelf(shelf);
+  }, [location]);
+
+  const buildBookshelfLink = shelf => {
+    if (shelf) return `${location.pathname}?shelf=${shelf}`;
+    else return `${location.pathname}`;
+  };
+
+  const countShelf = (books, shelf) =>
+    books.filter(book => book.primaryShelf === shelf).length;
+
+  const printShelf = () => {
+    switch (activeShelf) {
+      case 'read':
+        return 'Read';
+      case 'reading':
+        return 'Reading';
+      case 'to-read':
+        return 'To Read';
+    }
+  };
 
   if (loadingProfile) {
     return <Loader />;
@@ -47,78 +53,53 @@ const Bookshelves = ({ match, location }) => {
     return <PrivateProfile profile={profile} />;
   }
 
+  // console.log(profile);
+  const ownBookshelves = profile.user === user._id;
+
+  // {`${location.pathname}?shelf=`}
   return (
     <div className="Bookshelves">
       <main>
         <div className="Bookshelves__header">
           <h1 className="Bookshelves__header-text">
-            <Link className="green-link" to="#!">
+            <Link
+              className="green-link"
+              to={location.pathname
+                .split('/')
+                .slice(0, -1)
+                .join('/')}
+            >
               Stuart
-            </Link>{' '}
-            <span className="breadcrumb">&gt;</span>{' '}
-            <Link className="green-link" to="#!">
+            </Link>
+            <span className="breadcrumb"> &gt; </span>
+            <Link className="green-link" to={buildBookshelfLink()}>
               Books
             </Link>
+            {activeShelf && (
+              <>
+                <span className="breadcrumb"> &gt; </span>
+                <Link
+                  className="green-link"
+                  to={buildBookshelfLink(activeShelf)}
+                >
+                  {printShelf()}
+                </Link>
+              </>
+            )}
           </h1>
         </div>
 
         <div className="Bookshelves__content">
-          <nav className="Bookshelves__shelves-nav">
-            <ul>
-              <li className="list-header">Bookshelves</li>
-              <li>
-                <Link to="#!">All (904)</Link>
-              </li>
-              <li>
-                <Link to="#!" className="green-link">
-                  Read (338)
-                </Link>
-              </li>
-              <li>
-                <Link to="#!" className="green-link">
-                  Currently Reading (7)
-                </Link>
-              </li>
-              <li>
-                <Link to="#!" className="green-link">
-                  Want to Read (559)
-                </Link>
-              </li>
-            </ul>
-          </nav>
-          <div className="Bookshelves__list">
-            <div className="pagination-head">
-              <span className="pagination">
-                « previous 1 2 3 4 5 6 7 8 9 … 90 91 next »
-              </span>
-            </div>
-            <table>
-              <thead>
-                <tr className="Bookshelves__list-header">
-                  <th>cover</th>
-                  <th>title</th>
-                  <th>author</th>
-                  <th>avg rating</th>
-                  <th>rating</th>
-                  <th>my rating</th>
-                  <th>date shelved</th>
-                </tr>
-              </thead>
-              <tbody>
-                <BookshelfBook />
-                <BookshelfBook />
-              </tbody>
-            </table>
-            <div className="pagination-foot">
-              <span className="pagination-settings">
-                <span className="pagination-per-page">per page 20</span>
-                <span className="pagination-sort">sort</span>
-              </span>
-              <span className="pagination">
-                « previous 1 2 3 4 5 6 7 8 9 … 90 91 next »
-              </span>
-            </div>
-          </div>
+          <BookshelvesNav
+            countShelf={countShelf}
+            buildBookshelfLink={buildBookshelfLink}
+            books={profile.books}
+          />
+          <Bookshelf
+            books={profile.books}
+            shelf={activeShelf}
+            ownBookshelf={ownBookshelves}
+          />
         </div>
       </main>
     </div>

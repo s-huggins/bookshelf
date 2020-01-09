@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Rating from '../../common/Rating';
 import MiniRating from '../../common/MiniRating';
-import DropdownButton from '../../common/DropdownButton';
+import SearchResultDropdownButton from './SearchResultDropdownButton';
+import SearchResultRating from './SearchResultRating';
+import pluralize from '../../../util/pluralize';
 
 const BookResult = ({
   work: {
@@ -11,7 +12,43 @@ const BookResult = ({
     best_book = { title: 'Untitled', id: -1 }
   }
 }) => {
-  const { author = { name: 'Unknown', id: -1 } } = best_book;
+  const {
+    author = { name: 'Unknown', id: -1 },
+    average_rating,
+    ratings_count
+  } = best_book;
+
+  const [averageRating, setAverageRating] = useState(average_rating);
+  const [ratingsCount, setRatingsCount] = useState(ratings_count);
+
+  const updateRatingDisplay = (oldRating, newRating) => {
+    const sumRatings = averageRating * ratingsCount;
+
+    // if book was not previously rated by user
+    if (!oldRating) {
+      const newSumRatings = sumRatings + newRating;
+      const newRatingsCount = ratingsCount + 1;
+      const newAverageRating = newSumRatings / newRatingsCount;
+
+      setAverageRating(newAverageRating);
+      setRatingsCount(newRatingsCount);
+    } else if (newRating) {
+      // user updated rating without unrating
+      const newSumRatings = sumRatings - oldRating + newRating;
+      const newAverageRating = newSumRatings / ratingsCount;
+
+      setAverageRating(newAverageRating);
+    } else {
+      // user removed a rating
+      const newSumRatings = sumRatings - oldRating;
+      const newRatingsCount = ratingsCount - 1;
+      const newAverageRating =
+        newRatingsCount !== 0 ? newSumRatings / newRatingsCount : 0;
+
+      setAverageRating(newAverageRating);
+      setRatingsCount(newRatingsCount);
+    }
+  };
 
   return (
     <div className="BookResult">
@@ -29,19 +66,23 @@ const BookResult = ({
           </span>
         </span>
         <div className="BookResult__details-specifics">
-          <MiniRating average={4.22} />
+          <MiniRating average={averageRating} />
           <span className="text-tiny">
-            4.22 avg rating — 654,257 ratings — published{' '}
+            {averageRating.toFixed(2)} avg rating —{' '}
+            {`${ratingsCount} ${pluralize('rating', ratingsCount)}`} — published{' '}
             {original_publication_year}
           </span>
         </div>
-        <DropdownButton />
+        <SearchResultDropdownButton best_book={best_book} />
         <div className="BookResult__rate">
           <span className="BookResult__rate-text text-tiny">
             Rate this book
           </span>
           <div>
-            <Rating />
+            <SearchResultRating
+              best_book={best_book}
+              updateDisplay={updateRatingDisplay}
+            />
           </div>
         </div>
       </div>

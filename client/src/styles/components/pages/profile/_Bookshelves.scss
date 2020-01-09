@@ -1,3 +1,5 @@
+@import '../../../mixins/green-link';
+
 .Bookshelves {
   padding-top: 1rem;
 
@@ -32,8 +34,12 @@
       font-weight: bold;
       margin-bottom: 0.4rem;
     }
-    li {
+    .shelf-name {
       margin: 0.2rem 0;
+      @include green-link;
+      .active-shelf {
+        color: #333;
+      }
       a {
         &:hover {
           text-decoration: underline;
@@ -107,7 +113,7 @@
         width: 10%;
       }
 
-      .friend-rating,
+      .other-rating,
       .my-rating {
         width: 15%;
         .Rating,

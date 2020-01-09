@@ -1,6 +1,7 @@
 const rpn = require('request-promise-native');
 const xml2js = require('xml2js');
 const UrlBuilder = require('../utils/UrlBuilder');
+const Book = require('../models/Book');
 
 /**
  * Handler expects a query string of the form:
@@ -43,6 +44,23 @@ exports.searchBooks = async (req, res) => {
     const totalResults = +bookResults['total-results'];
     const queryTimeSeconds = +bookResults['query-time-seconds'];
     const works = bookResults.results.work;
+
+    // in parallel:
+    // for each work in works array
+    // look up if book exists in db
+    // populate the work.best_book object with fields `average_rating` & `ratings_count`
+    // if book not in db, set both these fields to 0
+    const tasks = works.map(async work => Book.findById(+work.best_book.id));
+    const dbBooks = await Promise.all(tasks);
+    dbBooks.forEach((dbBook, i) => {
+      if (dbBook) {
+        works[i].best_book.average_rating = dbBook.average_rating;
+        works[i].best_book.ratings_count = dbBook.ratings.length;
+      } else {
+        works[i].best_book.average_rating = 0;
+        works[i].best_book.ratings_count = 0;
+      }
+    });
 
     const data = {
       query,

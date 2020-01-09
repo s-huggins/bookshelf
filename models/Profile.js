@@ -41,8 +41,7 @@ const ProfileSchema = new Schema(
           type: Schema.Types.ObjectId,
           ref: 'Profile'
         }
-      ],
-      default: []
+      ]
     },
     friendRequests: {
       type: [
@@ -56,12 +55,11 @@ const ProfileSchema = new Schema(
             ref: 'Profile'
           }
         }
-      ],
-      default: []
+      ]
     },
     firstName: {
       type: String,
-      required: [true, 'First name is required'],
+      required: [true, 'First name is required.'],
       minlength: 1,
       maxlength: 40
     },
@@ -161,18 +159,7 @@ const ProfileSchema = new Schema(
         }
       ]
     },
-    // reviews: {
-    //   type: [
-    //     {
-    //       review: {
-    //         type: String,
-    //         maxlength: 8000
-    //       },
-    //       bookId: Number
-    //     }
-    //   ],
-    //   default: []
-    // },
+
     reviews: [
       {
         type: Schema.Types.ObjectId,

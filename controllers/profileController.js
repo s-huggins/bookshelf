@@ -18,7 +18,7 @@ const AppError = require('../utils/AppError');
 // @NB: Optional id param references either an auto-incrementing id field (which is not MongoDB's _id)
 // or profile handle from the Profile model. The profile handle cannot begin with a digit, which is
 // how we distinguish the parameter type.
-// TODO: populate bookshelves
+// TODO: refactor into separate handlers based on profile fetch condition - use middleware to fork request
 exports.getProfile = catchAsync(async (req, res, next) => {
   let profile;
   if (!req.params.id) {
@@ -26,7 +26,7 @@ exports.getProfile = catchAsync(async (req, res, next) => {
     // console.log('here');
     profile = await Profile.findOne({
       user: req.user._id
-    });
+    }).populate('books.bookId');
   } else {
     // fetching a profile by id.
     const nums = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
@@ -37,11 +37,13 @@ exports.getProfile = catchAsync(async (req, res, next) => {
       // });
 
       const reg = new RegExp(`^${req.params.id}$`, 'i');
-      profile = await Profile.findOne({ handle: { $regex: reg } });
+      profile = await Profile.findOne({ handle: { $regex: reg } }).populate(
+        'books.bookId'
+      );
     } else {
       profile = await Profile.findOne({
         id: req.params.id
-      });
+      }).populate('books.bookId');
     }
 
     if (!profile) {
@@ -290,6 +292,7 @@ exports.handleRating = catchAsync(async (req, res) => {
       await Book.create(book);
     }
   } else if (removedRating) {
+    // book exists in db, this block handles removal of rating whether the user has rated it or not
     await Book.findByIdAndUpdate(bookId, {
       $pull: {
         ratings: {
@@ -298,15 +301,8 @@ exports.handleRating = catchAsync(async (req, res) => {
       }
     });
   } else {
-    // await Book.findByIdAndUpdate(bookId, {
-    //   $push: {
-    //     ratings: {
-    //       profileId: req.user.profile.id,
-    //       rating
-    //     }
-    //   }
-    // });
-    await Book.findOneAndUpdate(
+    // else book exists, user has set a rating, to be patched in or pushed on to ratings array
+    const updatedRating = await Book.findOneAndUpdate(
       { _id: bookId, 'ratings.profileId': req.user.profile.id },
       {
         $set: {
@@ -314,6 +310,20 @@ exports.handleRating = catchAsync(async (req, res) => {
         }
       }
     );
+
+    if (!updatedRating) {
+      await Book.findOneAndUpdate(
+        { _id: bookId },
+        {
+          $push: {
+            ratings: {
+              profileId: req.user.profile.id,
+              rating
+            }
+          }
+        }
+      );
+    }
   }
 
   res.status(200).json({ status: 'success' });

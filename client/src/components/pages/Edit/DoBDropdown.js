@@ -52,19 +52,6 @@ const monthLengths = {
 const maxYear = new Date().getFullYear() - 13;
 const minYear = 1903;
 
-/**
- * `birthday` prop to DoBDropdown is a string of the form yyyy-mm-ddT00:00:00.000+00.00,
- * e.g. 1992-12-17T00:00:00.000+00.00.
- * This function extracts the date components as numbers.
- */
-const initializeBirthday = dateString => {
-  const bYear = +dateString.substring(0, 4);
-  const bMonth = +dateString.substring(5, 7);
-  const bDay = +dateString.substring(8, 10);
-
-  return [bYear, bMonth, bDay];
-};
-
 /* COMPONENT */
 const DoBDropdown = ({ birthday, handleChange }) => {
   const [year, setYear] = useState('year');
@@ -75,6 +62,30 @@ const DoBDropdown = ({ birthday, handleChange }) => {
   const [birthdaySet, setBirthdaySet] = useState(false);
 
   const zeroPad = val => `0${val}`.slice(-2);
+
+  /**
+   * `birthday` prop to DoBDropdown is a string of the form yyyy-mm-ddT00:00:00.000+00.00,
+   * e.g. 1992-12-17T00:00:00.000+00.00.
+   * This function extracts the date components as numbers.
+   */
+  const initializeBirthday = dateString => {
+    const bYear = +dateString.substring(0, 4);
+    const bMonth = +dateString.substring(5, 7);
+    const bDay = +dateString.substring(8, 10);
+
+    return [bYear, bMonth, bDay];
+  };
+
+  useEffect(() => {
+    if (birthday) {
+      const [bYear, bMonth, bDay] = initializeBirthday(birthday);
+      setYear(bYear);
+      setMonth(bMonth);
+      setDay(bDay);
+      setMonthDays(monthLengths[bMonth]);
+      setBirthdaySet(true);
+    }
+  }, [birthday]);
 
   const validate = (bYear, bMonth, bDay) => {
     // 13 or older validation
@@ -97,6 +108,8 @@ const DoBDropdown = ({ birthday, handleChange }) => {
     return [bYear, bMonth, bDay];
   };
 
+  /* FUNCTIONS TO PROPAGATE VALIDATED BIRTHDAY CHANGE UP TO PARENT */
+
   const updateBirthday = (bYear, bMonth, bDay) => {
     [bYear, bMonth, bDay] = validate(bYear, bMonth, bDay);
     handleChange(`${bYear}-${zeroPad(bMonth)}-${zeroPad(bDay)}`);
@@ -106,16 +119,7 @@ const DoBDropdown = ({ birthday, handleChange }) => {
     handleChange(undefined);
   };
 
-  useEffect(() => {
-    if (birthday) {
-      const [bYear, bMonth, bDay] = initializeBirthday(birthday);
-      setYear(bYear);
-      setMonth(bMonth);
-      setDay(bDay);
-      setMonthDays(monthLengths[bMonth]);
-      setBirthdaySet(true);
-    }
-  }, [birthday]);
+  /* DROPDOWN & RADIO HANDLERS */
 
   const handleYearChange = e => {
     const newYear = +e.target.value;

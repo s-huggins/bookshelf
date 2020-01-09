@@ -10,6 +10,7 @@ import AuthorDetail from './AuthorDetail';
 import SimilarBooks from './SimilarBooks';
 import DropdownButton from '../../common/DropdownButton';
 import pluralize from '../../../util/pluralize';
+import BookRating from './BookRating';
 
 const Book = ({ match }) => {
   const bookId = match.params.id; // check it is an int
@@ -75,7 +76,7 @@ const Book = ({ match }) => {
           <DropdownButton book={book} />
           <div className="rating-container">
             <span>Rate this book</span>
-            <Rating book={book} />
+            <BookRating book={book} />
           </div>
         </div>
         <div className="profile__main profile__main--book">

@@ -24,7 +24,7 @@ import {
  * @param {string} [profileId=''] - integer as a string, user handle, or empty.
  * @return {boolean} - loading status
  */
-const useLoadProfile = (profileId = '') => {
+const useLoadProfile = profileId => {
   const [loadingProfile, setLoadingProfile] = useState(true);
   const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
   const [profileCleared, setProfileCleared] = useState(!profileHasLoaded);
@@ -40,9 +40,9 @@ const useLoadProfile = (profileId = '') => {
       dispatch(getProfile(profileId)); // endpoint can distinguish each case
       return;
     }
-
     setLoadingProfile(false);
-  }, [profileHasLoaded]);
+    setProfileCleared(false);
+  }, [profileHasLoaded, profileId]);
 
   return loadingProfile;
 };

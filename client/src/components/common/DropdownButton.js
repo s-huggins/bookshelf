@@ -70,18 +70,26 @@ const DropdownButton = ({ book }) => {
 
   const handleShelfChange = shelf => {
     setShelf(shelf);
+
+    let authors = Array.isArray(book.authors.author)
+      ? book.authors.author
+      : [book.authors.author];
+
+    authors = authors.map(author => ({
+      ...author,
+      authorId: +author.id
+    }));
+
     const bookData = {
       bookId: +book.id,
       title: book.title,
-      authors: Array.isArray(book.authors.author)
-        ? book.authors.author
-        : [book.authors.author],
+      authors,
       image_url: book.image_url
     };
     dispatch(shelveBook(bookData, shelf));
     // update profile api, update book api for num times shelved?
   };
-
+  // console.log(book);
   return (
     <div className="DropdownButton">
       {button}

@@ -9,7 +9,8 @@ import {
   EDIT_AVATAR_SUCCESS,
   EDIT_AVATAR_FAILURE,
   CLEAR_EDIT_AVATAR_STATUS,
-  SHELVE_BOOK
+  SHELVE_BOOK,
+  UPDATE_PROFILE_RATINGS
 } from './profileTypes';
 import store from '../../redux/store';
 
@@ -166,9 +167,7 @@ export const shelveBook = (bookData, shelf) => async dispatch => {
     body: JSON.stringify(body)
   });
 
-  // console.log(bookData, shelf);
-
-  const json = await res.json();
+  // const json = await res.json();
 };
 
 export const rateBook = (bookData, rating) => async dispatch => {
@@ -185,8 +184,5 @@ export const rateBook = (bookData, rating) => async dispatch => {
     body: JSON.stringify(body)
   });
 
-  // console.log(bookData, shelf);
-
-  const json = await res.json();
-  console.log(json);
+  // const json = await res.json();
 };
