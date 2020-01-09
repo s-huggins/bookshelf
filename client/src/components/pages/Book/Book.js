@@ -89,6 +89,9 @@ const Book = ({ match }) => {
           <div className="profile__body">
             <div className="minirating-container">
               <MiniRating average={book.average_rating} />
+              <span className="avg-rating">
+                {book.average_rating.toFixed(2)}
+              </span>
               <span className="middle-dot">&#183;</span>
               <span className="green-link">
                 {book.ratings_count} {pluralize('rating', book.ratings_count)}

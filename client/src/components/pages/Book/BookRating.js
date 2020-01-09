@@ -57,6 +57,7 @@ const BookRating = ({ book }) => {
       image_url
     };
 
+    // TODO: reuuse inline rating component to manage view state instead of redux?
     dispatch(updateRating(oldRating, newRating, average_rating, ratings_count)); // updates book in store for fast view update
     dispatch(rateBook(bookData, newRating)); // persists profile & book updates to db
   };
