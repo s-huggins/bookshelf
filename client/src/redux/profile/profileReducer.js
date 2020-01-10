@@ -9,7 +9,9 @@ import {
   EDIT_AVATAR_SUCCESS,
   EDIT_AVATAR_FAILURE,
   CLEAR_EDIT_AVATAR_STATUS,
-  UPDATE_PROFILE_RATINGS
+  UPDATE_PROFILE_RATINGS,
+  SIGNAL_BOOK_WAS_RATED,
+  RESET_BOOK_WAS_RATED_SIGNAL
 } from './profileTypes';
 
 /* editStatus one of '', 'success', 'fail' */
@@ -17,7 +19,8 @@ const initialState = {
   loadedProfile: null,
   profileHasLoaded: false,
   editStatus: '',
-  editAvatarStatus: ''
+  editAvatarStatus: '',
+  bookRatedSignal: 'off'
 };
 
 export default (state = initialState, action) => {
@@ -84,6 +87,17 @@ export default (state = initialState, action) => {
       return {
         ...state,
         editAvatarStatus: ''
+      };
+
+    case SIGNAL_BOOK_WAS_RATED:
+      return {
+        ...state,
+        bookRatedSignal: 'on'
+      };
+    case RESET_BOOK_WAS_RATED_SIGNAL:
+      return {
+        ...state,
+        bookRatedSignal: 'off'
       };
 
     default:

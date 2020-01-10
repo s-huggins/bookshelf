@@ -26,6 +26,18 @@ router.get(
 );
 
 router
+  .route('/friendRequests/outgoing/:profileId')
+  .all(protect)
+  .post(profileController.sendFriendRequest);
+//   .delete(profileController.cancelFriendRequest);
+
+// router
+//   .route('friendRequests/incoming')
+//   .all(protect)
+//   .post(profileController.acceptFriendRequest)
+//   .delete(profileController.rejectFriendRequest);
+
+router
   .route('/:id?')
   .all(fromUsersRoute, protect)
   .get(profileController.getProfile)
@@ -41,17 +53,5 @@ router
 // if arriving through /users/:userId/profile
 // router.route('/').get(profileController.getProfileByUserId);
 // .patch(protect, restrictTo('admin'), profileController.updateProfileByUserId);
-
-// router
-//   .route('friendRequests/out')
-//   .all(protect)
-//   .patch(profileController.sendFriendRequest) // send a friend request
-//   .delete(profileController.cancelFriendRequest); // cancel a friend request
-
-// router.patch(
-//   'friendRequests/in',
-//   protect,
-//   profileController.handleFriendRequest
-// ); // accept or reject a friend request
 
 module.exports = router;

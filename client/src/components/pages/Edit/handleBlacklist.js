@@ -15,5 +15,6 @@ export default new Set([
   'bookshelves',
   'avatar',
   'handleCheck',
-  'rating'
+  'rating',
+  'friendRequests'
 ]);

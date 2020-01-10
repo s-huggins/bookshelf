@@ -46,6 +46,7 @@ const ProfileSchema = new Schema(
     friendRequests: {
       type: [
         {
+          _id: false,
           kind: {
             type: String,
             enum: ['Sent', 'Received']
@@ -54,6 +55,10 @@ const ProfileSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Profile'
           }
+          // date: {
+          //   type: Date,
+          //   default: Date.now
+          // }
         }
       ]
     },

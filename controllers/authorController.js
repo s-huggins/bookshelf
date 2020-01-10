@@ -4,6 +4,7 @@ const xml2js = require('xml2js');
 const UrlBuilder = require('../utils/UrlBuilder');
 const Rewriter = require('../utils/rewriteLinks');
 const Book = require('../models/Book');
+const catchAsync = require('../utils/asyncErrorWrapper');
 
 exports.getAuthorProfile = async (req, res) => {
   const apiEndPoint = UrlBuilder.buildAuthorProfile(req.params.authorId);
@@ -251,3 +252,20 @@ const setRatings = async data => {
     }
   });
 };
+
+exports.getRatingsData = catchAsync(async (req, res) => {
+  const ratingsData = await Book.getAuthorRatingsData(+req.params.authorId);
+  const data = {};
+  if (ratingsData.length === 0) {
+    data.author_ratings_count = 0;
+    data.author_average_rating = 0;
+  } else {
+    data.author_ratings_count = ratingsData[0].author_ratings_count;
+    data.author_average_rating = ratingsData[0].author_average_rating;
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data
+  });
+});

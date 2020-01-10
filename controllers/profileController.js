@@ -355,23 +355,46 @@ exports.handleRating = catchAsync(async (req, res) => {
 //   });
 // });
 
-// exports.sendFriendRequest = catchAsync(async (req, res, next) => {
-//   /**
-//    * expecting a body of the form { profile: profId }
-//    *
-//    */
+exports.sendFriendRequest = catchAsync(async (req, res) => {
+  /**
+   * expecting a body of the form { profile: profId }
+   *
+   */
 
-//    const userProfile = await Profile.findOne({user: req.user._id});
+  const otherProfileId = +req.params.profileId; // number
+  // const userProfile = await Profile.findOne({ user: req.user._id }); // user id must come from protect middleware
 
-//   const { profileId } = req.body;
-//    const update = {
-//      kind: 'Received',
-//      profile:
-//    };
+  if (req.user.profile.id === otherProfileId) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Users cannot friend themselves.'
+    });
+  }
 
-//    await Profile.findOneAndUpdate(
-//      {id: profileId},
-//      { $push: {friendRequests: } },
-//      {new: true}
-//     );
-// });
+  const updatedProfile = await Profile.findOneAndUpdate(
+    { id: otherProfileId },
+    {
+      $addToSet: {
+        friendRequests: {
+          kind: 'Received',
+          profile: req.user.profile._id
+        }
+      }
+    }
+  );
+
+  if (!updatedProfile) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'That profile does not exist.'
+    });
+  }
+
+  await Profile.findByIdAndUpdate(req.user.profile._id, {
+    $addToSet: {
+      friendRequests: { kind: 'Sent', profile: updatedProfile._id }
+    }
+  });
+
+  res.status(200).json({ status: 'success' });
+});

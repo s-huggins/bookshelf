@@ -4,12 +4,14 @@
   align-items: center;
   min-width: 70%;
   margin-left: 1.3rem;
+
   .icons-container {
     justify-self: flex-end;
-    a {
+    a,
+    .header-profile {
       padding: 0.8rem 0.6rem;
       height: 100%;
-
+      cursor: pointer;
       i {
         font-size: 1.6rem;
         opacity: 0.85;

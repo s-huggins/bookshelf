@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AuthorBook from './AuthorBook';
 import {
   fetchAuthor,
   clearFetchStatus
@@ -9,12 +8,10 @@ import Loader from '../../common/Loader';
 import { Redirect, Link } from 'react-router-dom';
 import AuthorDetails from './AuthorDetails';
 import apostrophize from '../../../util/apostrophize';
-import withUpdatingRating from '../Profile/withUpdatingRating';
 import AuthorBooksList from './AuthorBooksList';
-import pluralize from '../../../util/pluralize';
 import AuthorStats from './AuthorStats';
 
-const Author = ({ match, location }) => {
+const Author = ({ match }) => {
   const authorId = match.params.id;
   const [loading, setLoading] = useState(true);
 
@@ -39,6 +36,15 @@ const Author = ({ match, location }) => {
       dispatch(clearFetchStatus());
     }
   }, [loading]);
+
+  // const useUpdateAuthorRatings = () => {
+  //   const [authorRatingsData, setAuthorRatingsData] = useState({authorRatingsCount: author.author_ratings_count, authorRatingsAverage: author.author_average_rating})
+
+  //   // update rating, use author ID to hit endpoint that will return new ratings data
+  //   // deal with failure by not updating
+  //   //
+  // }
+  // console.log(author);
 
   if (loading) return <Loader />;
   // if (fetchStatus === 'fail' || !author) return <Redirect to="/not-found" />;

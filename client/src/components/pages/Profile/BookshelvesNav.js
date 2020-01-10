@@ -15,7 +15,7 @@ const BookshelvesNav = ({ countShelf, buildBookshelfLink, books }) => {
             }}
             activeClassName="active-shelf"
           >
-            All ({books.length})
+            All ({books.length.toLocaleString('en')})
           </NavLink>
         </li>
         <li className="shelf-name">
@@ -26,7 +26,7 @@ const BookshelvesNav = ({ countShelf, buildBookshelfLink, books }) => {
             }}
             activeClassName="active-shelf"
           >
-            Read ({countShelf(books, 'read')})
+            Read ({countShelf(books, 'read').toLocaleString('en')})
           </NavLink>
         </li>
         <li className="shelf-name">
@@ -37,7 +37,8 @@ const BookshelvesNav = ({ countShelf, buildBookshelfLink, books }) => {
             }}
             activeClassName="active-shelf"
           >
-            Currently Reading ({countShelf(books, 'reading')})
+            Currently Reading (
+            {countShelf(books, 'reading').toLocaleString('en')})
           </NavLink>
         </li>
         <li className="shelf-name">
@@ -48,7 +49,7 @@ const BookshelvesNav = ({ countShelf, buildBookshelfLink, books }) => {
             }}
             activeClassName="active-shelf"
           >
-            Want to Read ({countShelf(books, 'to-read')})
+            Want to Read ({countShelf(books, 'to-read').toLocaleString('en')})
           </NavLink>
         </li>
       </ul>

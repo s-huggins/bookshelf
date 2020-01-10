@@ -10,7 +10,7 @@ exports.getUser = catchAsync(async (req, res) => {
   // TODO: also populate messages for header message icon
   const user = await User.findById(req.user._id).populate(
     'profile',
-    '_id id handle displayName avatar_id books ratings reviews friends friendRequests'
+    '_id id handle displayName firstName avatar_id books ratings reviews friends friendRequests'
   );
   await Profile.findByIdAndUpdate(req.user.profile._id, {
     lastActive: new Date()

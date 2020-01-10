@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { withRouter, Link } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import HeaderSearch from './Search/HeaderSearch';
 import { signOut } from '../../../redux/auth/authActions';
 
-const HeaderProfile = ({ history }) => {
-  const name = useSelector(state => state.auth.user.name); // CHANGE TO NAME OBTAINED FROM PROFILE
+const HeaderProfile = ({ location }) => {
+  // const name = useSelector(state => state.auth.user.name);
+  const name = useSelector(state => state.auth.user.profile.firstName);
   // const [profileDropdownVisible, setProfileDropdownVisible] = useState(false);
   // sets up a menu dropdown event when the profile icon is clicked
   useEffect(() => {
@@ -57,9 +58,10 @@ const HeaderProfile = ({ history }) => {
           <i className="fas fa-users" title="Friends"></i>
         </a>
 
-        <a href="#!" id="header-profile">
+        {/* <Link id="header-profile" to='#!'><i className="fas fa-user" title="Profile"></i></Link> */}
+        <span className="header-profile" id="header-profile">
           <i className="fas fa-user" title="Profile"></i>
-        </a>
+        </span>
 
         <div className="header-profile-dropdown" id="header-profile-dropdown">
           <ul>
@@ -68,7 +70,7 @@ const HeaderProfile = ({ history }) => {
               <li>Profile</li>
             </Link>
 
-            <a href="#!">
+            <a href="#">
               <li>Friends</li>
             </a>
 
@@ -93,4 +95,4 @@ const HeaderProfile = ({ history }) => {
   );
 };
 
-export default withRouter(HeaderProfile);
+export default HeaderProfile;

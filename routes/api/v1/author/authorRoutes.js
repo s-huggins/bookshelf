@@ -22,5 +22,6 @@ router.get(
   protect,
   authorController.getAuthorBooksWithImage
 );
+router.get('/:authorId/ratings', protect, authorController.getRatingsData);
 
 module.exports = router;

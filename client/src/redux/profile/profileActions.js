@@ -10,7 +10,9 @@ import {
   EDIT_AVATAR_FAILURE,
   CLEAR_EDIT_AVATAR_STATUS,
   SHELVE_BOOK,
-  UPDATE_PROFILE_RATINGS
+  UPDATE_PROFILE_RATINGS,
+  SIGNAL_BOOK_WAS_RATED,
+  RESET_BOOK_WAS_RATED_SIGNAL
 } from './profileTypes';
 import store from '../../redux/store';
 
@@ -184,5 +186,11 @@ export const rateBook = (bookData, rating) => async dispatch => {
     body: JSON.stringify(body)
   });
 
+  dispatch({ type: SIGNAL_BOOK_WAS_RATED });
+
   // const json = await res.json();
 };
+
+export const resetBookRatedSignal = () => ({
+  type: RESET_BOOK_WAS_RATED_SIGNAL
+});

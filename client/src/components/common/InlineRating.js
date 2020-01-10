@@ -38,7 +38,6 @@ const InlineRating = ({ _id, title, authors, image_url, updateDisplay }) => {
       authors: authorsData,
       image_url
     };
-    console.log(authors);
     dispatch(rateBook(bookData, newRating)); // persists profile & book updates to db
   };
 
