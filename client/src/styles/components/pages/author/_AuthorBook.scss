@@ -17,11 +17,9 @@
   }
 
   &__cover {
-    width: 80px;
-    // border: 1px solid red;
-    text-align: center;
+    min-width: 70px;
     img {
-      max-width: 80px;
+      max-width: 70px;
       max-height: 80px;
     }
     margin-right: 0.5rem;

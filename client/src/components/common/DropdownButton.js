@@ -61,11 +61,16 @@ const DropdownButton = ({ book }) => {
     );
   }
 
-  const handleDropdown = () => {
-    setDropdownVisible(true);
+  const showDropdown = () => {
+    setTimeout(() => {
+      setDropdownVisible(true);
+    }, 150);
+  };
+
+  const closeDropdown = () => {
     setTimeout(() => {
       setDropdownVisible(false);
-    }, 500);
+    }, 200);
   };
 
   const handleShelfChange = shelf => {
@@ -89,13 +94,13 @@ const DropdownButton = ({ book }) => {
     dispatch(shelveBook(bookData, shelf));
     // update profile api, update book api for num times shelved?
   };
-  // console.log(book);
   return (
     <div className="DropdownButton">
       {button}
       <button
         className="btn btn--green btn--dropdown"
-        onMouseLeave={handleDropdown}
+        onMouseLeave={closeDropdown}
+        onMouseEnter={showDropdown}
       >
         <i className="fas fa-caret-down"></i>
       </button>
@@ -103,6 +108,7 @@ const DropdownButton = ({ book }) => {
         className={`dropdown-pane${
           dropdownVisible ? ' dropdown-pane--visible' : ''
         }`}
+        onMouseLeave={closeDropdown}
       >
         <ul>
           {shelf !== 'to-read' && (

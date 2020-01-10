@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import CurrentRead from './CurrentRead';
+import withRatingDisplayUpdate from './withUpdatingRating';
 
 const CurrentlyReadingPanel = ({
   books,
@@ -19,9 +20,10 @@ const CurrentlyReadingPanel = ({
         </h2>
       </div>
       <div className="panel__body">
-        <CurrentRead />
-        <CurrentRead />
-        <CurrentRead />
+        {books.map(_book =>
+          // <CurrentRead key={_book.bookId._id} {..._book.bookId} />
+          withRatingDisplayUpdate(CurrentRead, _book.bookId, _book.bookId._id)
+        )}
       </div>
       {bookCount > 3 && (
         <div className="panel__footer">

@@ -1,5 +1,5 @@
 import React from 'react';
-import BookshelfBook from './BookshelfBook';
+import BookshelfBookList from './BookshelfBookList';
 
 const Bookshelf = ({ books, shelf, ownBookshelf }) => {
   const shelfBooks = shelf
@@ -25,14 +25,7 @@ const Bookshelf = ({ books, shelf, ownBookshelf }) => {
           </tr>
         </thead>
         <tbody>
-          {shelfBooks.map(book => (
-            <BookshelfBook
-              ownBookshelf={ownBookshelf}
-              key={book.bookId._id}
-              dateShelved={book.dateShelved}
-              {...book.bookId}
-            />
-          ))}
+          <BookshelfBookList books={shelfBooks} ownBookshelf={ownBookshelf} />
         </tbody>
       </table>
       <div className="pagination-foot">

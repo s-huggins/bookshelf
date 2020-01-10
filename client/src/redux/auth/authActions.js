@@ -39,14 +39,6 @@ export const signUp = userData => async dispatch => {
           user: json.data.user
         }
       });
-
-      // dispatch({
-      //   type: SIGN_UP,
-      //   payload: {
-      //     token: json.token,
-      //     user: json.data.user
-      //   }
-      // });
     } else if (json.status === 'fail') {
       dispatch({
         type: SIGN_UP_FAIL,

@@ -26,15 +26,19 @@ const InlineRating = ({ _id, title, authors, image_url, updateDisplay }) => {
       newRating = starNumClicked;
     }
 
-    updateDisplay(oldRating, newRating);
+    updateDisplay && updateDisplay(oldRating, newRating);
+    const authorsData = authors.map(author => ({
+      ...author,
+      authorId: +author.id
+    }));
 
     const bookData = {
       bookId: _id,
       title,
-      authors,
+      authors: authorsData,
       image_url
     };
-
+    console.log(authors);
     dispatch(rateBook(bookData, newRating)); // persists profile & book updates to db
   };
 

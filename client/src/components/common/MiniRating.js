@@ -9,7 +9,7 @@ const MiniRating = ({ average }) => {
 
     if (starNum <= fillNum) return 'on';
 
-    if (starNum === fillNum + 1) {
+    if (starNum === fillNum + 1 && fraction) {
       if (fraction <= 0.5) return 'half';
 
       return 'high';

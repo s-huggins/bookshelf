@@ -71,6 +71,35 @@ BookSchema.virtual('ratings_count').get(function() {
   return this.ratings.length;
 });
 
+BookSchema.statics.getAuthorRatingsData = function(authorId) {
+  return this.aggregate([
+    {
+      $match: { 'authors.authorId': authorId }
+    },
+    {
+      $addFields: {
+        book_ratings_count: { $size: '$ratings' },
+        book_average_rating: { $avg: '$ratings.rating' }
+      }
+    },
+    {
+      $group: {
+        _id: null,
+        author_ratings_count: { $sum: '$book_ratings_count' },
+        author_average_rating: { $avg: '$book_average_rating' }
+      }
+    },
+
+    {
+      $project: {
+        _id: 0,
+        author_ratings_count: { $ifNull: ['$author_ratings_count', 0] },
+        author_average_rating: { $ifNull: ['$author_average_rating', 0.0] }
+      }
+    }
+  ]);
+};
+
 const Book = mongoose.model('Book', BookSchema);
 
 module.exports = Book;

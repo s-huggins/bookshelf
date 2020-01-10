@@ -72,11 +72,11 @@
     padding-left: 0.5rem;
     padding-right: 0.6rem;
 
-    &:hover {
-      + .dropdown-pane {
-        display: inline-block;
-      }
-    }
+    // &:hover {
+    //   + .dropdown-pane {
+    //     display: inline-block;
+    //   }
+    // }
   }
 
   .dropdown-pane {

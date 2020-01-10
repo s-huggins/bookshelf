@@ -24,7 +24,6 @@ export const searchBooks = (query, filter, page) => async dispatch => {
   });
 
   const json = await res.json();
-  // console.log(json);
 
   if (json.status === 'success') {
     dispatch({

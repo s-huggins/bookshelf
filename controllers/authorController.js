@@ -3,6 +3,7 @@ const rpn = require('request-promise-native');
 const xml2js = require('xml2js');
 const UrlBuilder = require('../utils/UrlBuilder');
 const Rewriter = require('../utils/rewriteLinks');
+const Book = require('../models/Book');
 
 exports.getAuthorProfile = async (req, res) => {
   const apiEndPoint = UrlBuilder.buildAuthorProfile(req.params.authorId);
@@ -25,10 +26,24 @@ exports.getAuthorProfile = async (req, res) => {
       .removeGoodreadsLinks()
       .print();
 
-    if (data.books)
-      data.books.book = !Array.isArray(data.books.book)
+    if (data.books) {
+      data.books = !Array.isArray(data.books.book)
         ? [data.books.book]
         : data.books.book;
+
+      data.books.forEach(book => {
+        book.author = Array.isArray(book.authors.author)
+          ? book.authors.author[0]
+          : book.authors.author;
+        delete book.authors;
+      });
+    }
+
+    delete data.fans_count;
+    delete data.author_followers_count;
+    delete data.goodreads_author;
+    // delete data.works_count;
+    await setRatings(data);
 
     res.status(200).json({
       status: 'success',
@@ -51,7 +66,7 @@ exports.getAuthorProfile = async (req, res) => {
 exports.getAuthorBooks = async (req, res) => {
   const { page = 1 } = req.query;
   let pageNum = parseInt(page, 10);
-  pageNum = Number.isNaN(pageNum) ? 1 : Math.abs(pageNum);
+  pageNum = Number.isNaN(pageNum) || pageNum <= 0 ? 1 : pageNum;
 
   const apiEndPoint = UrlBuilder.buildAuthorBooks(req.params.authorId, pageNum);
 
@@ -65,6 +80,7 @@ exports.getAuthorBooks = async (req, res) => {
       explicitArray: false
     });
 
+    // Promise.all?
     const json = await parser.parseStringPromise(xmlString);
     const jsonAttr = await parserAttr.parseStringPromise(xmlString);
 
@@ -77,9 +93,7 @@ exports.getAuthorBooks = async (req, res) => {
 
     data.pagination = pagination;
 
-    data.books.book = !Array.isArray(data.books.book)
-      ? [data.books.book]
-      : data.books.book;
+    await transformData(data);
 
     res.status(200).json({
       status: 'success',
@@ -150,11 +164,10 @@ exports.getAuthorBooksWithImage = async (req, res) => {
         pagination.end = +pagination.end;
         pagination.total = +pagination.total;
 
-        data.books.book = !Array.isArray(data.books.book)
-          ? [data.books.book]
-          : data.books.book;
+        await transformData(data);
 
         data.authorImage = jsonAuthor.GoodreadsResponse.author.image_url;
+
         res.status(200).json({
           status: 'success',
           data
@@ -185,4 +198,56 @@ exports.getAuthorBooksWithImage = async (req, res) => {
       message: 'Something went wrong.'
     });
   }
+};
+
+const transformData = async data => {
+  data.books = !Array.isArray(data.books.book)
+    ? [data.books.book]
+    : data.books.book;
+
+  data.books.forEach(book => {
+    delete book.text_reviews_count;
+    delete book.uri;
+    delete book.work;
+    book.author = book.authors.author;
+    delete book.author.text_reviews_count;
+    delete book.author.average_rating; // TODO: author ratings? average from books?
+    delete book.author.ratings_count;
+    delete book.authors;
+  });
+
+  await setRatings(data);
+};
+
+const setRatings = async data => {
+  // console.log('data.id is', data.id);
+  const { books } = data;
+  const tasks = [];
+  tasks.push(Book.getAuthorRatingsData(+data.id));
+  books.forEach(book => tasks.push(Book.findById(+book.id)));
+
+  const [authorRatingsData, ...dbBooks] = await Promise.all(tasks);
+  // set rating data for author
+  if (authorRatingsData.length === 0) {
+    data.author_ratings_count = 0;
+    data.author_average_rating = 0;
+  } else {
+    const {
+      author_ratings_count,
+      author_average_rating
+    } = authorRatingsData[0];
+    data.author_ratings_count = author_ratings_count;
+    data.author_average_rating = author_average_rating;
+  }
+
+  // set rating data for books
+  dbBooks.forEach((dbBook, i) => {
+    if (dbBook) {
+      books[i].average_rating = dbBook.average_rating;
+      books[i].ratings_count = dbBook.ratings.length;
+    } else {
+      books[i].average_rating = 0;
+      books[i].ratings_count = 0;
+    }
+  });
 };

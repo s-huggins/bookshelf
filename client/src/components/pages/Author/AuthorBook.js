@@ -1,21 +1,60 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MiniRating from '../../common/MiniRating';
 import { Link } from 'react-router-dom';
-import DropdownButton from '../../common/DropdownButton';
-import Rating from '../../common/Rating';
+import SearchResultRating from '../Search/SearchResultRating';
+import pluralize from '../../../util/pluralize';
+import AuthorBookDropdownButton from './AuthorBookDropdownButton';
 
 const AuthorBook = ({ book }) => {
-  const printDetails = book => {
-    const dummy = '4.22 avg rating — 654,257 ratings'; //TODO: replace with db data
+  const [averageRating, setAverageRating] = useState(book.average_rating);
+  const [ratingsCount, setRatingsCount] = useState(book.ratings_count);
 
-    const pubYear = book.publication_year
+  const updateRatingDisplay = (oldRating, newRating) => {
+    const sumRatings = averageRating * ratingsCount;
+
+    // if book was not previously rated by user
+    if (!oldRating) {
+      const newSumRatings = sumRatings + newRating;
+      const newRatingsCount = ratingsCount + 1;
+      const newAverageRating = newSumRatings / newRatingsCount;
+
+      setAverageRating(newAverageRating);
+      setRatingsCount(newRatingsCount);
+    } else if (newRating) {
+      // user updated rating without unrating
+      const newSumRatings = sumRatings - oldRating + newRating;
+      const newAverageRating = newSumRatings / ratingsCount;
+
+      setAverageRating(newAverageRating);
+    } else {
+      // user removed a rating
+      const newSumRatings = sumRatings - oldRating;
+      const newRatingsCount = ratingsCount - 1;
+      const newAverageRating =
+        newRatingsCount !== 0 ? newSumRatings / newRatingsCount : 0;
+
+      setAverageRating(newAverageRating);
+      setRatingsCount(newRatingsCount);
+    }
+  };
+
+  const printDetails = book => {
+    const avgRatingStr = `${averageRating.toFixed(2)} avg rating`;
+    const ratingsCountStr = `${ratingsCount} ${pluralize(
+      'rating',
+      book.ratings_count
+    )}`;
+
+    const pubYearStr = book.publication_year
       ? `published ${book.publication_year}`
       : '';
-    const numPages = book.num_pages
-      ? `${book.num_pages} page${book.num_pages !== 1 ? 's' : ''}`
+    const numPagesStr = book.num_pages
+      ? `${book.num_pages} ${pluralize('page', book.num_pages)}`
       : '';
 
-    return [dummy, pubYear, numPages].filter(s => s.length).join(' — ');
+    return [avgRatingStr, ratingsCountStr, pubYearStr, numPagesStr]
+      .filter(s => s)
+      .join(' — ');
   };
 
   return (
@@ -33,20 +72,28 @@ const AuthorBook = ({ book }) => {
 
           <div className="AuthorBook__details-specifics">
             <span className="AuthorBook__details-rating">
-              <MiniRating average={4.22} />
+              <MiniRating average={averageRating} />
             </span>
             <span className="text-tiny">{printDetails(book)}</span>
           </div>
         </div>
       </div>
       <div className="AuthorBook__actions">
-        <DropdownButton />
+        <AuthorBookDropdownButton
+          id={book.id}
+          title={book.title}
+          author={book.author}
+          image_url={book.image_url}
+        />
         <div className="AuthorBook__rate">
           <span className="AuthorBook__rate-text text-tiny">
             Rate this book
           </span>
           <div>
-            <Rating />
+            <SearchResultRating
+              book={book}
+              updateDisplay={updateRatingDisplay}
+            />
           </div>
         </div>
       </div>

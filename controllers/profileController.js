@@ -272,10 +272,10 @@ exports.handleRating = catchAsync(async (req, res) => {
     profile.ratings.push({ bookId, rating });
   }
   await profile.save();
-
   // create book if it doesn't already exist
   if (!(await Book.exists({ _id: bookId }))) {
     if (!removedRating) {
+      // remove this?
       const book = {
         _id: bookId,
         title: req.body.title,

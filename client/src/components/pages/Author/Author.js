@@ -8,8 +8,13 @@ import {
 import Loader from '../../common/Loader';
 import { Redirect, Link } from 'react-router-dom';
 import AuthorDetails from './AuthorDetails';
+import apostrophize from '../../../util/apostrophize';
+import withUpdatingRating from '../Profile/withUpdatingRating';
+import AuthorBooksList from './AuthorBooksList';
+import pluralize from '../../../util/pluralize';
+import AuthorStats from './AuthorStats';
 
-const Author = ({ match }) => {
+const Author = ({ match, location }) => {
   const authorId = match.params.id;
   const [loading, setLoading] = useState(true);
 
@@ -44,7 +49,6 @@ const Author = ({ match }) => {
         to={{ pathname: '/something-went-wrong', state: { pushTo: '/' } }}
       />
     );
-
   return (
     <div className="Author">
       <div className="profile profile--author">
@@ -65,14 +69,15 @@ const Author = ({ match }) => {
 
           <div className="Author-books">
             <h2 className="Author-books__header">
-              {author.name.endsWith('s')
-                ? `${author.name}'`
-                : `${author.name}'s`}{' '}
-              books
+              {`${apostrophize(author.name)} books`}
             </h2>
-            {author.books.book.map(book => (
-              <AuthorBook key={book.id} book={book} />
-            ))}
+            <AuthorStats
+              author_average_rating={author.author_average_rating}
+              author_ratings_count={author.author_ratings_count}
+              works_count={+author.works_count}
+              authorId={author.id}
+            />
+            <AuthorBooksList books={author.books} />
           </div>
           <span className="more-books green-link">
             <Link to={`/author/${authorId}/books`}>

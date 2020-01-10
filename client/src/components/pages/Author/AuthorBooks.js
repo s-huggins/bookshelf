@@ -6,9 +6,10 @@ import {
 } from '../../../redux/author/authorActions';
 import Loader from '../../common/Loader';
 import { Redirect, Link } from 'react-router-dom';
-import AuthorBook from './AuthorBook';
 import pluralize from '../../../util/pluralize';
 import Pagination from '../../common/Pagination';
+import AuthorBooksList from './AuthorBooksList';
+import AuthorStats from './AuthorStats';
 
 const getPage = pageParam => {
   let pageNum = parseInt(pageParam, 10);
@@ -73,11 +74,16 @@ const AuthorBooks = ({ match }) => {
 
   const bookCount =
     authorBooks.pagination.end - authorBooks.pagination.start + 1;
-
+  console.log(authorBooks);
   return (
     <div className="AuthorBooks">
       <div className="header">
-        <h1 className="header-text">Books by {authorBooks.name}</h1>
+        <h1 className="header-text">
+          Books by{' '}
+          <Link to={`/author/${authorBooks.id}`} className="author-name">
+            {authorBooks.name}
+          </Link>
+        </h1>
         <div className="header-author">
           <Link to={`/author/${authorBooks.id}`}>
             <img
@@ -90,12 +96,18 @@ const AuthorBooks = ({ match }) => {
             <Link to={`/author/${authorBooks.id}`} className="author-name">
               {authorBooks.name}
             </Link>
-            <span className="author-stats">
+            {/* <span className="author-stats">
               Average rating 3.92 <span className="stats-separator">·</span>{' '}
               3,691 ratings <span className="stats-separator">·</span> 196
               reviews <span className="stats-separator">·</span> shelved 14,004
               times
-            </span>
+            </span> */}
+            <AuthorStats
+              author_average_rating={authorBooks.author_average_rating}
+              author_ratings_count={authorBooks.author_ratings_count}
+              works_count={authorBooks.pagination.total}
+              authorId={authorBooks.id}
+            />
           </div>
         </div>
       </div>
@@ -117,9 +129,7 @@ const AuthorBooks = ({ match }) => {
             />
           </div>
           <div className="book-list">
-            {authorBooks.books.book.map(book => (
-              <AuthorBook key={book.id} book={book} />
-            ))}
+            <AuthorBooksList books={authorBooks.books} />
           </div>
           <div className="pagination-footer">
             <Pagination

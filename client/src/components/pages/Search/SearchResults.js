@@ -1,9 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import BookResult from './BookResult';
 import Loader from '../../common/Loader';
 import Pagination from '../../common/Pagination';
 import pluralize from '../../../util/pluralize';
+import BookResultList from './BookResultList';
 
 const SearchResults = ({ searching, page, searchString, filter }) => {
   const bookResults = useSelector(state => state.search.bookResults);
@@ -18,17 +18,14 @@ const SearchResults = ({ searching, page, searchString, filter }) => {
 
   if (searching) return <Loader />;
   if (!bookResults || !searchString) return null;
+
   return (
     <div className="SearchResults">
       <span className="SearchResults__query-info">
         {buildQueryInfo(bookResults)}
       </span>
       <div className="SearchResults__list">
-        {bookResults && // TODO: checks necessary?
-          bookResults.works &&
-          bookResults.works.map(work => (
-            <BookResult key={work.id} work={work} />
-          ))}
+        <BookResultList books={bookResults.works} />
       </div>
       <div className="SearchResults__footer">
         <Pagination

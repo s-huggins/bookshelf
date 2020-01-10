@@ -7,6 +7,9 @@
   .header {
     .header-text {
       font-size: 1.5rem;
+      a:hover {
+        text-decoration: underline;
+      }
     }
 
     .header-author {
@@ -28,6 +31,9 @@
       a,
       .author-stats {
         display: block;
+        a {
+          display: inline;
+        }
       }
 
       .author-name {

@@ -52,7 +52,7 @@ const BookDetails = ({ data }) => {
         );
       else publication = <li key="publication">{publication}</li>;
     } else if (pubDateOriginal) {
-      publication = <li>{`Published ${pubDateOriginal}`}</li>;
+      publication = <li key="publication">{`Published ${pubDateOriginal}`}</li>;
     }
 
     if (physical || publication)

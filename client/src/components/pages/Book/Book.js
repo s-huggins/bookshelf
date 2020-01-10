@@ -133,14 +133,24 @@ const Book = ({ match }) => {
           </div>
         ) : null}
         <div className="sidebar-authors">
-          {buildAuthorsArray(book).map(auth => (
+          {/* {buildAuthorsArray(book).map(auth => (
             <div
               className="sidebar__panel sidebar__panel--author"
               key={auth.id}
             >
               <AuthorDetail author={auth} />
             </div>
-          ))}
+          ))} */}
+          {buildAuthorsArray(book)
+            .filter(auth => !auth.role)
+            .map(auth => (
+              <div
+                className="sidebar__panel sidebar__panel--author"
+                key={auth.id}
+              >
+                <AuthorDetail author={auth} />
+              </div>
+            ))}
         </div>
       </div>
     </div>

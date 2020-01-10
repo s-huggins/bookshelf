@@ -14,11 +14,7 @@ const BookshelfDropdownButton = ({ _id, title, authors, image_url }) => {
     image_url
   };
 
-  return (
-    <>
-      <DropdownButton book={book} />
-    </>
-  );
+  return <DropdownButton book={book} />;
 };
 
 export default BookshelfDropdownButton;

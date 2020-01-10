@@ -139,7 +139,7 @@ const Profile = ({ match, location }) => {
         />
 
         <CurrentlyReadingPanel
-          books={profile.books}
+          books={profile.books.filter(book => book.primaryShelf === 'reading')}
           displayName={profile.displayName}
           ownProfile={profile.user === user._id}
           buildBookshelfLink={buildBookshelfLink}
