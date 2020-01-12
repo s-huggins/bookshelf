@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import nophoto from '../../../img/nophoto.png';
-import RatingFixed from '../../common/RatingFixed';
+import nophoto from '../../../../img/nophoto.png';
+import RatingFixed from '../../../common/RatingFixed';
 import { Link } from 'react-router-dom';
-import InlineRating from '../../common/InlineRating';
+import InlineRating from '../../../common/InlineRating';
+import moment from 'moment';
 
 const BookshelfBook = ({
   ownBookshelf,
@@ -21,7 +22,7 @@ const BookshelfBook = ({
 
   return (
     <tr className="Bookshelves__list-book">
-      <td>
+      <td className="cover">
         <Link to={`/book/${_id}`}>
           <img src={image_url || nophoto} alt="bookcover" />
         </Link>
@@ -49,7 +50,9 @@ const BookshelfBook = ({
           updateDisplay={updateRatingDisplay}
         />
       </td>
-      <td className="date-shelved">Dec 31, 2019</td>
+      <td className="date-shelved">
+        {moment(dateShelved).format('Do MMM, YYYY')}
+      </td>
     </tr>
   );
 };

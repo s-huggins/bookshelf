@@ -25,17 +25,19 @@ router.get(
   profileController.checkHandleAvailability
 );
 
+router.delete('/friends/:profileId', protect, profileController.removeFriend);
+
 router
   .route('/friendRequests/outgoing/:profileId')
   .all(protect)
-  .post(profileController.sendFriendRequest);
-//   .delete(profileController.cancelFriendRequest);
+  .post(profileController.sendFriendRequest)
+  .delete(profileController.cancelFriendRequest);
 
-// router
-//   .route('friendRequests/incoming')
-//   .all(protect)
-//   .post(profileController.acceptFriendRequest)
-//   .delete(profileController.rejectFriendRequest);
+router
+  .route('/friendRequests/incoming/:profileId')
+  .all(protect)
+  .post(profileController.acceptFriendRequest)
+  .delete(profileController.rejectFriendRequest);
 
 router
   .route('/:id?')

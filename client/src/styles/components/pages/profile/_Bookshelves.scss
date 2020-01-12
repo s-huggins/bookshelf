@@ -55,7 +55,7 @@
     .pagination-head,
     .pagination-foot {
       display: flex;
-      padding: 0 2rem;
+      padding: 0 1rem;
 
       align-items: center;
     }
@@ -67,18 +67,29 @@
     .pagination-foot {
       justify-content: space-between;
       margin-top: 0.6rem;
-    }
 
-    .pagination-settings {
-      .pagination-per-page {
-        margin-right: 1rem;
-      }
-      .pagination-sort {
+      &--infinite {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        background-color: $bg-primary;
+        width: 100%;
+        padding: 0.45rem 0rem;
+        padding-bottom: 0.65rem;
+
+        justify-content: flex-end;
       }
     }
 
     table {
       border-collapse: collapse;
+      width: 100%;
+    }
+
+    .no-items {
+      text-align: center;
+      margin: 1.5rem 0;
+      color: #999;
     }
 
     &-header {
@@ -102,20 +113,27 @@
         text-align: left;
       }
 
+      .cover {
+        // border: 1px solid red;
+        width: 10%;
+      }
+
       .title {
-        width: 35%;
+        // width: 35%;
+        flex-grow: 1;
+        // border: 1px solid black;
       }
       .author {
         width: 15%;
       }
 
       .avg-rating {
-        width: 10%;
+        width: 8%;
       }
 
       .other-rating,
       .my-rating {
-        width: 15%;
+        // width: 15%;
         .Rating,
         .Rating-fixed {
           span {

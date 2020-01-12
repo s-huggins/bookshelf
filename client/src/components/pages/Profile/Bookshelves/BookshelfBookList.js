@@ -1,5 +1,5 @@
 import React from 'react';
-import withUpdatingRating from './withUpdatingRating';
+import withUpdatingRating from '../withUpdatingRating';
 import BookshelfBook from './BookshelfBook';
 
 const BookshelfBookList = ({ books, ownBookshelf }) => {

@@ -1,5 +1,5 @@
 import React from 'react';
-import DropdownButton from '../../common/DropdownButton';
+import DropdownButton from '../../../common/DropdownButton';
 
 /* As with BookshelfRating, this component is a compatibility layer that wraps DropdownButton
 components, which expect their book data prop to be in the form returned by the Goodreads API.

@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Rating from '../../common/Rating';
 import MiniRating from '../../common/MiniRating';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchBook, clearFetchStatus } from '../../../redux/book/bookActions';

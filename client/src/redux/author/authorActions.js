@@ -20,7 +20,6 @@ export const fetchAuthor = authorId => async dispatch => {
   });
 
   const json = await res.json();
-  console.log(json);
 
   if (json.status === 'success') {
     dispatch({
@@ -54,7 +53,6 @@ export const fetchAuthorBooks = (
   });
 
   const json = await res.json();
-  // console.log(json);
 
   if (json.status === 'success') {
     dispatch({

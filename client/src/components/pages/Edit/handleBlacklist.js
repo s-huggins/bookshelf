@@ -16,5 +16,6 @@ export default new Set([
   'avatar',
   'handleCheck',
   'rating',
-  'friendRequests'
+  'friendRequests',
+  'friends'
 ]);

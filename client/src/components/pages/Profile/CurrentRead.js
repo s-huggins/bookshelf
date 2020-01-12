@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React from 'react';
 import cover from '../../../img/gulag.jpg';
 import { Link, useLocation } from 'react-router-dom';
 import moment from 'moment';
-import BookshelfDropdownButton from './BookshelfDropdownButton';
+import BookshelfDropdownButton from './Bookshelves/BookshelfDropdownButton';
 import InlineRating from '../../common/InlineRating';
 
 const CurrentRead = ({

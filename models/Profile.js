@@ -55,10 +55,6 @@ const ProfileSchema = new Schema(
             type: Schema.Types.ObjectId,
             ref: 'Profile'
           }
-          // date: {
-          //   type: Date,
-          //   default: Date.now
-          // }
         }
       ]
     },

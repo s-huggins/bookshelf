@@ -1,12 +1,7 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import avatar from '../../../img/avatar.png';
 
 const PrivateProfile = ({ profile }) => {
-  // useEffect(() => {
-  //   console.log(profile);
-  // });
-  // console.log(profile);
-
   return (
     <div className="PrivateProfile">
       <div className="Profile">

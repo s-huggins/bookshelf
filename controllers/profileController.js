@@ -356,13 +356,10 @@ exports.handleRating = catchAsync(async (req, res) => {
 // });
 
 exports.sendFriendRequest = catchAsync(async (req, res) => {
-  /**
-   * expecting a body of the form { profile: profId }
-   *
-   */
+  // add a Sent request to sender's friendRequests, and a Received request
+  // to recipient's friendRequests
 
   const otherProfileId = +req.params.profileId; // number
-  // const userProfile = await Profile.findOne({ user: req.user._id }); // user id must come from protect middleware
 
   if (req.user.profile.id === otherProfileId) {
     return res.status(400).json({
@@ -395,6 +392,109 @@ exports.sendFriendRequest = catchAsync(async (req, res) => {
       friendRequests: { kind: 'Sent', profile: updatedProfile._id }
     }
   });
+
+  res.status(200).json({ status: 'success' });
+});
+
+exports.cancelFriendRequest = catchAsync(async (req, res) => {
+  const otherProfile = await Profile.findOneAndUpdate(
+    { id: +req.params.profileId },
+    { $pull: { friendRequests: { profile: req.user.profile._id } } }
+  );
+
+  await Profile.findByIdAndUpdate(req.user.profile._id, {
+    $pull: { friendRequests: { profile: otherProfile._id } }
+  });
+
+  res.status(200).json({ status: 'success' });
+});
+
+exports.acceptFriendRequest = catchAsync(async (req, res) => {
+  // ensure outgoing friend request exists
+  // remove outstanding friend request entries
+  // add each profile to the other's friends list
+
+  const otherProfile = await Profile.findOneAndUpdate(
+    {
+      id: +req.params.profileId,
+      friendRequests: {
+        $elemMatch: { kind: 'Sent', profile: req.user.profile._id }
+      }
+    },
+    {
+      $pull: { friendRequests: { profile: req.user.profile._id } },
+      $push: { friends: req.user.profile._id }
+    }
+  );
+
+  await Profile.findOneAndUpdate(
+    {
+      _id: req.user.profile._id,
+      friendRequests: {
+        $elemMatch: { kind: 'Received', profile: otherProfile._id }
+      }
+    },
+    {
+      $pull: { friendRequests: { profile: otherProfile._id } },
+      $push: { friends: otherProfile._id }
+    }
+  );
+
+  res.status(200).json({ status: 'success' });
+});
+
+exports.rejectFriendRequest = catchAsync(async (req, res) => {
+  // const otherProfile = await Profile.findOneAndUpdate(
+  //   {
+  //     id: +req.params.profileId,
+  //     friendRequests: {
+  //       $elemMatch: { kind: 'Sent', profile: req.user.profile._id }
+  //     }
+  //   },
+  //   {
+  //     $pull: { friendRequests: { profile: req.user.profile._id } }
+  //     // $push: { friends: req.user.profile._id }
+  //   }
+  // );
+
+  const otherProfile = await Profile.findOne({
+    id: +req.params.profileId
+  });
+
+  await Profile.findOneAndUpdate(
+    {
+      _id: req.user.profile._id,
+      friendRequests: {
+        $elemMatch: { kind: 'Received', profile: otherProfile._id }
+      }
+    },
+    {
+      $pull: { friendRequests: { profile: otherProfile._id } }
+      // $push: { friends: otherProfile._id }
+    }
+  );
+
+  res.status(200).json({ status: 'success' });
+});
+
+exports.removeFriend = catchAsync(async (req, res) => {
+  const otherProfile = await Profile.findOneAndUpdate(
+    {
+      id: +req.params.profileId
+    },
+    {
+      $pull: { friends: req.user.profile._id }
+    }
+  );
+
+  await Profile.findOneAndUpdate(
+    {
+      _id: req.user.profile._id
+    },
+    {
+      $pull: { friends: otherProfile._id }
+    }
+  );
 
   res.status(200).json({ status: 'success' });
 });

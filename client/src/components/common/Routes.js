@@ -15,7 +15,7 @@ import WentWrong from '../pages/WentWrong';
 import Author from '../pages/Author/Author';
 import AuthorBooks from '../pages/Author/AuthorBooks';
 import DeleteAccount from '../pages/Edit/DeleteAccount';
-import Bookshelves from '../pages/Profile/Bookshelves';
+import Bookshelves from '../pages/Profile/Bookshelves/Bookshelves';
 import ForgotPassword from '../pages/ForgotPassword';
 import ResetPassword from '../pages/ResetPassword';
 
