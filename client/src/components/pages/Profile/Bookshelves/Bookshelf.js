@@ -1,42 +1,64 @@
 import React from 'react';
 import BookshelfBookList from './BookshelfBookList';
 import Pagination from '../../../common/Pagination';
-import { useState } from 'react';
+import { useState, useLayoutEffect, useRef } from 'react';
 import { useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
 import queryString from 'query-string';
-import { useLayoutEffect } from 'react';
 
 const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
+  const [allBooks, setAllBooks] = useState(books);
   const [booksView, setBooksView] = useState({
     books,
     startIndex: 0,
     endIndex: books.length
   });
-  const [mountEffectRan, setMountEffectRan] = useState(false);
 
   const location = useLocation();
+  const scrollCallback = useRef(e => {
+    const viewportHeight = window.innerHeight;
+    const pageHeight = document.body.scrollHeight;
+    const scrolledHeight = window.pageYOffset;
+    // hit page bottom when viewportHeight + scrolledHeight = pageHeight
+    if (viewportHeight + scrolledHeight > pageHeight - 150) {
+      // console.log('load more books');
+      setBooksView(booksView => ({
+        ...booksView,
+        endIndex: booksView.endIndex + 5
+      }));
+    }
+  });
 
   useLayoutEffect(() => {
-    // if not initial cycle and books have not changed, skip effect
-    if (mountEffectRan && booksView.books === books) return;
-    setMountEffectRan(true);
-
-    console.log('RUNNING CHILD');
     const parsed = queryString.parse(location.search);
 
-    // default ordering here, only run if unordered
-    // currently set to dateShelved, later will be book position
-    const sorted = books.sort(
-      (b1, b2) => new Date(b1.dateShelved) - new Date(b2.dateShelved)
-    );
+    // set the default ordering here
+    // only run a default order if no order query param
+    // default currently set to order by dateShelved, later will be book position
+    // only run default orders if books have changed
+    const sorted =
+      booksView.books === books
+        ? booksView.books
+        : books.sort(
+            (b1, b2) => new Date(b1.dateShelved) - new Date(b2.dateShelved)
+          );
 
     if (parsed['per-page'] === 'infinite') {
+      console.log('infinite scroll effect');
+      // scroll to top of page
+      // determine when images have loaded
+      // numScroll === any lower bound of enough books to scroll page
+      const numScroll = Math.floor(window.innerHeight / 100) + 1; // each book has a min height of 100px
+
       setBooksView({
         books: sorted,
         startIndex: 0,
-        endIndex: books.length
+        endIndex: numScroll
       });
+      window.addEventListener('scroll', scrollCallback.current);
+
+      return () => {
+        window.removeEventListener('scroll', scrollCallback.current);
+      };
     } else {
       const perPage = parseInt(parsed['per-page']);
       const pageNum = Math.abs(parseInt(parsed.page)) || 1;
@@ -90,7 +112,7 @@ const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
         </div>
       )}
 
-      <table onLoad={e => console.log(e.nativeEvent)}>
+      <table>
         <thead>
           <tr className="Bookshelves__list-header">
             <th>cover</th>

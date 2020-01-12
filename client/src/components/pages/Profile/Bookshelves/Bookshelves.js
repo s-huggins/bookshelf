@@ -25,7 +25,7 @@ const Bookshelves = ({ match, location }) => {
 
   useEffect(() => {
     // wait for profile to load
-    console.log('RUNNING PARENT');
+    // console.log('RUNNING PARENT');
     if (!profile) return;
 
     const { shelf = '' } = queryString.parse(location.search);

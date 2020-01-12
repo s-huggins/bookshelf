@@ -29,8 +29,11 @@ const PaginationSettings = ({ shelf }) => {
 
   const perPageChanged = e => {
     const newPerPage = e.target.value;
-    if (newPerPage === 'infinite') setPerPage('infinite');
-    else setPerPage(+newPerPage);
+    if (newPerPage === 'infinite') {
+      setPerPage('infinite');
+      // bounce user to top of page
+      window.scrollTo(0, 0);
+    } else setPerPage(+newPerPage);
 
     const parsed = queryString.parse(location.search);
     const entries = Object.entries(parsed).map(([qParam, qVal]) => [
