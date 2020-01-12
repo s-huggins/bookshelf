@@ -19,17 +19,24 @@ const Bookshelves = ({ match, location }) => {
   const loadingProfile = useLoadProfile(profileId);
 
   const [activeShelf, setActiveShelf] = useState({
-    shelf: '',
+    shelf: null,
     shelfBooks: []
   });
 
   useEffect(() => {
+    // wait for profile to load
+    console.log('RUNNING PARENT');
+    if (!profile) return;
+
     const { shelf = '' } = queryString.parse(location.search);
-    const shelfBooks = !profile
-      ? []
-      : shelf && shelf !== 'all'
-      ? profile.books.filter(book => book.primaryShelf === shelf)
-      : [...profile.books];
+
+    // skip effect if shelf hasn't changed
+    if (shelf === activeShelf.shelf) return;
+
+    const shelfBooks =
+      shelf && shelf !== 'all'
+        ? profile.books.filter(book => book.primaryShelf === shelf)
+        : [...profile.books];
     setActiveShelf({
       shelf,
       shelfBooks

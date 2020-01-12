@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import { useEffect } from 'react';
 import queryString from 'query-string';
+import { useLayoutEffect } from 'react';
 
 const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
   const [booksView, setBooksView] = useState({
@@ -12,15 +13,24 @@ const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
     startIndex: 0,
     endIndex: books.length
   });
+  const [mountEffectRan, setMountEffectRan] = useState(false);
+
   const location = useLocation();
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    // if not initial cycle and books have not changed, skip effect
+    if (mountEffectRan && booksView.books === books) return;
+    setMountEffectRan(true);
+
+    console.log('RUNNING CHILD');
     const parsed = queryString.parse(location.search);
-    // search criterion here
-    // order criterion here
+
+    // default ordering here, only run if unordered
+    // currently set to dateShelved, later will be book position
     const sorted = books.sort(
       (b1, b2) => new Date(b1.dateShelved) - new Date(b2.dateShelved)
     );
+
     if (parsed['per-page'] === 'infinite') {
       setBooksView({
         books: sorted,
@@ -53,6 +63,8 @@ const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
     }
   }, [location, books]);
 
+  // search and order criterion effect
+
   const parsed = queryString.parse(location.search);
   const infiniteScroll = parsed['per-page'] === 'infinite';
   let perPage = parseInt(parsed['per-page']) || 20;
@@ -78,7 +90,7 @@ const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
         </div>
       )}
 
-      <table>
+      <table onLoad={e => console.log(e.nativeEvent)}>
         <thead>
           <tr className="Bookshelves__list-header">
             <th>cover</th>

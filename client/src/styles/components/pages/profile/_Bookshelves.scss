@@ -103,6 +103,7 @@
     }
 
     &-book {
+      min-height: 100px;
       td {
         padding: 0 0.5rem;
         padding-top: 0.8rem;
@@ -114,8 +115,12 @@
       }
 
       .cover {
-        // border: 1px solid red;
         width: 10%;
+        min-height: 100%;
+        img {
+          max-width: 60px;
+          max-height: 80px;
+        }
       }
 
       .title {
@@ -148,11 +153,6 @@
       }
 
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);
-
-      img {
-        max-width: 60px;
-        max-height: 80px;
-      }
     }
   }
 }

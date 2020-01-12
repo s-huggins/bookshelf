@@ -27,7 +27,7 @@ const BookshelfBook = ({
           <img src={image_url || nophoto} alt="bookcover" />
         </Link>
       </td>
-      <td className="title">
+      <td className="title green-link">
         <Link to={`/book/${_id}`}>{title}</Link>
       </td>
       <td className="author">
