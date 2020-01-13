@@ -61,9 +61,32 @@
     }
 
     .pagination-head {
-      justify-content: flex-end;
+      justify-content: space-between;
       margin-bottom: 1.2rem;
+
+      .pagination-filter {
+        position: relative;
+        input {
+          width: 15rem;
+          padding-right: 1.5rem;
+        }
+        button {
+          position: absolute;
+          border: none;
+          background-color: transparent;
+          cursor: pointer;
+          right: 5px;
+          top: 50%;
+          transform: translateY(-50%);
+
+          .fa-search {
+            // color: #999;
+            opacity: 0.6;
+          }
+        }
+      }
     }
+
     .pagination-foot {
       justify-content: space-between;
       margin-top: 0.6rem;
@@ -100,6 +123,9 @@
         padding: 0.2rem 0.5rem;
         font-size: 0.95rem;
         text-align: left;
+        span {
+          cursor: pointer;
+        }
       }
     }
 
@@ -139,7 +165,7 @@
 
       .other-rating,
       .my-rating {
-        // width: 15%;
+        width: 15%;
         .Rating,
         .Rating-fixed {
           span {
@@ -149,8 +175,74 @@
         }
       }
 
+      .my-rating {
+        flex-grow: 0;
+        .shelf-action {
+          display: block;
+          // text-align: center;
+          font-size: 0.8rem;
+          margin-top: 0.2rem;
+          @include green-link;
+        }
+
+        .edit-pane {
+          font-size: 0.8rem;
+          display: none;
+          position: absolute;
+          background-color: #fff;
+          z-index: 200;
+          border: 1px solid rgba(0, 0, 0, 0.1);
+          border-radius: 2px;
+          box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
+          min-width: 15rem;
+          padding: 0.2rem 0.6rem;
+          padding-bottom: 1.5rem;
+
+          .edit-pane-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.4rem;
+            .header-text,
+            .close-button {
+              font-weight: normal;
+              color: #999;
+              font-size: 0.8rem;
+            }
+            .close-button {
+              cursor: pointer;
+            }
+          }
+
+          label {
+            display: flex;
+            align-items: center;
+            padding: 0.4rem 0.1rem;
+
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            &:hover {
+              background-color: #ffffe0;
+            }
+            .label-text {
+              margin-left: 0.4rem;
+            }
+          }
+
+          .unshelf {
+            .fa-times {
+              color: #999;
+            }
+          }
+        }
+
+        .edit-pane--active {
+          display: block;
+        }
+      }
+
       .date-shelved {
         width: 10%;
+        // flex: 1 0 15%;
       }
 
       border-bottom: 1px solid rgba(0, 0, 0, 0.1);

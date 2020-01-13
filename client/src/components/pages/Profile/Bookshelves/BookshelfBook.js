@@ -5,6 +5,9 @@ import RatingFixed from '../../../common/RatingFixed';
 import { Link } from 'react-router-dom';
 import InlineRating from '../../../common/InlineRating';
 import moment from 'moment';
+import { useEffect } from 'react';
+import { useRef } from 'react';
+import BookshelfBookEditPane from './BookshelfBookEditPane';
 
 const BookshelfBook = ({
   ownBookshelf,
@@ -14,11 +17,38 @@ const BookshelfBook = ({
   authors,
   image_url,
   averageRating,
-  ratingsCount,
-  updateRatingDisplay
+  // ratingsCount,
+  updateRatingDisplay,
+  userRating
 }) => {
-  const myRatings = useSelector(state => state.auth.user.profile.ratings);
-  const myRating = myRatings.find(r => r.bookId === _id);
+  const ownBooks = useSelector(state => state.auth.user.profile.books);
+  const [bookShelved, setBookShelved] = useState(
+    ownBooks.find(book => book.bookId === _id)
+  );
+
+  const [editPaneActive, setEditPaneActive] = useState(false);
+  const editPane = useRef(null);
+  const editPaneClickCallback = useRef(function(e) {
+    const editPaneClick =
+      editPane.current && editPane.current.contains(e.target);
+
+    if (!editPaneClick) {
+      setEditPaneActive(false);
+    }
+  });
+
+  useEffect(() => {
+    if (editPaneActive) {
+      document.addEventListener('click', editPaneClickCallback.current);
+    }
+
+    return () =>
+      document.removeEventListener('click', editPaneClickCallback.current);
+  }, [editPaneActive]);
+
+  const handleEditPane = e => {
+    setEditPaneActive(!editPaneActive);
+  };
 
   return (
     <tr className="Bookshelves__list-book">
@@ -38,7 +68,7 @@ const BookshelfBook = ({
       <td className="avg-rating">{averageRating.toFixed(2)}</td>
       {!ownBookshelf && (
         <td className="other-rating">
-          <RatingFixed rating={4} />
+          <RatingFixed rating={userRating} />
         </td>
       )}
       <td className="my-rating">
@@ -49,7 +79,22 @@ const BookshelfBook = ({
           image_url={image_url}
           updateDisplay={updateRatingDisplay}
         />
+        <span className="shelf-action" onClick={handleEditPane}>
+          {bookShelved ? 'edit shelves' : 'add to shelves'}
+        </span>
+
+        <BookshelfBookEditPane
+          _id={_id}
+          title={title}
+          authors={authors}
+          image_url={image_url}
+          ref={editPane}
+          editPaneActive={editPaneActive}
+          setEditPaneActive={setEditPaneActive}
+          setBookShelved={setBookShelved}
+        />
       </td>
+
       <td className="date-shelved">
         {moment(dateShelved).format('Do MMM, YYYY')}
       </td>

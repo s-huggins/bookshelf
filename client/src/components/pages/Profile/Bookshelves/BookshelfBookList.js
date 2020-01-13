@@ -11,6 +11,8 @@ const BookshelfBookList = ({ books, ownBookshelf }) => {
         props={{
           ownBookshelf,
           dateShelved: book.dateShelved,
+          userRating: book.userRating,
+          ownRating: book.ownRating,
           ...book.bookId
         }}
       />

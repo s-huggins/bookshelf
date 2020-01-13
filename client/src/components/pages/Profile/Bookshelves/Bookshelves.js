@@ -10,10 +10,9 @@ import queryString from 'query-string';
 import PaginationSettings from './PaginationSettings';
 import Breadcrumb from './Breadcrumb';
 
-const Bookshelves = ({ match, location }) => {
+const Bookshelves = ({ match, location, history }) => {
   const { user } = useSelector(state => state.auth);
   const profile = useSelector(state => state.profile.loadedProfile);
-
   /* PROFILE FETCH HOOK */
   const profileId = match.params.id || match.params.handle || '';
   const loadingProfile = useLoadProfile(profileId);
@@ -33,10 +32,29 @@ const Bookshelves = ({ match, location }) => {
     // skip effect if shelf hasn't changed
     if (shelf === activeShelf.shelf) return;
 
-    const shelfBooks =
+    let shelfBooks =
       shelf && shelf !== 'all'
         ? profile.books.filter(book => book.primaryShelf === shelf)
         : [...profile.books];
+
+    shelfBooks = shelfBooks.map(book => {
+      // add user rating
+      // add own rating
+      const extendedBook = { ...book };
+
+      const userRating = profile.ratings.find(
+        rating => rating.bookId === book.bookId._id
+      );
+      extendedBook.userRating = userRating ? userRating.rating : 0;
+
+      const ownRating = user.profile.ratings.find(
+        rating => rating.bookId === book.bookId._id
+      );
+      extendedBook.ownRating = ownRating ? ownRating.rating : 0;
+
+      return extendedBook;
+    });
+
     setActiveShelf({
       shelf,
       shelfBooks
@@ -44,8 +62,34 @@ const Bookshelves = ({ match, location }) => {
   }, [location, profile]);
 
   const buildBookshelfLink = shelf => {
-    if (shelf) return `${location.pathname}?shelf=${shelf}`;
-    else return `${location.pathname}`;
+    const baseURL = shelf
+      ? `${location.pathname}?shelf=${shelf}`
+      : location.pathname;
+
+    const parsed = queryString.parse(location.search);
+    delete parsed.shelf;
+    delete parsed.page;
+    const params = Object.entries(parsed).map(([qParam, qVal]) => [
+      qParam.toLowerCase(),
+      qVal
+    ]);
+
+    if (shelf) {
+      const newURL = params.reduce((url, [qParam, qVal]) => {
+        return `${url}&${qParam}=${qVal}`;
+      }, baseURL);
+
+      return newURL;
+    } else if (params.length) {
+      const newURL = params.reduce((url, [qParam, qVal], i) => {
+        if (i === 0) return `${url}?${qParam}=${qVal}`;
+        return `${url}&${qParam}=${qVal}`;
+      }, baseURL);
+
+      return newURL;
+    }
+
+    return baseURL;
   };
 
   const countShelf = (books, shelf) =>
@@ -83,7 +127,7 @@ const Bookshelves = ({ match, location }) => {
             shelf={activeShelf.shelf}
             ownBookshelf={ownBookshelves}
           >
-            <PaginationSettings />
+            <PaginationSettings ownBookshelf={ownBookshelves} />
           </Bookshelf>
         </div>
       </main>

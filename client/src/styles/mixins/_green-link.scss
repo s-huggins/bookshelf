@@ -1,5 +1,6 @@
 @mixin green-link {
   color: $txt-green;
+  cursor: pointer;
   &:hover {
     text-decoration: underline;
   }

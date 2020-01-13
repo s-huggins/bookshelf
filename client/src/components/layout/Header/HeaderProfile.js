@@ -10,6 +10,7 @@ const HeaderProfile = ({ location }) => {
   // const [profileDropdownVisible, setProfileDropdownVisible] = useState(false);
   // sets up a menu dropdown event when the profile icon is clicked
   useEffect(() => {
+    // TODO: use refs
     const profileIcon = document.getElementById('header-profile');
     const dropdown = document.getElementById('header-profile-dropdown');
     dropdown.style.display = 'none';
