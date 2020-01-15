@@ -1,0 +1,42 @@
+.FindFriendsPanel {
+  .find-friends {
+    ul {
+      li {
+        i {
+          padding-right: 0.3rem;
+          font-size: 1rem;
+        }
+        .fa-envelope {
+          color: #d44638;
+        }
+        .fa-facebook-square {
+          color: #3b5998;
+        }
+        .fa-twitter {
+          color: #00acee;
+        }
+        .fa-user-friends {
+          color: $txt-primary;
+        }
+        display: inline-block;
+        margin: 0 0;
+        margin-right: 1rem;
+        padding: 0.2rem 0.5rem;
+      }
+    }
+    display: block;
+
+    .search-members {
+      margin-top: 1rem;
+      margin-left: 0.5rem;
+      input {
+        margin-right: 0.4rem;
+        width: 70%;
+      }
+      button {
+        padding: 0.25rem 0.6rem;
+        margin-top: 0.2rem;
+      }
+    }
+  }
+}

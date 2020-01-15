@@ -114,6 +114,7 @@ const Bookshelves = ({ match, location, history }) => {
         <Breadcrumb
           buildBookshelfLink={buildBookshelfLink}
           activeShelf={activeShelf}
+          displayName={profile.displayName}
         />
 
         <div className="Bookshelves__content">

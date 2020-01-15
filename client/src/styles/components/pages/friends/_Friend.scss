@@ -1,0 +1,92 @@
+@import '../../../mixins/green-link';
+
+.Friend {
+  display: flex;
+  padding: 0.4rem 0.6rem;
+
+  border-bottom: 1px solid #d7d7d7;
+  max-width: 44rem;
+
+  a {
+    @include green-link;
+  }
+
+  img {
+    max-width: 80px;
+    max-height: 80px;
+  }
+
+  .friend-info {
+    display: flex;
+
+    .friend-avatar {
+      margin-right: 0.75rem;
+
+      width: 90px;
+    }
+
+    .friend-details {
+      display: flex;
+      flex-direction: column;
+      margin-right: 1rem;
+      margin-top: 0.25rem;
+
+      .divider {
+        font-size: 1rem;
+        opacity: 0.5;
+      }
+
+      .friend-name {
+        font-weight: bold;
+        font-size: 0.9rem;
+        margin-bottom: 0.2rem;
+      }
+
+      .friend-nums {
+        font-size: 0.85rem;
+      }
+    }
+  }
+
+  .friend-activity {
+    display: flex;
+    margin-right: 1rem;
+
+    flex-basis: 50%;
+    // border: 1px solid red;
+    // width: 18rem;
+    .bookcover {
+      width: 80px;
+    }
+    .activity-details {
+      display: flex;
+      flex-direction: column;
+      font-size: 0.85rem;
+
+      .currently-reading,
+      .activity-time {
+        color: #999;
+      }
+
+      .book-title {
+        margin: 0.25rem 0;
+      }
+    }
+  }
+
+  .friend-actions {
+    // border: 1px solid red;
+    flex-basis: 20%;
+    align-self: center;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    button {
+      padding: 0.4rem 0.75rem;
+      margin-bottom: 0.25rem;
+    }
+    .friend-action-link {
+      font-size: 0.85rem;
+    }
+  }
+}

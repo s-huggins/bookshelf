@@ -19,20 +19,12 @@ const CurrentlyReadingPanel = ({
         </h2>
       </div>
       <div className="panel__body">
-        {/* {books.map(_book => {
-          const CurrentReadWithRatingDisplayUpdate = withRatingDisplayUpdate(
-            CurrentRead
-          );
-          return (
-            <CurrentReadWithRatingDisplayUpdate
-              props={{ ..._book.bookId }}
-              key={_book.bookId._id}
-            />
-          );
-        })} */}
-        {books.slice(0, 3).map(_book => (
-          <CurrentRead key={_book.bookId._id} {..._book.bookId} />
-        ))}
+        {books
+          .sort((b1, b2) => new Date(b2.dateShelved) - new Date(b1.dateShelved))
+          .slice(0, 3)
+          .map(_book => (
+            <CurrentRead key={_book.bookId._id} {..._book.bookId} />
+          ))}
       </div>
       {bookCount > 3 && (
         <div className="panel__footer">

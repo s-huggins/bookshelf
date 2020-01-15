@@ -43,13 +43,14 @@ exports.searchBooks = async (req, res) => {
     const resultsEnd = +bookResults['results-end'];
     const totalResults = +bookResults['total-results'];
     const queryTimeSeconds = +bookResults['query-time-seconds'];
-    const works = bookResults.results.work;
+    let works = bookResults.results.work;
 
     // in parallel:
     // for each work in works array
     // look up if book exists in db
     // populate the work.best_book object with fields `average_rating` & `ratings_count`
     // if book not in db, set both these fields to 0
+    works = Array.isArray(works) ? works : [works];
     const tasks = works.map(async work => Book.findById(+work.best_book.id));
     const dbBooks = await Promise.all(tasks);
     dbBooks.forEach((dbBook, i) => {

@@ -22,7 +22,7 @@ h1 {
     padding: 0;
 
     .active {
-      border-bottom: 2px solid;
+      border-bottom: 2px solid black;
     }
     .page-nav__nav-link {
       display: inline-block;
@@ -34,13 +34,13 @@ h1 {
       height: 2.2rem;
 
       &:hover {
-        border-bottom: 2px solid;
-      }
-      span {
-        // border: 1px solid red;
+        border-bottom: 2px solid black;
       }
     }
   }
+  // border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  // border: 1px solid red;
+  // margin: 0 1.8rem;
 }
 
 .form-control--edit {

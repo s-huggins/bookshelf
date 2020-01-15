@@ -7,10 +7,13 @@ const ProfileDetails = ({ profile }) => {
     isNeeded: profile && profile.aboutMe && profile.aboutMe.length > 400,
     show: true
   });
+  const [friendRequestSent, setFriendRequestSent] = useState(false); // TODO: pluck this from user outgoing requests, using id
 
   const handleSeeMore = () => {
     setSeeMore({ ...seeMore, show: !seeMore.show });
   };
+
+  const handleAddFriend = () => {};
 
   if (!profile) return null;
 
@@ -30,11 +33,16 @@ const ProfileDetails = ({ profile }) => {
       <div className="profile__body">
         {!profile.ownProfile && (
           <div className="profile__actions">
-            <button className="btn btn--dark btn--action">Add friend</button>
+            <button
+              className="btn btn--dark btn--action"
+              onClick={handleAddFriend}
+            >
+              Add friend
+            </button>
             <button className="btn btn--light btn--action">Message</button>
           </div>
         )}
-        <ul className="profile__details">
+        <ul className="profile__details profile__details--user-profile">
           {profile.name && (
             <li>
               <span className="text-bold">Name</span> {profile.name}

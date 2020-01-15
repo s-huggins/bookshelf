@@ -2,7 +2,7 @@ import React from 'react';
 import BookshelfBookList from './BookshelfBookList';
 import Pagination from '../../../common/Pagination';
 import { useState, useLayoutEffect, useRef } from 'react';
-import { useLocation, Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import queryString from 'query-string';
 import BookshelfBookListHeader from './BookshelfBookListHeader';
 import BookshelfFilter from './BookshelfFilter';

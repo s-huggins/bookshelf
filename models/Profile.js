@@ -43,6 +43,19 @@ const ProfileSchema = new Schema(
         }
       ]
     },
+
+    // friends: {
+    //   type: [
+    //     {
+    //       profile: {
+    //         type: Schema.Types.ObjectId,
+    //         ref: 'Profile'
+    //       },
+    //       profileId: Number
+    //     }
+    //   ]
+    // }
+
     friendRequests: {
       type: [
         {

@@ -6,7 +6,7 @@ import Header from './components/layout/Header/Header';
 import Footer from './components/layout/Footer';
 import './styles/index.scss';
 import { setCurrentUser } from './redux/auth/authActions';
-import Routes from './components/common/Routes';
+import Routes from './components/Routes/Routes';
 
 store.dispatch(setCurrentUser());
 

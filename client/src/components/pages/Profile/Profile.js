@@ -13,7 +13,7 @@ import CurrentlyReadingPanel from './CurrentlyReadingPanel';
 import RecentUpdatesPanel from './RecentUpdatesPanel';
 
 const Profile = ({ match, location }) => {
-  const { user, token } = useSelector(state => state.auth);
+  const { user } = useSelector(state => state.auth);
   const profile = useSelector(state => state.profile.loadedProfile);
 
   /**
@@ -26,10 +26,8 @@ const Profile = ({ match, location }) => {
    * it if it is declared public or is friends with the user, else it will
    * return a limited snapshot when it is private and not a friend.
    */
-  /* PROFILE FETCH HOOK */
-  // const profileId = match.params.id || match.params.handle || '';
-  // const loadingProfile = useLoadProfile(profileId);
 
+  /* PROFILE FETCH HOOK */
   const profileId = match.params.id || match.params.handle || '';
   const loadingProfile = useLoadProfile(profileId, match);
 
@@ -37,7 +35,7 @@ const Profile = ({ match, location }) => {
    * The server does not return private fields of non-friends.
    */
   const buildProfileDetails = profile => {
-    const profileDetails = {};
+    const profileDetails = { profileId: profile.id };
 
     profileDetails.ownProfile = profile.user === user._id;
 
@@ -88,7 +86,7 @@ const Profile = ({ match, location }) => {
   };
 
   const buildProfileSide = profile => {
-    const { _id: profileId, avatar_id, token, ratings, reviews } = profile;
+    const { _id: profileId, avatar_id, ratings, reviews } = profile;
     return {
       profileId,
       avatar_id,
@@ -126,7 +124,11 @@ const Profile = ({ match, location }) => {
     <div className="Profile">
       <main>
         <div className="profile">
-          <ProfileSide token={token} profile={buildProfileSide(profile)} />
+          <ProfileSide
+            location={location}
+            profile={buildProfileSide(profile)}
+            ownProfile={profile.user === user._id}
+          />
           <ProfileDetails profile={buildProfileDetails(profile)} />
         </div>
 

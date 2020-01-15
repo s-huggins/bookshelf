@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 
-const Breadcrumb = ({ buildBookshelfLink, activeShelf }) => {
+const Breadcrumb = ({ buildBookshelfLink, activeShelf, displayName }) => {
   const location = useLocation();
 
   const printShelf = () => {
@@ -29,7 +29,7 @@ const Breadcrumb = ({ buildBookshelfLink, activeShelf }) => {
             .slice(0, -1)
             .join('/')}
         >
-          Stuart
+          {displayName}
         </Link>
         <span className="breadcrumb"> &gt; </span>
         <Link className="green-link" to={buildBookshelfLink()}>

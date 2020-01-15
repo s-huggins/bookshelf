@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, Redirect } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import Loader from './Loader';
+import Loader from '../common/Loader';
 import { setCurrentUser } from '../../redux/auth/authActions';
 
 const PrivateRoute = ({ component: Component, componentProps, ...rest }) => {

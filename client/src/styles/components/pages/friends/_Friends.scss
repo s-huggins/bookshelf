@@ -1,0 +1,160 @@
+.Friends {
+  background-color: #fff;
+  .container {
+    padding-top: 1.5rem;
+  }
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    h1 {
+      font-family: $font-secondary;
+      font-size: 1.8rem;
+      padding-bottom: 0.5rem;
+    }
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+  }
+}
+
+.notification-text {
+  color: #ff0000;
+}
+
+.page-nav {
+  align-self: flex-end;
+  .page-nav__nav-links {
+    list-style-type: none;
+    margin: 0 2rem;
+    // margin-bottom: 1rem;
+    padding: 0;
+
+    .active {
+      border-bottom: 2px solid black;
+    }
+    .page-nav__nav-link {
+      display: inline-block;
+      // border: 1px solid black;
+      padding: 0.5rem;
+      margin: 0 0.5rem;
+      // margin-bottom: 1rem;
+      cursor: pointer;
+      height: 2.2rem;
+
+      &:hover {
+        border-bottom: 2px solid black;
+      }
+    }
+  }
+}
+
+.Friends__page {
+  display: flex;
+  justify-content: space-between;
+
+  &-main {
+    flex-basis: 70%;
+    // border: 1px solid red;
+  }
+
+  &-side {
+    // border: 1px solid blue;
+
+    margin-top: 2rem;
+    margin-left: 4rem;
+    margin-right: 1.5rem;
+    flex-basis: 30%;
+    font-size: 0.9rem;
+
+    .link-list {
+      margin-bottom: 2rem;
+      li {
+        padding: 0.1rem 0;
+        .notification-text {
+          padding-left: 0.2rem;
+        }
+      }
+    }
+  }
+}
+
+.FriendsPage {
+  .friends-search {
+    margin: 1rem 0;
+    margin-left: 1.5rem;
+
+    .friends-search-searchbar {
+      position: relative;
+      display: inline-block;
+      input {
+        width: 18rem;
+        padding-right: 1.5rem;
+      }
+      button {
+        position: absolute;
+        border: none;
+        background-color: transparent;
+        cursor: pointer;
+        right: 5px;
+        top: 50%;
+        transform: translateY(-50%);
+
+        .fa-search {
+          // color: #999;
+          opacity: 0.6;
+        }
+      }
+    }
+  }
+
+  .filter-all {
+    margin-right: 0.5rem;
+  }
+  .list-header {
+    .showing-detail {
+      border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+      padding-bottom: 0.4rem;
+      padding-left: 0.2rem;
+      font-size: 0.9rem;
+    }
+
+    border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+
+    margin-bottom: 1rem;
+    .filter-letter {
+      padding: 0 0.15rem;
+    }
+    .pagination-header {
+      padding: 0.4rem 0.2rem;
+      display: flex;
+      justify-content: space-between;
+    }
+  }
+}
+
+.AddFriendsPage {
+  .add-friends-header {
+    margin-top: 1.5rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 1.35rem;
+    font-family: $font-secondary;
+  }
+
+  .friends-address-search {
+    margin: 1rem 0;
+    margin-left: 1.5rem;
+    input {
+      height: 1.75rem;
+      margin-right: 0.15rem;
+      width: 16rem;
+    }
+    button {
+      padding: 0.25rem 0.6rem;
+    }
+  }
+
+  .friend-result {
+    margin-top: 0.5rem;
+    .no-results-text {
+      padding: 0.4rem 0.6rem;
+    }
+  }
+}

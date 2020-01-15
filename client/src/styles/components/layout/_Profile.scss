@@ -65,15 +65,27 @@
       padding: 0.2rem 0;
       display: flex;
       align-items: flex-start;
+
       .text-bold {
         display: inline-block;
         min-width: 22%;
+        // width: 5rem;
+        // padding-right: 2rem;
         font-weight: bold;
       }
 
       .see-more {
         cursor: pointer;
         margin-left: 0.3rem;
+      }
+    }
+
+    &--user-profile {
+      li {
+        .text-bold {
+          min-width: 0;
+          width: 5rem;
+        }
       }
     }
   }

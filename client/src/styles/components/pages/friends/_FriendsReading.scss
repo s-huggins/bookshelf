@@ -1,0 +1,25 @@
+.FriendsReading {
+  background-color: #fff;
+  .container {
+    padding-top: 1.5rem;
+  }
+
+  main {
+    h2 {
+      font-family: $font-secondary;
+      margin-top: 1.5rem;
+      padding: 0.4rem 0.6rem;
+      font-size: 1.35rem;
+      margin-bottom: 1rem;
+    }
+    max-width: 40rem;
+
+    .FriendsReading__list {
+      // border: 1px solid red;
+    }
+    .FriendsReading__pagination {
+      display: flex;
+      justify-content: flex-end;
+    }
+  }
+}

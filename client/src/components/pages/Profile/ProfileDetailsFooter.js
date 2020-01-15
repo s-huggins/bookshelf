@@ -40,7 +40,7 @@ const ProfileDetailsFooter = ({ social, handle }) => {
           </li>
         )}
       </ul>
-      {handle && <span className="handle">{`bookshelf/user/${handle}`}</span>}
+      {handle && <span className="handle">{`bookshelf/${handle}`}</span>}
     </div>
   );
 };
