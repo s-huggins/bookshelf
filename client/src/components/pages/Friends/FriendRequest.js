@@ -1,47 +1,73 @@
 import React from 'react';
-import pepe from '../../../img/pepe.png';
 import { Link } from 'react-router-dom';
+import Avatar from '../Profile/Avatar';
+import moment from 'moment';
+import pluralize from '../../../util/pluralize';
 
-const FriendRequest = () => {
+const FriendRequest = ({
+  date,
+  profileId,
+  displayName,
+  location,
+  numFriends,
+  numBooks,
+  avatar_id
+}) => {
+  const handleApprove = () => {};
+  const handleIgnore = () => {};
+
   return (
     <div className="FriendRequest">
       <div className="FriendRequest__body">
         <div className="FriendRequest__avatar">
-          <Link to="#!">
-            <img src={pepe} alt="avatar" />
+          <Link to={`/user/${profileId}`}>
+            <Avatar avatar_id={avatar_id} />
           </Link>
         </div>
         <div className="FriendRequest__details">
           <ul>
             <li>
-              <Link to="#!" className="green-link request-display-name">
-                Jordy
+              <Link
+                to={`/user/${profileId}`}
+                className="green-link request-display-name"
+              >
+                {displayName}
               </Link>
             </li>
-            <li>16 books</li>
-            <li>0 friends</li>
-            <li>The United States</li>
+            <li>{`${numBooks.toLocaleString('en')} ${pluralize(
+              'book',
+              numBooks
+            )}`}</li>
+            <li>{`${numFriends.toLocaleString('en')} ${pluralize(
+              'book',
+              numFriends
+            )}`}</li>
+            <li>{location && location.value}</li>
           </ul>
         </div>
         <div className="FriendRequest__actions">
           <span className="action-confirm-text">
             Add{' '}
-            <Link to="#!" className="green-link">
-              Jordy
+            <Link to={`/user/${profileId}`} className="green-link">
+              {displayName}
             </Link>{' '}
             as a friend?
           </span>
           <span>
-            <button className="btn btn--light">Approve</button>{' '}
+            <button className="btn btn--light" onClick={handleApprove}>
+              Approve
+            </button>
             <span className="faint-text">or</span>
-            <Link to="#!" className="green-link ignore-link">
+            <button className="green-link ignore-link" onClick={handleIgnore}>
               ignore
-            </Link>
+            </button>
           </span>
         </div>
       </div>
       <div className="FriendRequest__footer">
-        <span className="friend-request-time">25 minutes ago</span>
+        <span className="friend-request-time">
+          {moment(date).format('Do MMM, YYYY hh:mm A')}
+        </span>
       </div>
     </div>
   );

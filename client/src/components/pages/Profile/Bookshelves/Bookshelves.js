@@ -109,7 +109,7 @@ const Bookshelves = ({ match, location, history }) => {
   const ownBookshelves = profile.user === user._id;
 
   return (
-    <div className="Bookshelves">
+    <div className="Bookshelves page-container">
       <main>
         <Breadcrumb
           buildBookshelfLink={buildBookshelfLink}

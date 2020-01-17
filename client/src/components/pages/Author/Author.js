@@ -56,7 +56,7 @@ const Author = ({ match }) => {
       />
     );
   return (
-    <div className="Author">
+    <div className="Author page-container">
       <div className="profile profile--author">
         <div className="profile__side">
           <img className="profile__img" src={author.image_url} alt="author" />

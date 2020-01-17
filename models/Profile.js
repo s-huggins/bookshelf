@@ -38,23 +38,16 @@ const ProfileSchema = new Schema(
     friends: {
       type: [
         {
-          type: Schema.Types.ObjectId,
-          ref: 'Profile'
+          profile: {
+            type: Schema.Types.ObjectId,
+            ref: 'Profile'
+          },
+          profileId: {
+            type: Number
+          }
         }
       ]
     },
-
-    // friends: {
-    //   type: [
-    //     {
-    //       profile: {
-    //         type: Schema.Types.ObjectId,
-    //         ref: 'Profile'
-    //       },
-    //       profileId: Number
-    //     }
-    //   ]
-    // }
 
     friendRequests: {
       type: [
@@ -64,16 +57,23 @@ const ProfileSchema = new Schema(
             type: String,
             enum: ['Sent', 'Received']
           },
+          profileId: Number, // of other user
           profile: {
             type: Schema.Types.ObjectId,
             ref: 'Profile'
-          }
+          },
+          date: {
+            type: Date,
+            default: Date.now
+          },
+          ignored: Boolean
         }
       ]
     },
     firstName: {
       type: String,
       required: [true, 'First name is required.'],
+      trim: true,
       minlength: 1,
       maxlength: 40
     },
@@ -89,7 +89,9 @@ const ProfileSchema = new Schema(
     },
     displayName: {
       type: String,
+      trim: true,
       maxlength: 20,
+      minlength: 1,
       default() {
         return this.firstName.substring(0, 20);
       }
@@ -341,6 +343,25 @@ ProfileSchema.virtual('age').get(function() {
     return age;
   }
   return undefined;
+});
+
+ProfileSchema.virtual('currentRead').get(function() {
+  if (!this.books) return undefined;
+  const reading = this.books.filter(book => book.primaryShelf === 'reading');
+  let latest = null;
+  reading.forEach(book => {
+    if (!latest) latest = book;
+    else if (book.dateShelved > latest.dateShelved) latest = book;
+  });
+  return latest;
+});
+ProfileSchema.virtual('numFriends').get(function() {
+  if (!this.friends) return undefined;
+  return this.friends.length;
+});
+ProfileSchema.virtual('numBooks').get(function() {
+  if (!this.books) return undefined;
+  return this.books.length;
 });
 
 const Profile = mongoose.model('Profile', ProfileSchema);

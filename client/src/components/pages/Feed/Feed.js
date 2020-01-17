@@ -14,7 +14,7 @@ const Feed = () => {
   if (loading) return <Loader />;
 
   return (
-    <div className="Feed">
+    <div className="Feed page-container">
       <div className="Feed__container">
         <aside className="sidebar--feed">
           <section className="sidebar--feed__panel">

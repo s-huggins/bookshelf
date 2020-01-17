@@ -12,12 +12,13 @@
       url(../../../img/bookshelves-min.jpg);
     background-position: center;
     background-size: cover;
-    // width: 100%;
-    padding-left: 1rem;
+    max-width: 1600px;
+    margin: 0 auto;
     height: 22.5rem;
 
     .container {
-      // width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
       display: flex;
       justify-content: space-between;
       @media (max-width: $registration-box-breakpoint) {
@@ -84,13 +85,12 @@
       .register {
         // width: 40%;
         flex: 1 0 30%;
-        margin-right: 3.5rem;
+        // margin-right: 3.5rem;
         margin-left: 2rem;
         font-size: 0.9rem;
         background-color: $bg-secondary;
         border-top: 1px solid rgba(0, 0, 0, 0.1);
-        padding: 0.2rem 1rem;
-        padding-top: 1.5rem;
+        padding: 1.5rem 1rem;
 
         @media (max-width: 920px) {
           flex: 1 0 40%;

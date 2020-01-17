@@ -141,7 +141,7 @@ const ChangeEmail = () => {
   if (loadingEdit) return <Loader />;
 
   return (
-    <div className="ChangeEmail">
+    <div className="ChangeEmail page-container">
       <div className="container">
         {alert && (
           <Alert

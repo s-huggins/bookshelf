@@ -11,15 +11,9 @@ const {
 const router = express.Router();
 const { protect, restrictTo } = authController;
 
-// param middleware
-// router.param('userId', (req, res, next, val) => {
-//   console.log(`User ID is ${val}`);
-//   next();
-// });
-
 router.use('/:userId/profile', profileRouter);
 
-// TODO: user's 'name' at registration is sticky. cascade update from profile change?
+// TODO: user's 'name' at registration is sticky. patch in update from profile `firstName` change?
 router.post('/signup', signupValidator, authController.signup);
 router.post('/login', signinValidator, authController.login);
 

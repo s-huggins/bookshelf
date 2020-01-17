@@ -1,24 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { signUp } from '../../../redux/auth/authActions';
+import {
+  register,
+  clearLandingAuthFail
+} from '../../../redux/auth/authActions';
 
 const LandingRegistration = ({ history }) => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const failedSignUp = useSelector(state => state.auth.failedSignUp);
+  const landingAuthFail = useSelector(state => state.auth.landingAuthFail);
+  const failedSignUp = useSelector(state => state.auth.signUp.failed);
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
 
   useEffect(() => {
-    if (failedSignUp) {
-      history.push('/register');
+    if (landingAuthFail) {
+      history.push({
+        pathname: '/register',
+        state: {
+          name,
+          email
+        }
+      });
+      dispatch(clearLandingAuthFail());
     } else if (isAuthenticated) {
       history.push('/');
     }
-  }, [failedSignUp, isAuthenticated]);
+  }, [failedSignUp, landingAuthFail, isAuthenticated]);
 
-  const register = e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
     // backend expects passwordConfirm!
@@ -29,13 +40,13 @@ const LandingRegistration = ({ history }) => {
       passwordConfirm: password
     };
 
-    dispatch(signUp(userData));
+    dispatch(register(userData, true));
   };
 
   return (
     <div className="register">
       <h2>New here? Create a free account!</h2>
-      <form onSubmit={register}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         <input
           className="form-control form-control--register"
           type="text"

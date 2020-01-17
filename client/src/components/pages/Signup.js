@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Redirect, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { signUp } from '../../redux/auth/authActions';
+import { register, clearFailedSignup } from '../../redux/auth/authActions';
 import Loader from '../common/Loader';
 
-function Signup({ history }) {
+function Signup({ history, location }) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-
   const dispatch = useDispatch();
-  // const errors = useSelector(state => state.auth.signUpErrors);
-  // const  = useSelector(state => state.auth.failedSignUp);
-  const {
-    isAuthenticated,
-    failedSignUp,
-    signUpErrors: errors,
-    loadingUser
-  } = useSelector(state => state.auth);
+  const { isAuthenticated, signUp, loadingUser } = useSelector(
+    state => state.auth
+  );
 
-  const register = e => {
+  useEffect(() => {
+    if (history.location.state) {
+      const { name, email } = location.state;
+      setName(name);
+      setEmail(email);
+    }
+
+    return () => {
+      dispatch(clearFailedSignup());
+    };
+  }, []);
+
+  const handleSubmit = e => {
     e.preventDefault();
     // backend needs passwordConfirm!
     const userData = {
@@ -29,14 +35,14 @@ function Signup({ history }) {
       passwordConfirm: password
     };
 
-    dispatch(signUp(userData));
+    dispatch(register(userData));
   };
 
   if (loadingUser) return <Loader />;
   if (isAuthenticated) return <Redirect to="/" />;
 
   return (
-    <div className="Signup">
+    <div className="Signup page-container">
       <main>
         <div className="container">
           <div className="form-container">
@@ -46,19 +52,19 @@ function Signup({ history }) {
               recommendations, and join our large community of readers.
             </p>
             <hr />
-            {failedSignUp && errors && (
+            {signUp.failed && (
               <div className="errors">
-                {Object.entries(errors).map(([k, e]) => (
+                {Object.entries(signUp.errors).map(([k, e]) => (
                   <p key={k}>{e}</p>
                 ))}
               </div>
             )}
 
-            <form onSubmit={register} autoComplete="off">
+            <form onSubmit={handleSubmit} autoComplete="off">
               <label htmlFor="name">Name</label>
               <input
                 className={`form-control form-control--register ${
-                  errors && errors.name ? 'input-error' : ''
+                  signUp.failed && signUp.errors.name ? 'input-error' : ''
                 }`}
                 type="text"
                 name="name"
@@ -70,7 +76,7 @@ function Signup({ history }) {
               <label htmlFor="email">Email</label>
               <input
                 className={`form-control form-control--register ${
-                  errors && errors.email ? 'input-error' : ''
+                  signUp.failed && signUp.errors.email ? 'input-error' : ''
                 }`}
                 type="text"
                 name="email"
@@ -82,7 +88,7 @@ function Signup({ history }) {
               <label htmlFor="password">Password</label>
               <input
                 className={`form-control form-control--register ${
-                  errors && errors.password ? 'input-error' : ''
+                  signUp.failed && signUp.errors.password ? 'input-error' : ''
                 }`}
                 type="password"
                 name="password"

@@ -5,16 +5,18 @@ const sendErrorDev = (err, res) => {
   res.status(err.statusCode).json({
     status: err.status,
     error: err,
+    errors: err.errors,
     message: err.msg,
     stack: err.stack
   });
 };
 
 const sendErrorProd = (err, res) => {
-  if (err.isOperational) {
+  if (err.isOperational && !`${err.status}`.beginsWith('5')) {
     // trusted error
     res.status(err.statusCode).json({
       status: err.status,
+      errors: err.errors,
       message: err.msg
     });
   } else {
@@ -22,19 +24,22 @@ const sendErrorProd = (err, res) => {
     // log somewhere
     res.status(500).json({
       status: 'error',
-      message: 'Sorry, something went wrong'
+      message: 'Sorry, something went wrong',
+      errors: {
+        error: 'Sorry, something went wrong'
+      }
     });
   }
 };
 
 const handleJwtError = () =>
   new AppError('Invalid token. Please log in again.', 401, {
-    token: 'Invalid token'
+    token: 'Invalid token.'
   });
 
 const handleJwtExpiredError = () =>
   new AppError('Your token has expired. Please log in again.', 401, {
-    token: 'Token has expired'
+    token: 'Token has expired.'
   });
 
 const handleCastErrorDB = err => {
@@ -44,17 +49,25 @@ const handleCastErrorDB = err => {
 
 const handleDuplicateFieldsDB = err => {
   // console.log('DUPLICATION', err);
+  // console.log(err.errmsg);
   const value = err.errmsg.match(/(['"])(\\?.)*?\1/)[0];
   const message = `Duplicate field value: ${value}.`;
   return new AppError(message, 400);
 };
 
 const handleValidationErrorDB = err => {
-  let errors = Object.values(err.errors).map(el => el.message);
-  errors = errors.map(error => (error.endsWith('.') ? error : `${error}.`));
+  let errorMessages = Object.values(err.errors).map(el => el.message);
+  errorMessages = errorMessages.map(error =>
+    error.endsWith('.') ? error : `${error}.`
+  );
+  const message = `${errorMessages.join(' ')}`;
 
-  const message = `${errors.join(' ')}`;
-  return new AppError(message, 400, { ...err.errors });
+  const errors = {};
+  Object.entries(err.errors).forEach(([name, error]) => {
+    errors[name] = error.message;
+  });
+
+  return new AppError(message, 400, errors);
 };
 
 /* eslint-disable no-unused-vars */

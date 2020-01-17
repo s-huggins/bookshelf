@@ -11,12 +11,23 @@ import {
   EDIT_USER_SUCCESS,
   EDIT_USER_FAILURE,
   CLEAR_EDIT_STATUS,
-  DELETE_ACCOUNT
+  DELETE_ACCOUNT,
+  SENT_FRIEND_REQUEST,
+  CANCELED_FRIEND_REQUEST,
+  ACCEPTED_FRIEND_REQUEST,
+  IGNORED_FRIEND_REQUEST,
+  CLEAR_FAILED_SIGNUP,
+  CLEAR_FAILED_SIGNIN,
+  CLEAR_LANDING_AUTH_FAIL
 } from './authTypes';
 
 import store from '../store';
 
-export const signUp = userData => async dispatch => {
+export const clearFailedSignup = () => ({ type: CLEAR_FAILED_SIGNUP });
+export const clearFailedSignin = () => ({ type: CLEAR_FAILED_SIGNIN });
+export const clearLandingAuthFail = () => ({ type: CLEAR_LANDING_AUTH_FAIL });
+
+export const register = (userData, fromLanding = false) => async dispatch => {
   try {
     const res = await fetch('http://localhost:5000/api/v1/users/signup', {
       headers: {
@@ -27,7 +38,6 @@ export const signUp = userData => async dispatch => {
       body: JSON.stringify(userData)
     });
     const json = await res.json();
-    console.log(json);
     if (json.status === 'success') {
       // save token in local storage
       localStorage.setItem('jwt', json.token);
@@ -42,23 +52,26 @@ export const signUp = userData => async dispatch => {
     } else if (json.status === 'fail') {
       dispatch({
         type: SIGN_UP_FAIL,
-        payload: json.error.errors
+        payload: {
+          errors: json.errors,
+          fromLanding
+        }
       });
     } else if (json.status === 'error') {
       dispatch({
         type: SIGN_UP_ERROR,
-        payload: { error: json.message }
+        payload: { errors: json.errors, fromLanding }
       });
     }
   } catch (err) {
-    console.log('ERROR: ', err);
     dispatch({
-      type: SIGN_UP_ERROR
+      type: SIGN_UP_ERROR,
+      payload: { error: 'Something went wrong.', fromLanding }
     });
   }
 };
 
-export const signIn = userData => async dispatch => {
+export const logIn = userData => async dispatch => {
   try {
     const res = await fetch('http://localhost:5000/api/v1/users/login', {
       headers: {
@@ -83,25 +96,21 @@ export const signIn = userData => async dispatch => {
     } else if (json.status === 'fail') {
       dispatch({
         type: SIGN_IN_FAIL,
-        payload: json.error.errors
+        payload: json.errors
       });
     } else if (json.status === 'error') {
       dispatch({
         type: SIGN_IN_ERROR,
-        payload: { error: json.message }
+        payload: json.errors
       });
     }
   } catch (err) {
-    console.log('ERROR: ', err);
     dispatch({
-      type: SIGN_IN_ERROR
+      type: SIGN_IN_ERROR,
+      payload: { error: 'Something went wrong.' }
     });
   }
 };
-
-// export const resetPassword = () => async dispatch => {
-
-// }
 
 export const setCurrentUser = () => async dispatch => {
   if (localStorage.jwt) {
@@ -247,3 +256,76 @@ const setLoading = isLoading => ({
 export const clearEditStatus = () => ({
   type: CLEAR_EDIT_STATUS
 });
+
+export const sendFriendRequest = profileId => async dispatch => {
+  const uri = `http://localhost:5000/api/v1/profile/friendRequests/outgoing/${profileId}`;
+  const token = store.getState().auth.token;
+
+  const res = await fetch(uri, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const json = await res.json();
+
+  if (json.status === 'success')
+    dispatch({
+      type: SENT_FRIEND_REQUEST,
+      payload: {
+        friendRequests: json.data.friendRequests
+      }
+    });
+};
+
+export const cancelFriendRequest = profileId => async dispatch => {
+  const uri = `http://localhost:5000/api/v1/profile/friendRequests/outgoing/${profileId}`;
+  const token = store.getState().auth.token;
+
+  const res = await fetch(uri, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const json = await res.json();
+
+  if (json.status === 'success')
+    dispatch({
+      type: CANCELED_FRIEND_REQUEST,
+      payload: {
+        friendRequests: json.data.friendRequests
+      }
+    });
+};
+
+export const acceptFriendRequest = profileId => async dispatch => {
+  const uri = `http://localhost:5000/api/v1/profile/friendRequests/incoming/${profileId}`;
+  const token = store.getState().auth.token;
+
+  const res = await fetch(uri, {
+    method: 'POST',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const json = await res.json();
+
+  if (json.status === 'success')
+    dispatch({
+      type: ACCEPTED_FRIEND_REQUEST,
+      payload: {
+        friendRequests: json.data.friendRequests,
+        friends: json.data.friends
+      }
+    });
+};

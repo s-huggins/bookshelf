@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { signIn } from '../../../redux/auth/authActions';
+import { logIn, clearFailedSignin } from '../../../redux/auth/authActions';
 
 /* TODO: Header will vary based on authentication status
 i.e. the signin form will change to a logout button
@@ -12,24 +12,29 @@ const HeaderLogin = ({ history }) => {
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
-  const failedSignIn = useSelector(state => state.auth.failedSignIn);
+  const signIn = useSelector(state => state.auth.signIn);
 
-  const logIn = e => {
+  const handleSubmit = e => {
     e.preventDefault();
 
     const userData = { email, password };
-    dispatch(signIn(userData));
+    dispatch(logIn(userData));
   };
 
   useEffect(() => {
-    if (failedSignIn) {
-      history.push('/login');
+    if (signIn.failed) {
+      history.push({
+        pathname: '/login',
+        state: {
+          email
+        }
+      });
     }
-  }, [failedSignIn]);
+  }, [signIn]);
 
   return (
     <div className="Header__sign-in">
-      <form id="login-form" onSubmit={logIn} autoComplete="off">
+      <form id="login-form" onSubmit={handleSubmit} autoComplete="off">
         <div className="input-container">
           <input
             className="form-control form-control--nav"

@@ -1,3 +1,5 @@
+@import '../../../mixins/green-link';
+
 .FriendRequest {
   // justify-content: space-between;
   padding: 0.4rem 0.4rem;
@@ -48,6 +50,9 @@
     }
     .ignore-link {
       font-weight: bold;
+      background-color: transparent;
+      border: none;
+      @include green-link;
     }
   }
 

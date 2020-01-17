@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { signUp } from '../../../redux/auth/authActions';
+import React from 'react';
 import LandingRegistration from './LandingRegistration';
 
 const Landing = ({ history }) => {
@@ -16,8 +14,8 @@ const Landing = ({ history }) => {
           </div>
         </div>
 
-        <section className="highlights-section">
-          <div className="container">
+        <div className="page-container">
+          <section className="highlights-section">
             <div className="row" id="row">
               <div className="highlight">
                 <h3>Deciding what to read next?</h3>
@@ -42,8 +40,8 @@ const Landing = ({ history }) => {
                 </p>
               </div>
             </div>
-          </div>
-        </section>
+          </section>
+        </div>
       </main>
     </div>
   );

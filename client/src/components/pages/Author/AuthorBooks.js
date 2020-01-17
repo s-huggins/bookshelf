@@ -75,7 +75,7 @@ const AuthorBooks = ({ match }) => {
   const bookCount =
     authorBooks.pagination.end - authorBooks.pagination.start + 1;
   return (
-    <div className="AuthorBooks">
+    <div className="AuthorBooks page-container">
       <div className="header">
         <h1 className="header-text">
           Books by{' '}

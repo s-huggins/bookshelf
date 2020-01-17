@@ -92,7 +92,7 @@ const DeleteAccount = () => {
   };
 
   return (
-    <div className="DeleteAccount">
+    <div className="DeleteAccount page-container">
       <div className="container">
         {alert && (
           <Alert

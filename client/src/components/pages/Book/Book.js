@@ -68,7 +68,7 @@ const Book = ({ match }) => {
     );
 
   return (
-    <div className="Book">
+    <div className="Book page-container">
       <div className="profile profile--book">
         <div className="profile__side profile__side--book">
           <img className="profile__img" src={book.image_url} alt="bookcover" />

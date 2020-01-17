@@ -11,13 +11,13 @@ exports.signupValidator = catchAsync(async (req, res, next) => {
 
   // validate email
   if (await User.findOne({ email })) {
-    errors.email = 'That email is already registered';
+    errors.email = 'That email is already registered.';
   }
   if (!validator.default.isEmail(email)) {
-    errors.email = 'Invalid email';
+    errors.email = 'Invalid email.';
   }
   if (!validator.default.isLength(email, { max: 100 })) {
-    errors.email = 'Sorry, your email cannot be greater than 100 characters';
+    errors.email = 'Sorry, your email cannot be greater than 100 characters.';
   }
   if (validator.default.isEmpty(email)) {
     errors.email = 'An email is required';

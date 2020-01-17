@@ -7,7 +7,7 @@ const WentWrong = ({ history, location }) => {
   }, []);
 
   return (
-    <div className="WentWrong">
+    <div className="WentWrong page-container">
       <div className="container">
         <h1>Sorry, something went wrong. Please try again.</h1>
       </div>

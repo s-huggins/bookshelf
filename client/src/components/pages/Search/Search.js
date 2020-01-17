@@ -91,7 +91,7 @@ const Search = ({ location, history }) => {
   };
 
   return (
-    <div className="Search">
+    <div className="Search page-container">
       <div className="container">
         <h1>Search</h1>
         <form className="Search__form" onSubmit={handleSearch}>

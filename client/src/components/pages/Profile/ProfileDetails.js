@@ -1,19 +1,84 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import ProfileDetailsFooter from './ProfileDetailsFooter';
+import { useDispatch, useSelector } from 'react-redux';
+import {
+  sendFriendRequest,
+  cancelFriendRequest,
+  acceptFriendRequest
+} from '../../../redux/auth/authActions';
 
 const ProfileDetails = ({ profile }) => {
   const [seeMore, setSeeMore] = useState({
     isNeeded: profile && profile.aboutMe && profile.aboutMe.length > 400,
     show: true
   });
-  const [friendRequestSent, setFriendRequestSent] = useState(false); // TODO: pluck this from user outgoing requests, using id
+  const dispatch = useDispatch();
+
+  const friendRequests = useSelector(
+    state => state.auth.user.profile.friendRequests
+  );
+  const friends = useSelector(state => state.auth.user.profile.friends);
+  const [friendRequestStatus, setFriendRequestStatus] = useState('');
+
+  useEffect(() => {
+    if (profile.ownProfile) return;
+
+    const fReq = friendRequests.find(
+      req => req.profileId === profile.profileId
+    );
+    if (fReq) setFriendRequestStatus(fReq.kind);
+  }, []);
 
   const handleSeeMore = () => {
     setSeeMore({ ...seeMore, show: !seeMore.show });
   };
 
-  const handleAddFriend = () => {};
+  const handleUnfriend = () => {};
+
+  const handleFriendRequest = () => {
+    if (friendRequestStatus === 'Sent') {
+      // cancel request
+      dispatch(cancelFriendRequest(profile.profileId));
+      setFriendRequestStatus('');
+    } else if (friendRequestStatus === 'Received') {
+      // accept request
+      dispatch(acceptFriendRequest(profile.profileId));
+      setFriendRequestStatus('');
+    } else {
+      dispatch(sendFriendRequest(profile.profileId));
+      setFriendRequestStatus('Sent');
+    }
+  };
+
+  const renderFriendButton = () => {
+    const isFriend = !!friends.find(fr => fr.profileId === profile.profileId);
+    if (isFriend) {
+      return (
+        <button className="btn btn--light btn--action" onClick={handleUnfriend}>
+          <i className="fas fa-check check"></i> Friends
+        </button>
+      );
+    }
+
+    let btnText;
+    if (friendRequestStatus === 'Sent') {
+      btnText = 'Cancel friend request';
+    } else if (friendRequestStatus === 'Received') {
+      btnText = 'Accept friend request';
+    } else {
+      btnText = 'Add friend';
+    }
+
+    return (
+      <button
+        className="btn btn--dark btn--action"
+        onClick={handleFriendRequest}
+      >
+        {btnText}
+      </button>
+    );
+  };
 
   if (!profile) return null;
 
@@ -33,12 +98,7 @@ const ProfileDetails = ({ profile }) => {
       <div className="profile__body">
         {!profile.ownProfile && (
           <div className="profile__actions">
-            <button
-              className="btn btn--dark btn--action"
-              onClick={handleAddFriend}
-            >
-              Add friend
-            </button>
+            {renderFriendButton()}
             <button className="btn btn--light btn--action">Message</button>
           </div>
         )}

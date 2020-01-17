@@ -48,7 +48,7 @@ const ForgotPassword = () => {
   };
 
   return (
-    <div className="ForgotPassword">
+    <div className="ForgotPassword page-container">
       <main>
         <div className="form-container">
           <h1>Reset Password</h1>

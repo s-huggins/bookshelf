@@ -58,7 +58,7 @@ const ResetPassword = ({ match }) => {
   };
 
   return (
-    <div className="ResetPassword">
+    <div className="ResetPassword page-container">
       <main>
         <div className="form-container">
           <h1>New Password</h1>

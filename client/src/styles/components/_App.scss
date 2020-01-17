@@ -1,12 +1,6 @@
 @import '../mixins/green-link';
 @import '../mixins/middle-dot';
 
-/* BORDER TEST */
-
-.TEST {
-  border: 1px solid black;
-}
-
 /* BODY */
 
 html,
@@ -15,7 +9,6 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
-  // overflow-x: hidden;
 }
 
 body {

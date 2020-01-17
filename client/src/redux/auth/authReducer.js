@@ -14,17 +14,29 @@ import {
   EDIT_USER_FAILURE,
   CLEAR_EDIT_STATUS,
   DELETE_ACCOUNT,
-  PROFILE_WAS_UPDATED
+  PROFILE_WAS_UPDATED,
+  SENT_FRIEND_REQUEST,
+  CANCELED_FRIEND_REQUEST,
+  ACCEPTED_FRIEND_REQUEST,
+  IGNORED_FRIEND_REQUEST,
+  CLEAR_FAILED_SIGNUP,
+  CLEAR_FAILED_SIGNIN,
+  CLEAR_LANDING_AUTH_FAIL
 } from './authTypes';
 
 const initialState = {
   isAuthenticated: false,
   user: null,
   token: '',
-  failedSignUp: false,
-  signUpErrors: {},
-  failedSignIn: false,
-  signInErrors: {},
+  signUp: {
+    failed: false,
+    errors: {}
+  },
+  signIn: {
+    failed: false,
+    errors: {}
+  },
+  landingAuthFail: false,
   loadingUser: true,
   editStatus: '',
   errorMessage: ''
@@ -43,10 +55,15 @@ export default (state = initialState, action) => {
         isAuthenticated: true,
         token: action.payload.token,
         user: action.payload.user,
-        failedSignUp: false,
-        failedSignIn: false,
-        signUpErrors: {},
-        signInErrors: {},
+        signUp: {
+          failed: false,
+          errors: {}
+        },
+        signIn: {
+          failed: false,
+          errors: {}
+        },
+        landingAuthFail: false,
         loadingUser: false
         // loadingUser: true
       };
@@ -54,20 +71,30 @@ export default (state = initialState, action) => {
     case SIGN_UP_FAIL:
       return {
         ...state,
-        failedSignUp: true,
-        signUpErrors: action.payload,
-        failedSignIn: false,
-        signInErrors: {},
+        signUp: {
+          failed: true,
+          errors: action.payload.errors
+        },
+        landingAuthFail: action.payload.fromLanding || false,
+        signIn: {
+          failed: false,
+          errors: {}
+        },
         loadingUser: false
       };
 
     case SIGN_UP_ERROR:
       return {
         ...state,
-        failedSignUp: true,
-        signUpErrors: action.payload,
-        failedSignIn: false,
-        signInErrors: {},
+        signUp: {
+          failed: true,
+          errors: action.payload.errors
+        },
+        landingAuthFail: action.payload.fromLanding || false,
+        signIn: {
+          failed: false,
+          errors: {}
+        },
         loadingUser: false
       };
 
@@ -77,30 +104,45 @@ export default (state = initialState, action) => {
         isAuthenticated: true,
         token: action.payload.token,
         user: action.payload.user,
-        failedSignUp: false,
-        failedSignIn: false,
-        signUpErrors: {},
-        signInErrors: {},
+        signUp: {
+          failed: false,
+          errors: {}
+        },
+        signIn: {
+          failed: false,
+          errors: {}
+        },
+        landingAuthFail: false,
         loadingUser: false
       };
 
     case SIGN_IN_FAIL:
       return {
         ...state,
-        failedSignIn: true,
-        signInErrors: action.payload,
-        failedSignUp: false,
-        signUpErrors: {},
+        signIn: {
+          failed: true,
+          errors: action.payload
+        },
+        signUp: {
+          failed: false,
+          errors: {}
+        },
+        landingAuthFail: false,
         loadingUser: false
       };
 
     case SIGN_IN_ERROR:
       return {
         ...state,
-        failedSignIn: true,
-        signInErrors: action.payload,
-        failedSignUp: false,
-        signUpErrors: {},
+        signIn: {
+          failed: true,
+          errors: action.payload
+        },
+        signUp: {
+          failed: false,
+          errors: {}
+        },
+        landingAuthFail: false,
         loadingUser: false
       };
 
@@ -161,6 +203,56 @@ export default (state = initialState, action) => {
     case DELETE_ACCOUNT:
       return {
         ...initialState
+      };
+
+    case SENT_FRIEND_REQUEST:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          friendRequests: action.payload.friendRequests
+        }
+      };
+
+    case CANCELED_FRIEND_REQUEST:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          friendRequests: action.payload.friendRequests
+        }
+      };
+
+    case ACCEPTED_FRIEND_REQUEST:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          friendRequests: action.payload.friendRequests,
+          friends: action.payload.friends
+        }
+      };
+
+    case CLEAR_FAILED_SIGNUP:
+      return {
+        ...state,
+        signUp: {
+          failed: false,
+          errors: {}
+        }
+      };
+    case CLEAR_FAILED_SIGNIN:
+      return {
+        ...state,
+        signIn: {
+          failed: false,
+          errors: {}
+        }
+      };
+    case CLEAR_LANDING_AUTH_FAIL:
+      return {
+        ...state,
+        landingAuthFail: false
       };
 
     default:

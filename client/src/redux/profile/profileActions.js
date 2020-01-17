@@ -9,8 +9,8 @@ import {
   EDIT_AVATAR_SUCCESS,
   EDIT_AVATAR_FAILURE,
   CLEAR_EDIT_AVATAR_STATUS,
-  SHELVE_BOOK,
-  UPDATE_PROFILE_RATINGS,
+  // SHELVE_BOOK,
+  // UPDATE_PROFILE_RATINGS,
   SIGNAL_BOOK_WAS_RATED,
   RESET_BOOK_WAS_RATED_SIGNAL
 } from './profileTypes';
@@ -48,6 +48,7 @@ export const getProfile = profileId => async dispatch => {
   });
 
   const json = await res.json();
+  console.log('json is', json);
 
   if (json.status === 'success') {
     dispatch({
@@ -159,7 +160,8 @@ export const shelveBook = (bookData, shelf) => async dispatch => {
   const body = { shelf, ...bookData };
 
   const token = store.getState().auth.token;
-  const res = await fetch('http://localhost:5000/api/v1/profile/bookshelves', {
+  // const res =
+  await fetch('http://localhost:5000/api/v1/profile/bookshelves', {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
@@ -176,7 +178,8 @@ export const rateBook = (bookData, rating) => async dispatch => {
   const body = { rating, ...bookData };
 
   const token = store.getState().auth.token;
-  const res = await fetch('http://localhost:5000/api/v1/profile/rating', {
+  // const res =
+  await fetch('http://localhost:5000/api/v1/profile/rating', {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',

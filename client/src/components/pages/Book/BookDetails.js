@@ -12,7 +12,8 @@ const BookDetails = ({ data }) => {
       book.format ? `${book.format}`.trim() : '',
       book.edition_information ? `${book.edition_information}`.trim() : '',
       book.num_pages
-        ? `${book.num_pages}`.trim() + ` page${+book.num_pages != 1 ? 's' : ''}`
+        ? `${book.num_pages}`.trim() +
+          ` page${+book.num_pages !== 1 ? 's' : ''}`
         : ''
     ]
       .filter(s => s.length)

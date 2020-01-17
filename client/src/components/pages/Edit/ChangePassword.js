@@ -158,7 +158,7 @@ const ChangePassword = () => {
   if (loadingEdit) return <Loader />;
 
   return (
-    <div className="ChangePassword">
+    <div className="ChangePassword page-container">
       <div className="container">
         {alert && (
           <Alert

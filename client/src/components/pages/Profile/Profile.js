@@ -15,6 +15,7 @@ import RecentUpdatesPanel from './RecentUpdatesPanel';
 const Profile = ({ match, location }) => {
   const { user } = useSelector(state => state.auth);
   const profile = useSelector(state => state.profile.loadedProfile);
+  // const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
 
   /**
    * Begin profile fetch on mount with useLoadProfile.
@@ -111,6 +112,7 @@ const Profile = ({ match, location }) => {
     return <Loader />;
   }
   // if (profileHasLoaded && profile == null) return <Redirect to="/not-found" />;
+  console.log('profile is', profile);
   if (profile == null) return <Redirect to="/not-found" />;
 
   // TODO: and if not a friend
@@ -121,7 +123,7 @@ const Profile = ({ match, location }) => {
   // const ownProfile = profile.user === user._id;
 
   return (
-    <div className="Profile">
+    <div className="Profile page-container">
       <main>
         <div className="profile">
           <ProfileSide

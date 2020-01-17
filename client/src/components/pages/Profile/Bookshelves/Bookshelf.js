@@ -106,7 +106,6 @@ const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
   };
 
   useLayoutEffect(() => {
-    // console.log('RUNNING CHILD');
     const queryParamChanged = param => parsed[param] !== booksView[param];
     const parsed = queryString.parse(location.search);
 

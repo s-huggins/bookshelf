@@ -12,8 +12,3 @@ const propsArray = [
 export default propsArray.map(props => (
   <Route exact {...props} key={props.path} />
 ));
-
-{
-  /* <Route exact path="/not-found" component={NotFound} />
-<Route exact path="/something-went-wrong" component={WentWrong} /> */
-}

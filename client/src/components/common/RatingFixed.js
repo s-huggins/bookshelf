@@ -19,6 +19,8 @@ const RatingFixed = ({ rating }) => {
         return 'really liked it';
       case 5:
         return 'it was amazing';
+      default:
+        return '';
     }
   };
 

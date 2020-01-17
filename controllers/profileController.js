@@ -23,10 +23,19 @@ exports.getProfile = catchAsync(async (req, res, next) => {
   let profile;
   if (!req.params.id) {
     // user fetching own profile
-    // console.log('here');
+    // acount-editing pages fetch the user's profile this way
     profile = await Profile.findOne({
       user: req.user._id
-    }).populate('books.bookId');
+    })
+      .populate('books.bookId')
+      .populate(
+        'friendRequests.profile',
+        'displayName avatar_id location friends books'
+      );
+    profile.friendRequests.forEach(req => {
+      delete req.profile.books;
+      delete req.profile.friends;
+    }); // virtual props needed these
   } else {
     // fetching a profile by id.
     const nums = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
@@ -368,66 +377,126 @@ exports.sendFriendRequest = catchAsync(async (req, res) => {
     });
   }
 
+  // no sent or received request can be outstanding
   const updatedProfile = await Profile.findOneAndUpdate(
-    { id: otherProfileId },
     {
-      $addToSet: {
+      id: otherProfileId,
+      friendRequests: {
+        $not: {
+          $elemMatch: {
+            profileId: +req.user.profile.id
+          }
+        }
+      }
+    },
+    {
+      $push: {
         friendRequests: {
           kind: 'Received',
-          profile: req.user.profile._id
+          profile: req.user.profile._id,
+          profileId: req.user.profile.id
         }
       }
     }
   );
 
   if (!updatedProfile) {
-    return res.status(404).json({
+    return res.status(400).json({
       status: 'fail',
-      message: 'That profile does not exist.'
+      message: 'Profile does not exist or a request is already outstanding.'
+    });
+  }
+  const ownUpdatedProfile = await Profile.findOneAndUpdate(
+    {
+      _id: req.user.profile._id,
+      friendRequests: {
+        $not: {
+          $elemMatch: {
+            profileId: otherProfileId
+          }
+        }
+      }
+    },
+    {
+      $push: {
+        friendRequests: {
+          kind: 'Sent',
+          profile: updatedProfile._id,
+          profileId: otherProfileId
+        }
+      }
+    },
+    { new: true }
+  );
+  if (!ownUpdatedProfile) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Friend request is already pending.'
     });
   }
 
-  await Profile.findByIdAndUpdate(req.user.profile._id, {
-    $addToSet: {
-      friendRequests: { kind: 'Sent', profile: updatedProfile._id }
+  res.status(200).json({
+    status: 'success',
+    data: {
+      friendRequests: ownUpdatedProfile.friendRequests
     }
   });
-
-  res.status(200).json({ status: 'success' });
 });
 
+// pulling non-existent entries is fine
 exports.cancelFriendRequest = catchAsync(async (req, res) => {
   const otherProfile = await Profile.findOneAndUpdate(
     { id: +req.params.profileId },
     { $pull: { friendRequests: { profile: req.user.profile._id } } }
   );
 
-  await Profile.findByIdAndUpdate(req.user.profile._id, {
-    $pull: { friendRequests: { profile: otherProfile._id } }
-  });
+  const ownUpdatedProfile = await Profile.findByIdAndUpdate(
+    req.user.profile._id,
+    {
+      $pull: { friendRequests: { profile: otherProfile._id } }
+    },
+    { new: true }
+  );
 
-  res.status(200).json({ status: 'success' });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      friendRequests: ownUpdatedProfile.friendRequests
+    }
+  });
 });
 
 exports.acceptFriendRequest = catchAsync(async (req, res) => {
   // ensure outgoing friend request exists
   // remove outstanding friend request entries
   // add each profile to the other's friends list
+  const otherProfileId = +req.params.profileId;
 
   const otherProfile = await Profile.findOneAndUpdate(
     {
-      id: +req.params.profileId,
+      id: otherProfileId,
       friendRequests: {
         $elemMatch: { kind: 'Sent', profile: req.user.profile._id }
       }
     },
     {
       $pull: { friendRequests: { profile: req.user.profile._id } },
-      $push: { friends: req.user.profile._id }
+      $push: {
+        friends: {
+          profile: req.user.profile._id,
+          profileId: req.user.profile.id
+        }
+      } // adds friend
     }
   );
 
-  await Profile.findOneAndUpdate(
+  if (!otherProfile)
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Profile or outstanding request does not exist.'
+    });
+
+  const ownUpdatedProfile = await Profile.findOneAndUpdate(
     {
       _id: req.user.profile._id,
       friendRequests: {
@@ -436,45 +505,73 @@ exports.acceptFriendRequest = catchAsync(async (req, res) => {
     },
     {
       $pull: { friendRequests: { profile: otherProfile._id } },
-      $push: { friends: otherProfile._id }
-    }
+      $push: {
+        friends: { profile: otherProfile._id, profileId: otherProfileId }
+      } // adds friend
+    },
+    { new: true }
   );
 
-  res.status(200).json({ status: 'success' });
+  if (!ownUpdatedProfile)
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Profile or outstanding request does not exist.'
+    });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      friendRequests: ownUpdatedProfile.friendRequests,
+      friends: ownUpdatedProfile.friends
+    }
+  });
 });
 
+// don't remove outgoing request from sender's profile
+// users are not informed of a rejected request
+// the request's `ignored` field is set to true
 exports.rejectFriendRequest = catchAsync(async (req, res) => {
-  // const otherProfile = await Profile.findOneAndUpdate(
+  // const otherProfile = await Profile.findOne({
+  //   id: +req.params.profileId
+  // });
+
+  // const ownUpdatedProfile = await Profile.findOneAndUpdate(
   //   {
-  //     id: +req.params.profileId,
+  //     _id: req.user.profile._id,
   //     friendRequests: {
-  //       $elemMatch: { kind: 'Sent', profile: req.user.profile._id }
+  //       $elemMatch: { kind: 'Received', profile: otherProfile._id }
   //     }
   //   },
   //   {
-  //     $pull: { friendRequests: { profile: req.user.profile._id } }
-  //     // $push: { friends: req.user.profile._id }
+  //     $pull: { friendRequests: { profile: otherProfile._id } }
   //   }
   // );
-
-  const otherProfile = await Profile.findOne({
-    id: +req.params.profileId
-  });
-
-  await Profile.findOneAndUpdate(
+  const otherProfileId = +req.params.profileId;
+  const ownUpdatedProfile = await Profile.findOneAndUpdate(
     {
       _id: req.user.profile._id,
       friendRequests: {
-        $elemMatch: { kind: 'Received', profile: otherProfile._id }
+        $elemMatch: { kind: 'Received', profileId: otherProfileId }
       }
     },
     {
-      $pull: { friendRequests: { profile: otherProfile._id } }
-      // $push: { friends: otherProfile._id }
-    }
+      $set: { 'friendRequests.$.ignored': true }
+    },
+    { new: true }
   );
 
-  res.status(200).json({ status: 'success' });
+  if (!ownUpdatedProfile)
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Profile or outstanding request does not exist.'
+    });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      friendRequests: ownUpdatedProfile.friendRequests
+    }
+  });
 });
 
 exports.removeFriend = catchAsync(async (req, res) => {
@@ -483,18 +580,36 @@ exports.removeFriend = catchAsync(async (req, res) => {
       id: +req.params.profileId
     },
     {
-      $pull: { friends: req.user.profile._id }
+      $pull: { friends: { profile: req.user.profile._id } }
     }
   );
 
-  await Profile.findOneAndUpdate(
+  if (!otherProfile)
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Profile or friend does not exist.'
+    });
+
+  const ownUpdatedProfile = await Profile.findOneAndUpdate(
     {
       _id: req.user.profile._id
     },
     {
-      $pull: { friends: otherProfile._id }
-    }
+      $pull: { friends: { profile: otherProfile._id } }
+    },
+    { new: true }
   );
 
-  res.status(200).json({ status: 'success' });
+  if (!ownUpdatedProfile)
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Profile or friend does not exist.'
+    });
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      friends: ownUpdatedProfile.friends
+    }
+  });
 });

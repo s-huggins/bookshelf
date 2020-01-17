@@ -5,7 +5,7 @@ import Pagination from '../../common/Pagination';
 
 const Reading = () => {
   return (
-    <div className="FriendsReading">
+    <div className="FriendsReading page-container">
       <div className="container">
         <main>
           <h1>

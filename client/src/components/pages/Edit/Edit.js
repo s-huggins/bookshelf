@@ -75,7 +75,7 @@ const Edit = () => {
   if (!loadingProfile && !profile) return <Redirect to="/" />;
 
   return (
-    <div className="EditProfile">
+    <div className="EditProfile page-container">
       <div className="container">
         <main>
           {alert && (

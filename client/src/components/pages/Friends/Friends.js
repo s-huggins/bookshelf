@@ -40,7 +40,7 @@ const Friends = ({ match }) => {
   }
   console.log(profile);
   return (
-    <div className="Friends">
+    <div className="Friends page-container">
       <div className="container">
         <main>
           <div className="Friends__header">
