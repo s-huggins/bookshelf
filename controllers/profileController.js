@@ -32,6 +32,11 @@ exports.getProfile = catchAsync(async (req, res, next) => {
         'friendRequests.profile',
         'displayName avatar_id location friends books'
       );
+
+    if (!profile) {
+      return next(new AppError('This profile does not exist.', 404));
+    }
+
     profile.friendRequests.forEach(req => {
       delete req.profile.books;
       delete req.profile.friends;

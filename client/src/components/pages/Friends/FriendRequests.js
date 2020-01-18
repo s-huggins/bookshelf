@@ -6,9 +6,9 @@ import useLoadProfile from '../Profile/Hooks/useLoadProfile';
 import Loader from '../../common/Loader';
 import { useSelector } from 'react-redux';
 
-const FriendRequests = () => {
-  const profile = useSelector(state => state.profile.loadedProfile);
-  const loadingProfile = useLoadProfile();
+const FriendRequests = ({ match }) => {
+  // const profile = useSelector(state => state.profile.loadedProfile);
+  const [loadingProfile, profile] = useLoadProfile(match);
 
   return (
     <div className="FriendRequests page-container">

@@ -18,7 +18,8 @@ import {
   IGNORED_FRIEND_REQUEST,
   CLEAR_FAILED_SIGNUP,
   CLEAR_FAILED_SIGNIN,
-  CLEAR_LANDING_AUTH_FAIL
+  CLEAR_LANDING_AUTH_FAIL,
+  REMOVED_FRIEND
 } from './authTypes';
 
 import store from '../store';
@@ -327,5 +328,27 @@ export const acceptFriendRequest = profileId => async dispatch => {
         friendRequests: json.data.friendRequests,
         friends: json.data.friends
       }
+    });
+};
+
+export const removeFriend = profileId => async dispatch => {
+  const uri = `http://localhost:5000/api/v1/profile/friends/${profileId}`;
+  const token = store.getState().auth.token;
+
+  const res = await fetch(uri, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const json = await res.json();
+
+  if (json.status === 'success')
+    dispatch({
+      type: REMOVED_FRIEND,
+      payload: json.data.friends
     });
 };

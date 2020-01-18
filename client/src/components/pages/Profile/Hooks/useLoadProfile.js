@@ -1,9 +1,33 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import {
-  prepareGetProfile,
-  getProfile
-} from '../../../../redux/profile/profileActions';
+import { getProfile } from '../../../../redux/profile/profileActions';
+
+const useLoadProfile = match => {
+  const [loading, setLoading] = useState(true);
+  const profile = useSelector(state => state.profile.loadedProfile);
+  const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
+  const dispatch = useDispatch();
+  const firstRun = useRef(true);
+
+  useEffect(() => {
+    if (firstRun.current) {
+      firstRun.current = false;
+    } else if (profileHasLoaded) {
+      setLoading(false);
+    }
+  }, [profileHasLoaded]);
+
+  useLayoutEffect(() => {
+    const profileId = match.params.id || match.params.handle || '';
+    dispatch(getProfile(profileId));
+    setLoading(true);
+  }, [match]);
+
+  return [loading, profile];
+};
+export default useLoadProfile;
+
+// OLD CODE TO GO EVENTUALLY
 
 /**
  * If there is already a previous profile in the redux store, first clear
@@ -24,27 +48,53 @@ import {
  * @param {string} [profileId=''] - integer as a string, user handle, or empty.
  * @return {boolean} - loading status
  */
-const useLoadProfile = profileId => {
-  const [loadingProfile, setLoadingProfile] = useState(true);
-  const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
-  const [profileCleared, setProfileCleared] = useState(!profileHasLoaded);
-  const dispatch = useDispatch();
+// const useLoadProfile = profileId => {
+//   const [loadingProfile, setLoadingProfile] = useState(true);
+//   const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
+//   const [profileCleared, setProfileCleared] = useState(!profileHasLoaded);
+//   const dispatch = useDispatch();
+//   console.log(loadingProfile);
+//   useEffect(() => {
+//     if (!profileCleared) {
+//       dispatch(prepareGetProfile());
+//       setProfileCleared(true);
+//       return;
+//     }
+//     if (!profileHasLoaded) {
+//       dispatch(getProfile(profileId)); // endpoint can distinguish each case
+//       return;
+//     }
+//     setLoadingProfile(false);
+//     setProfileCleared(false);
+//   }, [profileHasLoaded, profileId]);
 
-  useEffect(() => {
-    if (!profileCleared) {
-      dispatch(prepareGetProfile());
-      setProfileCleared(true);
-      return;
-    }
-    if (!profileHasLoaded) {
-      dispatch(getProfile(profileId)); // endpoint can distinguish each case
-      return;
-    }
-    setLoadingProfile(false);
-    setProfileCleared(false);
-  }, [profileHasLoaded, profileId]);
+//   return loadingProfile;
+// };
 
-  return loadingProfile;
-};
+// const useLoadProfile = profileId => {
+//   // const [loadingProfile, setLoadingProfile] = useState(true);
+//   const loadingProfile = useRef(true);
+//   console.log(loadingProfile);
 
-export default useLoadProfile;
+//   const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
+//   const [profileCleared, setProfileCleared] = useState(!profileHasLoaded);
+//   const dispatch = useDispatch();
+//   useEffect(() => {
+//     if (!profileCleared) {
+//       dispatch(prepareGetProfile());
+//       setProfileCleared(true);
+//       loadingProfile.current = true;
+//       return;
+//     }
+//     if (!profileHasLoaded) {
+//       dispatch(getProfile(profileId)); // endpoint can distinguish each case
+//       loadingProfile.current = true;
+
+//       return;
+//     }
+//     loadingProfile.current = false;
+//     setProfileCleared(false);
+//   }, [profileHasLoaded, profileId]);
+
+//   return loadingProfile.current;
+// };

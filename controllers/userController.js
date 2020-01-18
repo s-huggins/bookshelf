@@ -76,6 +76,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   });
 });
 
+// for user deleting own account
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const { password } = req.body;
 

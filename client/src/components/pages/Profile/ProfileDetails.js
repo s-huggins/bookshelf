@@ -5,8 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import {
   sendFriendRequest,
   cancelFriendRequest,
-  acceptFriendRequest
+  acceptFriendRequest,
+  removeFriend
 } from '../../../redux/auth/authActions';
+import Backdrop from '../../common/Backdrop';
+import Modal from '../../common/Modal';
+import apostrophize from '../../../util/apostrophize';
 
 const ProfileDetails = ({ profile }) => {
   const [seeMore, setSeeMore] = useState({
@@ -20,6 +24,8 @@ const ProfileDetails = ({ profile }) => {
   );
   const friends = useSelector(state => state.auth.user.profile.friends);
   const [friendRequestStatus, setFriendRequestStatus] = useState('');
+  const [friendButtonHovered, setFriendButtonHovered] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   useEffect(() => {
     if (profile.ownProfile) return;
@@ -34,7 +40,23 @@ const ProfileDetails = ({ profile }) => {
     setSeeMore({ ...seeMore, show: !seeMore.show });
   };
 
-  const handleUnfriend = () => {};
+  const handleUnfriend = () => {
+    // display action confirmation modal
+    // if user confirms action, dispatch action to reducer
+    // else close modal
+
+    // setModalOpen(true);
+    setModalOpen(!modalOpen);
+  };
+
+  const handleConfirmUnfriend = () => {
+    dispatch(removeFriend(profile.profileId));
+    setFriendRequestStatus('');
+    setModalOpen(false);
+  };
+  const handleCancelUnfriend = () => {
+    setModalOpen(false);
+  };
 
   const handleFriendRequest = () => {
     if (friendRequestStatus === 'Sent') {
@@ -44,8 +66,10 @@ const ProfileDetails = ({ profile }) => {
     } else if (friendRequestStatus === 'Received') {
       // accept request
       dispatch(acceptFriendRequest(profile.profileId));
-      setFriendRequestStatus('');
+      // setFriendRequestStatus('');
+      setFriendRequestStatus('Accepted');
     } else {
+      // send request
       dispatch(sendFriendRequest(profile.profileId));
       setFriendRequestStatus('Sent');
     }
@@ -55,8 +79,23 @@ const ProfileDetails = ({ profile }) => {
     const isFriend = !!friends.find(fr => fr.profileId === profile.profileId);
     if (isFriend) {
       return (
-        <button className="btn btn--light btn--action" onClick={handleUnfriend}>
-          <i className="fas fa-check check"></i> Friends
+        <button
+          className="btn btn--light btn--action btn--friend"
+          onClick={handleUnfriend}
+          onMouseOver={() => {
+            setFriendButtonHovered(true);
+          }}
+          onMouseOut={() => {
+            setFriendButtonHovered(false);
+          }}
+        >
+          {friendButtonHovered ? (
+            <span>Unfriend</span>
+          ) : (
+            <span>
+              <i className="fas fa-check check"></i> Friends
+            </span>
+          )}
         </button>
       );
     }
@@ -66,6 +105,8 @@ const ProfileDetails = ({ profile }) => {
       btnText = 'Cancel friend request';
     } else if (friendRequestStatus === 'Received') {
       btnText = 'Accept friend request';
+    } else if (friendRequestStatus === 'Accepted') {
+      btnText = 'Accepting...';
     } else {
       btnText = 'Add friend';
     }
@@ -83,82 +124,116 @@ const ProfileDetails = ({ profile }) => {
   if (!profile) return null;
 
   return (
-    <div className="profile__main">
-      <div className="profile__header">
-        <h1 className="profile__header-text">
-          {`${profile.displayName} ${profile.handle &&
-            '(' + profile.handle + ')'} `}
-          {profile.ownProfile && (
-            <Link className="green-link edit-profile" to="/user/edit">
-              (edit profile)
-            </Link>
-          )}
-        </h1>
-      </div>
-      <div className="profile__body">
-        {!profile.ownProfile && (
-          <div className="profile__actions">
-            {renderFriendButton()}
-            <button className="btn btn--light btn--action">Message</button>
-          </div>
-        )}
-        <ul className="profile__details profile__details--user-profile">
-          {profile.name && (
-            <li>
-              <span className="text-bold">Name</span> {profile.name}
-            </li>
-          )}
-          {profile.details && (
-            <li>
-              <span className="text-bold">Details</span> {profile.details}
-            </li>
-          )}
-          {profile.birthday && (
-            <li>
-              <span className="text-bold">Birthday</span> {profile.birthday}
-            </li>
-          )}
-          {profile.website && (
-            <li>
-              <span className="text-bold">Website</span>{' '}
-              <a href={profile.website} className="green-link">
-                {profile.website}
-              </a>
-            </li>
-          )}
-          <li>
-            <span className="text-bold">Activity</span> {profile.activity}
-          </li>
-          {profile.interests && (
-            <li>
-              <span className="text-bold">Interests</span> {profile.interests}
-            </li>
-          )}
-          {profile.favBooks && (
-            <li>
-              <span className="text-bold">Favorite Books</span>{' '}
-              {profile.favBooks}
-            </li>
-          )}
-          {profile.aboutMe && (
-            <li>
-              <span className="text-bold">About Me</span>{' '}
-              <p>
-                {seeMore.isNeeded && seeMore.show
-                  ? profile.aboutMe.substring(0, 400) + '...'
-                  : profile.aboutMe}{' '}
-                {seeMore.isNeeded && (
-                  <a className="green-link see-more" onClick={handleSeeMore}>
-                    {seeMore.show ? '(See more)' : '(Show less)'}
-                  </a>
-                )}
+    <>
+      {modalOpen && (
+        <>
+          <Backdrop />
+          <Modal handleClose={() => setModalOpen(false)}>
+            <div className="Unfriend-modal">
+              <h2 className="Unfriend-modal__header">
+                Unfriend {profile.displayName}?
+              </h2>
+              <p className="Unfriend-modal__body">
+                This will remove {apostrophize(profile.displayName)} activity
+                from your updates feed, and your own activity will stop
+                appearing in their updates feed. {profile.displayName} will not
+                be notified.
               </p>
-            </li>
+              <div className="Unfriend-modal__actions">
+                <button
+                  className="btn btn--dark"
+                  onClick={handleConfirmUnfriend}
+                >
+                  Confirm
+                </button>
+                <button
+                  className="btn btn--light"
+                  onClick={handleCancelUnfriend}
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          </Modal>
+        </>
+      )}
+      <div className="profile__main">
+        <div className="profile__header">
+          <h1 className="profile__header-text">
+            {`${profile.displayName} ${profile.handle &&
+              '(' + profile.handle + ')'} `}
+            {profile.ownProfile && (
+              <Link className="green-link edit-profile" to="/user/edit">
+                (edit profile)
+              </Link>
+            )}
+          </h1>
+        </div>
+        <div className="profile__body">
+          {!profile.ownProfile && (
+            <div className="profile__actions">
+              {renderFriendButton()}
+              <button className="btn btn--light btn--action">Message</button>
+            </div>
           )}
-        </ul>
+          <ul className="profile__details profile__details--user-profile">
+            {profile.name && (
+              <li>
+                <span className="text-bold">Name</span> {profile.name}
+              </li>
+            )}
+            {profile.details && (
+              <li>
+                <span className="text-bold">Details</span> {profile.details}
+              </li>
+            )}
+            {profile.birthday && (
+              <li>
+                <span className="text-bold">Birthday</span> {profile.birthday}
+              </li>
+            )}
+            {profile.website && (
+              <li>
+                <span className="text-bold">Website</span>{' '}
+                <a href={profile.website} className="green-link">
+                  {profile.website}
+                </a>
+              </li>
+            )}
+            <li>
+              <span className="text-bold">Activity</span> {profile.activity}
+            </li>
+            {profile.interests && (
+              <li>
+                <span className="text-bold">Interests</span> {profile.interests}
+              </li>
+            )}
+            {profile.favBooks && (
+              <li>
+                <span className="text-bold">Favorite Books</span>{' '}
+                {profile.favBooks}
+              </li>
+            )}
+            {profile.aboutMe && (
+              <li>
+                <span className="text-bold">About Me</span>{' '}
+                <p>
+                  {seeMore.isNeeded && seeMore.show
+                    ? profile.aboutMe.substring(0, 400) + '...'
+                    : profile.aboutMe}{' '}
+                  {seeMore.isNeeded && (
+                    <a className="green-link see-more" onClick={handleSeeMore}>
+                      {seeMore.show ? '(See more)' : '(Show less)'}
+                    </a>
+                  )}
+                </p>
+              </li>
+            )}
+          </ul>
+        </div>
+        <ProfileDetailsFooter social={profile.social} handle={profile.handle} />
       </div>
-      <ProfileDetailsFooter social={profile.social} handle={profile.handle} />
-    </div>
+    </>
   );
 };
 

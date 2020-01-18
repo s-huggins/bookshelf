@@ -33,6 +33,8 @@ export const clearEditAvatarStatus = () => ({
 
 // profileId optional
 export const getProfile = profileId => async dispatch => {
+  dispatch(prepareGetProfile());
+  console.log('dispatching for profile');
   let uri = 'http://localhost:5000/api/v1/profile';
   if (profileId) {
     uri = `${uri}/${profileId}`;
@@ -48,7 +50,6 @@ export const getProfile = profileId => async dispatch => {
   });
 
   const json = await res.json();
-  console.log('json is', json);
 
   if (json.status === 'success') {
     dispatch({

@@ -21,7 +21,8 @@ import {
   IGNORED_FRIEND_REQUEST,
   CLEAR_FAILED_SIGNUP,
   CLEAR_FAILED_SIGNIN,
-  CLEAR_LANDING_AUTH_FAIL
+  CLEAR_LANDING_AUTH_FAIL,
+  REMOVED_FRIEND
 } from './authTypes';
 
 const initialState = {
@@ -146,6 +147,28 @@ export default (state = initialState, action) => {
         loadingUser: false
       };
 
+    case CLEAR_FAILED_SIGNUP:
+      return {
+        ...state,
+        signUp: {
+          failed: false,
+          errors: {}
+        }
+      };
+    case CLEAR_FAILED_SIGNIN:
+      return {
+        ...state,
+        signIn: {
+          failed: false,
+          errors: {}
+        }
+      };
+    case CLEAR_LANDING_AUTH_FAIL:
+      return {
+        ...state,
+        landingAuthFail: false
+      };
+
     case SET_CURRENT_USER:
       return {
         ...state,
@@ -210,7 +233,10 @@ export default (state = initialState, action) => {
         ...state,
         user: {
           ...state.user,
-          friendRequests: action.payload.friendRequests
+          profile: {
+            ...state.user.profile,
+            friendRequests: action.payload.friendRequests
+          }
         }
       };
 
@@ -219,7 +245,10 @@ export default (state = initialState, action) => {
         ...state,
         user: {
           ...state.user,
-          friendRequests: action.payload.friendRequests
+          profile: {
+            ...state.user.profile,
+            friendRequests: action.payload.friendRequests
+          }
         }
       };
 
@@ -228,31 +257,24 @@ export default (state = initialState, action) => {
         ...state,
         user: {
           ...state.user,
-          friendRequests: action.payload.friendRequests,
-          friends: action.payload.friends
+          profile: {
+            ...state.user.profile,
+            friendRequests: action.payload.friendRequests,
+            friends: action.payload.friends
+          }
         }
       };
 
-    case CLEAR_FAILED_SIGNUP:
+    case REMOVED_FRIEND:
       return {
         ...state,
-        signUp: {
-          failed: false,
-          errors: {}
+        user: {
+          ...state.user,
+          profile: {
+            ...state.user.profile,
+            friends: action.payload
+          }
         }
-      };
-    case CLEAR_FAILED_SIGNIN:
-      return {
-        ...state,
-        signIn: {
-          failed: false,
-          errors: {}
-        }
-      };
-    case CLEAR_LANDING_AUTH_FAIL:
-      return {
-        ...state,
-        landingAuthFail: false
       };
 
     default:

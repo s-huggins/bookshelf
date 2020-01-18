@@ -1,4 +1,5 @@
 import {
+  LOADING_PROFILE,
   PREPARE_LOAD_PROFILE,
   CLEAR_PROFILE,
   LOAD_PROFILE_SUCCESS,
@@ -16,6 +17,7 @@ import {
 
 /* editStatus one of '', 'success', 'fail' */
 const initialState = {
+  loadingProfile: false,
   loadedProfile: null,
   profileHasLoaded: false,
   editStatus: '',
@@ -26,15 +28,23 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case PREPARE_LOAD_PROFILE:
-    case CLEAR_PROFILE:
       return {
         ...state,
-        loadedProfile: null,
+        loadingProfile: true,
         profileHasLoaded: false
+        // loadedProfile: null
       };
+    // case PREPARE_LOAD_PROFILE:
+    // case CLEAR_PROFILE:
+    //   return {
+    //     ...state,
+    //     loadedProfile: null,
+    //     profileHasLoaded: false
+    //   };
     case LOAD_PROFILE_SUCCESS:
       return {
         ...state,
+        loadingProfile: false,
         profileHasLoaded: true,
         loadedProfile: action.payload.data.profile
       };
@@ -42,9 +52,12 @@ export default (state = initialState, action) => {
     case LOAD_PROFILE_FAILURE:
       return {
         ...state,
+        loadingProfile: false,
         profileHasLoaded: true,
         loadedProfile: null
       };
+
+    // LOAD PROFILE ERROR HERE
 
     case EDIT_PROFILE_SUCCESS:
       return {

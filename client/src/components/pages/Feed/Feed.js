@@ -1,17 +1,18 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 import CurrentlyReading from './CurrentlyReading';
 import FeedUpdate from './FeedUpdate';
 import useLoadProfile from '../Profile/Hooks/useLoadProfile';
 import Loader from '../../common/Loader';
 
-const Feed = () => {
-  const profile = useSelector(state => state.profile.loadedProfile);
+const Feed = ({ match }) => {
+  // const profile = useSelector(state => state.profile.loadedProfile);
 
   // load own profile
-  const loading = useLoadProfile();
+  const [loadingProfile, profile] = useLoadProfile(match);
 
-  if (loading) return <Loader />;
+  if (loadingProfile) return <Loader />;
 
   return (
     <div className="Feed page-container">
@@ -46,4 +47,4 @@ const Feed = () => {
   );
 };
 
-export default Feed;
+export default withRouter(Feed);

@@ -21,6 +21,25 @@
     margin-left: 0.5rem;
   }
 
+  .Unfriend-modal {
+    padding: 1.5rem;
+    padding-top: 0rem;
+    &__header {
+      margin-bottom: 1rem;
+      font-family: $font-secondary;
+    }
+    &__body {
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+    &__actions {
+      button {
+        margin: 0rem 0.4rem;
+        font-size: 1.1rem;
+      }
+    }
+  }
+
   .panel--bookshelves {
     margin-top: 1rem;
   }

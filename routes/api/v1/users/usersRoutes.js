@@ -1,5 +1,5 @@
 const express = require('express');
-const usersController = require('../../../../controllers/usersController');
+const usersController = require('../../../../controllers/userController');
 const authController = require('../../../../controllers/authController');
 const profileRouter = require('../profile/profileRoutes');
 const {

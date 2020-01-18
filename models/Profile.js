@@ -43,7 +43,8 @@ const ProfileSchema = new Schema(
             ref: 'Profile'
           },
           profileId: {
-            type: Number
+            type: Number,
+            unique: false
           }
         }
       ]
@@ -52,7 +53,6 @@ const ProfileSchema = new Schema(
     friendRequests: {
       type: [
         {
-          _id: false,
           kind: {
             type: String,
             enum: ['Sent', 'Received']
@@ -317,6 +317,7 @@ ProfileSchema.post('remove', async function(doc, next) {
 ProfileSchema.post('remove', async function(doc, next) {
   const removalTasks = [];
 
+  // remove book ratings
   for (let i = 0; i < doc.ratings.length; i += 1) {
     const rating = doc.ratings[i];
     removalTasks.push(
@@ -325,6 +326,28 @@ ProfileSchema.post('remove', async function(doc, next) {
       })
     );
   }
+
+  // TODO: remove book reviews
+
+  // clean the profiles of all former friends
+  // const friendsTask = mongoose.model('Profile').updateMany({'friends.id': doc.id}, {$pull: {friends: {id: doc.id}}} )
+
+  const friendsTask = mongoose.model('Profile').updateMany(
+    {
+      $or: [
+        { 'friends.profileId': doc.id },
+        { 'friendRequests.profileId': doc.id }
+      ]
+    },
+    {
+      $pull: {
+        friends: { profileId: doc.id },
+        friendRequests: { profileId: doc.id }
+      }
+    }
+  );
+
+  removalTasks.push(friendsTask);
 
   await Promise.all(removalTasks);
 

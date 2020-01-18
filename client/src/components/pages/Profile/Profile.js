@@ -14,7 +14,9 @@ import RecentUpdatesPanel from './RecentUpdatesPanel';
 
 const Profile = ({ match, location }) => {
   const { user } = useSelector(state => state.auth);
-  const profile = useSelector(state => state.profile.loadedProfile);
+  // const profile = useSelector(state => state.profile.loadedProfile);
+  const [loadingProfile, profile] = useLoadProfile(match);
+
   // const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
 
   /**
@@ -29,8 +31,6 @@ const Profile = ({ match, location }) => {
    */
 
   /* PROFILE FETCH HOOK */
-  const profileId = match.params.id || match.params.handle || '';
-  const loadingProfile = useLoadProfile(profileId, match);
 
   /**
    * The server does not return private fields of non-friends.
@@ -112,7 +112,6 @@ const Profile = ({ match, location }) => {
     return <Loader />;
   }
   // if (profileHasLoaded && profile == null) return <Redirect to="/not-found" />;
-  console.log('profile is', profile);
   if (profile == null) return <Redirect to="/not-found" />;
 
   // TODO: and if not a friend

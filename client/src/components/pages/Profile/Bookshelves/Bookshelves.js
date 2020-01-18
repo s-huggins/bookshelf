@@ -12,10 +12,10 @@ import Breadcrumb from './Breadcrumb';
 
 const Bookshelves = ({ match, location, history }) => {
   const { user } = useSelector(state => state.auth);
-  const profile = useSelector(state => state.profile.loadedProfile);
+  // const profile = useSelector(state => state.profile.loadedProfile);
   /* PROFILE FETCH HOOK */
   const profileId = match.params.id || match.params.handle || '';
-  const loadingProfile = useLoadProfile(profileId);
+  const [loadingProfile, profile] = useLoadProfile(match);
 
   const [activeShelf, setActiveShelf] = useState({
     shelf: null,

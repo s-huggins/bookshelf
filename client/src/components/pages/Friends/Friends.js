@@ -9,9 +9,9 @@ import AddFriendsPage from './AddFriendsPage';
 
 const Friends = ({ match }) => {
   /* PROFILE FETCH HOOK */
-  const profile = useSelector(state => state.profile.loadedProfile);
+  // const profile = useSelector(state => state.profile.loadedProfile);
   const profileId = match.params.id || match.params.handle || '';
-  const loadingProfile = useLoadProfile(profileId);
+  const [loadingProfile, profile] = useLoadProfile(match);
 
   const [activeNavLink, setActiveNavLink] = useState('friends');
 
