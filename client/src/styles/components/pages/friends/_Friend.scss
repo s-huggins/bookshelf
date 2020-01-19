@@ -18,17 +18,15 @@
 
   .friend-info {
     display: flex;
-
+    flex-basis: 35%;
     .friend-avatar {
-      margin-right: 0.75rem;
-
-      width: 90px;
+      margin-right: 0.4rem;
+      width: 75px;
     }
 
     .friend-details {
       display: flex;
       flex-direction: column;
-      margin-right: 1rem;
       margin-top: 0.25rem;
 
       .divider {
@@ -52,7 +50,7 @@
     display: flex;
     margin-right: 1rem;
 
-    flex-basis: 50%;
+    flex-basis: 45%;
     // border: 1px solid red;
     // width: 18rem;
     .bookcover {
@@ -75,7 +73,6 @@
   }
 
   .friend-actions {
-    // border: 1px solid red;
     flex-basis: 20%;
     align-self: center;
     display: flex;

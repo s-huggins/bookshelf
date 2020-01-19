@@ -12,25 +12,9 @@ import BookshelvesPanel from './BookshelvesPanel';
 import CurrentlyReadingPanel from './CurrentlyReadingPanel';
 import RecentUpdatesPanel from './RecentUpdatesPanel';
 
-const Profile = ({ match, location }) => {
+const Profile = ({ location }) => {
   const { user } = useSelector(state => state.auth);
-  // const profile = useSelector(state => state.profile.loadedProfile);
-  const [loadingProfile, profile] = useLoadProfile(match);
-
-  // const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
-
-  /**
-   * Begin profile fetch on mount with useLoadProfile.
-   * If there is no route id param (/user/:id) or handle param (/:handle),
-   * then fetch the user's own profile.
-   * Otherwise fetch a profile according to profileId or handle, which can also
-   * be used to fetch the user's own.
-   * If fetching a profile not belonging to the user, the server will return
-   * it if it is declared public or is friends with the user, else it will
-   * return a limited snapshot when it is private and not a friend.
-   */
-
-  /* PROFILE FETCH HOOK */
+  const [loadingProfile, profile] = useLoadProfile();
 
   /**
    * The server does not return private fields of non-friends.

@@ -1,5 +1,4 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import CurrentlyReading from './CurrentlyReading';
 import FeedUpdate from './FeedUpdate';
@@ -7,8 +6,6 @@ import useLoadProfile from '../Profile/Hooks/useLoadProfile';
 import Loader from '../../common/Loader';
 
 const Feed = ({ match }) => {
-  // const profile = useSelector(state => state.profile.loadedProfile);
-
   // load own profile
   const [loadingProfile, profile] = useLoadProfile(match);
 

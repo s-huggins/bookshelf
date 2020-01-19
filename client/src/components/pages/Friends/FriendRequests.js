@@ -4,11 +4,9 @@ import FindFriendsPanel from './FindFriendsPanel';
 import FriendRequest from './FriendRequest';
 import useLoadProfile from '../Profile/Hooks/useLoadProfile';
 import Loader from '../../common/Loader';
-import { useSelector } from 'react-redux';
 
-const FriendRequests = ({ match }) => {
-  // const profile = useSelector(state => state.profile.loadedProfile);
-  const [loadingProfile, profile] = useLoadProfile(match);
+const FriendRequests = () => {
+  const [loadingProfile, profile] = useLoadProfile();
 
   return (
     <div className="FriendRequests page-container">
@@ -28,7 +26,7 @@ const FriendRequests = ({ match }) => {
               <div className="FriendRequests__requests">
                 {profile.friendRequests.length > 0 ? (
                   profile.friendRequests
-                    .filter(fReq => fReq.kind === 'Received')
+                    .filter(fReq => fReq.kind === 'Received' && !fReq.ignored)
                     .map(fReq => (
                       <FriendRequest
                         key={fReq.profileId}
@@ -38,7 +36,9 @@ const FriendRequests = ({ match }) => {
                       />
                     ))
                 ) : (
-                  <p className="no-requests">You have no friend requests.</p>
+                  <p className="no-requests">
+                    You have no new friend requests.
+                  </p>
                 )}
               </div>
             )}

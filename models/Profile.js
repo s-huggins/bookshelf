@@ -376,8 +376,10 @@ ProfileSchema.virtual('currentRead').get(function() {
     if (!latest) latest = book;
     else if (book.dateShelved > latest.dateShelved) latest = book;
   });
+
   return latest;
 });
+
 ProfileSchema.virtual('numFriends').get(function() {
   if (!this.friends) return undefined;
   return this.friends.length;

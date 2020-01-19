@@ -1,17 +1,13 @@
 import React, { useState } from 'react';
 import Loader from '../../common/Loader';
 import useLoadProfile from '../Profile/Hooks/useLoadProfile';
-import { Redirect } from 'react-router-dom';
+import { Redirect, withRouter } from 'react-router-dom';
 import PrivateProfile from '../Profile/PrivateProfile';
-import { useSelector } from 'react-redux';
 import FriendsPage from './FriendsPage';
 import AddFriendsPage from './AddFriendsPage';
 
-const Friends = ({ match }) => {
-  /* PROFILE FETCH HOOK */
-  // const profile = useSelector(state => state.profile.loadedProfile);
-  const profileId = match.params.id || match.params.handle || '';
-  const [loadingProfile, profile] = useLoadProfile(match);
+const OwnFriends = () => {
+  const [loadingProfile, profile] = useLoadProfile();
 
   const [activeNavLink, setActiveNavLink] = useState('friends');
 
@@ -38,7 +34,6 @@ const Friends = ({ match }) => {
   if (!loadingProfile && !profile.isPublic) {
     return <PrivateProfile profile={profile} />;
   }
-  console.log(profile);
   return (
     <div className="Friends page-container">
       <div className="container">
@@ -74,4 +69,4 @@ const Friends = ({ match }) => {
   );
 };
 
-export default Friends;
+export default withRouter(OwnFriends);

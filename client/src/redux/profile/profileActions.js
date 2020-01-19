@@ -21,9 +21,9 @@ import { PROFILE_WAS_UPDATED } from '../auth/authTypes';
 export const prepareGetProfile = () => ({
   type: PREPARE_LOAD_PROFILE
 });
-export const clearProfile = () => ({
-  type: CLEAR_PROFILE
-});
+// export const clearProfile = () => ({
+//   type: CLEAR_PROFILE
+// });
 export const clearEditStatus = () => ({
   type: CLEAR_EDIT_STATUS
 });
@@ -34,7 +34,6 @@ export const clearEditAvatarStatus = () => ({
 // profileId optional
 export const getProfile = profileId => async dispatch => {
   dispatch(prepareGetProfile());
-  console.log('dispatching for profile');
   let uri = 'http://localhost:5000/api/v1/profile';
   if (profileId) {
     uri = `${uri}/${profileId}`;

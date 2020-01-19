@@ -8,11 +8,9 @@ import Alert from '../../common/Alert';
 import { clearEditStatus } from '../../../redux/profile/profileActions';
 import useLoadProfile from '../Profile/Hooks/useLoadProfile';
 
-const Edit = ({ match }) => {
+const Edit = () => {
   const { user } = useSelector(state => state.auth);
-
-  // these state data must be extracted separately
-  // const profile = useSelector(state => state.profile.loadedProfile);
+  const [loadingProfile, profile] = useLoadProfile();
   const editStatus = useSelector(state => state.profile.editStatus);
 
   const dispatch = useDispatch();
@@ -20,9 +18,6 @@ const Edit = ({ match }) => {
   const [activeNavLink, setActiveNavLink] = useState('profile');
   const [loadingEdit, setLoadingEdit] = useState(false);
   const [alert, setAlert] = useState(null);
-
-  /* HOOK TO LOAD PROFILE */
-  const [loadingProfile, profile] = useLoadProfile(match);
 
   /* Display success or failure alerts after a profile update */
   useEffect(() => {
@@ -107,7 +102,7 @@ const Edit = ({ match }) => {
             </ul>
           </nav>
 
-          {loadingProfile ? null : loadingEdit ? (
+          {loadingProfile || loadingEdit ? (
             <Loader />
           ) : (
             selectEditPage(activeNavLink)

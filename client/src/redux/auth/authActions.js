@@ -5,6 +5,9 @@ import {
   SIGN_IN,
   SIGN_IN_FAIL,
   SIGN_IN_ERROR,
+  CLEAR_FAILED_SIGNUP,
+  CLEAR_FAILED_SIGNIN,
+  CLEAR_LANDING_AUTH_FAIL,
   SET_CURRENT_USER,
   SIGN_OUT,
   LOADING_USER,
@@ -16,9 +19,6 @@ import {
   CANCELED_FRIEND_REQUEST,
   ACCEPTED_FRIEND_REQUEST,
   IGNORED_FRIEND_REQUEST,
-  CLEAR_FAILED_SIGNUP,
-  CLEAR_FAILED_SIGNIN,
-  CLEAR_LANDING_AUTH_FAIL,
   REMOVED_FRIEND
 } from './authTypes';
 
@@ -135,6 +135,7 @@ export const setCurrentUser = () => async dispatch => {
       dispatch({ type: SIGN_OUT });
     }
   } else {
+    // no jwt in local storage
     dispatch(setLoading(false));
   }
 };
@@ -327,6 +328,30 @@ export const acceptFriendRequest = profileId => async dispatch => {
       payload: {
         friendRequests: json.data.friendRequests,
         friends: json.data.friends
+      }
+    });
+};
+
+export const ignoreFriendRequest = profileId => async dispatch => {
+  const uri = `http://localhost:5000/api/v1/profile/friendRequests/incoming/${profileId}`;
+  const token = store.getState().auth.token;
+
+  const res = await fetch(uri, {
+    method: 'DELETE',
+    headers: {
+      Accept: 'application/json',
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  });
+
+  const json = await res.json();
+
+  if (json.status === 'success')
+    dispatch({
+      type: IGNORED_FRIEND_REQUEST,
+      payload: {
+        friendRequests: json.data.friendRequests
       }
     });
 };

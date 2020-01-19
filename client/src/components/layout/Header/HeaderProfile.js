@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import MessageIcon from './MessageIcon';
 
 const HeaderProfile = () => {
-  // Parent Header component has ensured authentication, and consequently a loaded profile
+  // Parent Header component has ensured authentication, and consequently a loaded user profile
   const { friendRequests, firstName } = useSelector(
     state => state.auth.user.profile
   );

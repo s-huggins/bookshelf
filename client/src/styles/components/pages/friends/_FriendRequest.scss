@@ -19,7 +19,9 @@
   }
 
   &__details {
-    margin-right: 3.5rem;
+    // border: 1px solid red;
+    flex-basis: 20%;
+    margin-right: 2rem;
     font-size: 0.85rem;
     li {
       margin-bottom: 0.15rem;
@@ -53,6 +55,17 @@
       background-color: transparent;
       border: none;
       @include green-link;
+    }
+
+    &-approved,
+    &-ignored {
+      font-size: 1.1rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .text-muted {
+      font-size: 0.9rem;
+      color: #999;
     }
   }
 

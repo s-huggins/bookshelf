@@ -1,14 +1,18 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { getProfile } from '../../../../redux/profile/profileActions';
+import { useParams, useLocation } from 'react-router-dom';
 
-const useLoadProfile = match => {
+const useLoadProfile = (match, reloadOnQueryChange = false) => {
   const [loading, setLoading] = useState(true);
   const profile = useSelector(state => state.profile.loadedProfile);
   const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
   const dispatch = useDispatch();
   const firstRun = useRef(true);
-
+  const lastPathname = useRef('');
+  const params = useParams();
+  const location = useLocation();
+  console.log('loadprof, params are', params);
   useEffect(() => {
     if (firstRun.current) {
       firstRun.current = false;
@@ -18,14 +22,43 @@ const useLoadProfile = match => {
   }, [profileHasLoaded]);
 
   useLayoutEffect(() => {
-    const profileId = match.params.id || match.params.handle || '';
+    // if base url hasn't changed, exit early
+    if (!reloadOnQueryChange && location.pathname === lastPathname.current)
+      return; // qparam changed
+    lastPathname.current = location.pathname;
+    const profileId = params.id || params.handle || '';
     dispatch(getProfile(profileId));
     setLoading(true);
-  }, [match]);
+  }, [params]);
 
   return [loading, profile];
 };
 export default useLoadProfile;
+
+// const useLoadProfile = (match) => {
+//   const [loading, setLoading] = useState(true);
+//   const profile = useSelector(state => state.profile.loadedProfile);
+//   const profileHasLoaded = useSelector(state => state.profile.profileHasLoaded);
+//   const dispatch = useDispatch();
+//   const firstRun = useRef(true);
+
+//   useEffect(() => {
+//     if (firstRun.current) {
+//       firstRun.current = false;
+//     } else if (profileHasLoaded) {
+//       setLoading(false);
+//     }
+//   }, [profileHasLoaded]);
+
+//   useLayoutEffect(() => {
+//     const profileId = match.params.id || match.params.handle || '';
+//     dispatch(getProfile(profileId));
+//     setLoading(true);
+//   }, [match]);
+
+//   return [loading, profile];
+// };
+// export default useLoadProfile;
 
 // OLD CODE TO GO EVENTUALLY
 

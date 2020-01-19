@@ -16,9 +16,7 @@ function App() {
       <Router>
         <div className="App">
           <Header />
-          {/* <div className="page-container"> */}
           <Routes />
-          {/* </div> */}
           <Footer />
         </div>
       </Router>

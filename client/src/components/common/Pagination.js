@@ -12,15 +12,6 @@ const Pagination = ({
   useQueryParam,
   noLimit
 }) => {
-  // console.log('pagination params', {
-  //   perPage,
-  //   baseLink,
-  //   total,
-  //   page,
-  //   useQueryParam,
-  //   noLimit
-  // });
-
   // const totalPages = Math.min(100, Math.ceil(total / perPage) || 1);
   const totalPages = noLimit
     ? Math.ceil(total / perPage) || 1

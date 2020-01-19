@@ -34,13 +34,7 @@ export default (state = initialState, action) => {
         profileHasLoaded: false
         // loadedProfile: null
       };
-    // case PREPARE_LOAD_PROFILE:
-    // case CLEAR_PROFILE:
-    //   return {
-    //     ...state,
-    //     loadedProfile: null,
-    //     profileHasLoaded: false
-    //   };
+
     case LOAD_PROFILE_SUCCESS:
       return {
         ...state,

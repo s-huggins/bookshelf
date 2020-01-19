@@ -1,9 +1,26 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import FriendsList from './FriendsList';
 import FindFriendsPanel from './FindFriendsPanel';
+import FriendsListHeader from './FriendsListHeader';
+import { useEffect } from 'react';
+import queryString from 'query-string';
+import { useState } from 'react';
 
 const FriendsPage = ({ profile }) => {
+  console.log(profile);
+  const location = useLocation();
+  const [filteredView, setFilteredView] = useState({
+    friends: profile.friends,
+    startIndex: 0,
+    endIndex: profile.friends.length - 1
+  });
+  useEffect(() => {
+    const parsed = queryString.parse(location.search);
+    // filter friends list here to be passed down to FriendsList component
+    // filter order page
+  }, [location]);
+
   return (
     <div className="FriendsPage Friends__page">
       <div className="Friends__page-main">
@@ -19,33 +36,8 @@ const FriendsPage = ({ profile }) => {
             </button>
           </span>
         </form>
-        <div className="list-header">
-          <div className="showing-detail">Showing 1-9 of 9</div>
-
-          <div className="pagination-header">
-            <span>
-              <span className="filter-all">
-                <Link to="#!">all</Link>
-              </span>
-              {'abcdefghijklmnopqrstuvwxyz'.split('').map(l => (
-                <span key={l} className="filter-letter">
-                  <Link to="#!" className="green-link">
-                    {l}
-                  </Link>
-                </span>
-              ))}
-            </span>
-            <span>
-              <select name="sort" id="friends-sort">
-                <option value="last-active">last active</option>
-                <option value="display-name">display name</option>
-
-                <option value="date-added">date added</option>
-              </select>
-            </span>
-          </div>
-        </div>
-        <FriendsList />
+        <FriendsListHeader friendsView={filteredView} />
+        <FriendsList friendsView={filteredView} />
       </div>
       <div className="Friends__page-side sidebar">
         <div className="sidebar__panel link-list">

@@ -45,8 +45,7 @@ const ProfileDetails = ({ profile }) => {
     // if user confirms action, dispatch action to reducer
     // else close modal
 
-    // setModalOpen(true);
-    setModalOpen(!modalOpen);
+    setModalOpen(true);
   };
 
   const handleConfirmUnfriend = () => {
@@ -93,7 +92,7 @@ const ProfileDetails = ({ profile }) => {
             <span>Unfriend</span>
           ) : (
             <span>
-              <i className="fas fa-check check"></i> Friends
+              <i className="fas fa-check button-check"></i> Friends
             </span>
           )}
         </button>

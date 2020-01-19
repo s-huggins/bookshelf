@@ -14,7 +14,6 @@ function Signin({ location }) {
   const { isAuthenticated, loadingUser } = useSelector(state => state.auth);
 
   useEffect(() => {
-    console.log(location);
     if (location.state) setEmail(location.state.email);
 
     return () => {

@@ -19,6 +19,87 @@ const AppError = require('../utils/AppError');
 // or profile handle from the Profile model. The profile handle cannot begin with a digit, which is
 // how we distinguish the parameter type.
 // TODO: refactor into separate handlers based on profile fetch condition - use middleware to fork request
+// exports.getProfile = catchAsync(async (req, res, next) => {
+//   let profile;
+//   if (!req.params.id) {
+//     // user fetching own profile
+//     // acount-editing pages fetch the user's profile this way
+//     profile = await Profile.findOne({
+//       user: req.user._id
+//     })
+//       .populate('books.bookId')
+//       .populate(
+//         'friendRequests.profile',
+//         'displayName avatar_id location friends books'
+//       )
+//       .populate('friends.profile', 'displayName avatar_id friends books');
+//     if (!profile) {
+//       return next(new AppError('This profile does not exist.', 404));
+//     }
+//   } else {
+//     // fetching a profile by id.
+//     const nums = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
+//     // if regex matches, search profile by handle, else search by profile id
+//     if (!nums.has(req.params.id[0])) {
+//       // profile = await Profile.findOne({
+//       //   handle: req.params.id
+//       // });
+
+//       const reg = new RegExp(`^${req.params.id}$`, 'i');
+//       profile = await Profile.findOne({ handle: { $regex: reg } }).populate(
+//         'books.bookId'
+//       );
+//     } else {
+//       profile = await Profile.findOne({
+//         id: req.params.id
+//       }).populate('books.bookId');
+//     }
+
+//     if (!profile) {
+//       return next(new AppError('This profile does not exist.', 404));
+//     }
+
+//     // if not own profile
+//     if (!(profile.user.toString() === req.user.id)) {
+//       // TODO: check if it is a friend's profile, and if so, return it regardless
+
+//       if (!profile.isPublic) {
+//         return res.status(200).json({
+//           status: 'success',
+//           code: 'PRIVATE',
+//           message: 'This profile is private.',
+//           data: {
+//             profile: {
+//               isPublic: false,
+//               displayName: profile.displayName,
+//               handle: profile.handle,
+//               avatar: profile.avatar
+//             }
+//           }
+//         });
+//       }
+
+//       // remove userdata declared private
+//       // const profileJson = profile.toJSON();
+//       // console.log(profile._doc);
+//       Object.keys(profile._doc).forEach(k => {
+//         if (profile._doc[k].private) {
+//           delete profile._doc[k];
+//         }
+//       });
+
+//       delete profile._doc.friendRequests;
+//     }
+//   }
+
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       profile
+//     }
+//   });
+// });
+
 exports.getProfile = catchAsync(async (req, res, next) => {
   let profile;
   if (!req.params.id) {
@@ -31,16 +112,30 @@ exports.getProfile = catchAsync(async (req, res, next) => {
       .populate(
         'friendRequests.profile',
         'displayName avatar_id location friends books'
-      );
+      )
+      // .populate('friends.profile', 'displayName avatar_id friends books');
+      .populate({
+        path: 'friends.profile',
+        select: 'displayName avatar_id friends books lastActive',
+        populate: {
+          path: 'books.bookId'
+        }
+      });
 
     if (!profile) {
       return next(new AppError('This profile does not exist.', 404));
     }
 
-    profile.friendRequests.forEach(req => {
-      delete req.profile.books;
-      delete req.profile.friends;
-    }); // virtual props needed these
+    profile = profile.toJSON();
+    // remove the overfetched data that was needed for virtual props
+    profile.friends.forEach(fr => {
+      delete fr.profile.books;
+      delete fr.profile.friends;
+    });
+    profile.friendRequests.forEach(fReq => {
+      delete fReq.profile.books;
+      delete fReq.profile.friends;
+    });
   } else {
     // fetching a profile by id.
     const nums = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);

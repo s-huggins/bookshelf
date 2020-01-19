@@ -1,0 +1,32 @@
+.OtherFriends {
+  .small-text {
+    font-size: 0.9rem;
+    margin-left: 0.25rem;
+  }
+
+  .Friends__header--other {
+    border-bottom: none;
+    display: flex;
+    justify-content: space-between;
+
+    .profile-link {
+      align-self: flex-start;
+    }
+  }
+
+  &__list {
+    margin-top: 1.5rem;
+    width: 85%;
+    .text-faded {
+      color: #999;
+    }
+    .sort-label {
+      margin-right: 0.5rem;
+    }
+    .list-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+  }
+}

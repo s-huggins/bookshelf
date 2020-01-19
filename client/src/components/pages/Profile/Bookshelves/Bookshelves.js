@@ -10,12 +10,9 @@ import queryString from 'query-string';
 import PaginationSettings from './PaginationSettings';
 import Breadcrumb from './Breadcrumb';
 
-const Bookshelves = ({ match, location, history }) => {
+const Bookshelves = ({ location }) => {
   const { user } = useSelector(state => state.auth);
-  // const profile = useSelector(state => state.profile.loadedProfile);
-  /* PROFILE FETCH HOOK */
-  const profileId = match.params.id || match.params.handle || '';
-  const [loadingProfile, profile] = useLoadProfile(match);
+  const [loadingProfile, profile] = useLoadProfile();
 
   const [activeShelf, setActiveShelf] = useState({
     shelf: null,
@@ -23,10 +20,7 @@ const Bookshelves = ({ match, location, history }) => {
   });
 
   useEffect(() => {
-    // wait for profile to load
-    // console.log('RUNNING PARENT');
-    if (!profile) return;
-
+    if (loadingProfile) return;
     const { shelf = '' } = queryString.parse(location.search);
 
     // skip effect if shelf hasn't changed
@@ -59,7 +53,7 @@ const Bookshelves = ({ match, location, history }) => {
       shelf,
       shelfBooks
     });
-  }, [location, profile]);
+  }, [location, loadingProfile]);
 
   const buildBookshelfLink = shelf => {
     const baseURL = shelf

@@ -265,6 +265,18 @@ export default (state = initialState, action) => {
         }
       };
 
+    case IGNORED_FRIEND_REQUEST:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profile: {
+            ...state.user.profile,
+            friendRequests: action.payload.friendRequests
+          }
+        }
+      };
+
     case REMOVED_FRIEND:
       return {
         ...state,
