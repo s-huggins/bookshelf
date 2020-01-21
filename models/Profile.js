@@ -45,6 +45,10 @@ const ProfileSchema = new Schema(
           profileId: {
             type: Number,
             unique: false
+          },
+          dateAdded: {
+            type: Date,
+            default: Date.now
           }
         }
       ]

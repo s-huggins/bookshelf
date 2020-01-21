@@ -15,7 +15,6 @@ exports.getUser = catchAsync(async (req, res) => {
   await Profile.findByIdAndUpdate(req.user.profile._id, {
     lastActive: new Date()
   });
-
   res.status(200).json({
     status: 'success',
     data: {

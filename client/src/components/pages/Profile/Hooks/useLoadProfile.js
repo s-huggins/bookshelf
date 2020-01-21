@@ -12,7 +12,6 @@ const useLoadProfile = (match, reloadOnQueryChange = false) => {
   const lastPathname = useRef('');
   const params = useParams();
   const location = useLocation();
-  console.log('loadprof, params are', params);
   useEffect(() => {
     if (firstRun.current) {
       firstRun.current = false;

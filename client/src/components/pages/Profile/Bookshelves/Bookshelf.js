@@ -94,21 +94,23 @@ const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
   };
 
   const filterBooks = books => {
-    if (filter)
+    if (filter) {
+      const reg = new RegExp(filter, 'i');
+      // filter author or title
       return books.filter(book => {
-        // filter author or title
-        const reg = new RegExp(filter, 'i');
         return (
           reg.test(book.bookId.title) || reg.test(book.bookId.authors[0].name)
         );
       });
+    }
+
     return books;
   };
 
   useLayoutEffect(() => {
-    const queryParamChanged = param => parsed[param] !== booksView[param];
     const parsed = queryString.parse(location.search);
 
+    const queryParamChanged = param => parsed[param] !== booksView[param];
     const booksChanged = books !== allBooks;
 
     let bookList = booksView.books;

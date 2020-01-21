@@ -28,7 +28,8 @@ const BookshelfFilter = ({ setFilter }) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    setFilter(e.target.value);
+    // setFilter(e.target.value);
+    setFilter(filterString);
   };
 
   return (

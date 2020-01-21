@@ -4,12 +4,14 @@ import {
   register,
   clearLandingAuthFail
 } from '../../../redux/auth/authActions';
+import { useHistory } from 'react-router-dom';
 
-const LandingRegistration = ({ history }) => {
+const LandingRegistration = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
+  const history = useHistory();
   const landingAuthFail = useSelector(state => state.auth.landingAuthFail);
   const failedSignUp = useSelector(state => state.auth.signUp.failed);
   const isAuthenticated = useSelector(state => state.auth.isAuthenticated);

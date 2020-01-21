@@ -6,7 +6,7 @@ import { useEffect } from 'react';
 import { useState } from 'react';
 
 const FriendsListHeader = ({
-  friendsView: { friends, startIndex, endIndex }
+  friendsView: { listView, startIndex, endIndex }
 }) => {
   const location = useLocation();
   const history = useHistory();
@@ -14,10 +14,13 @@ const FriendsListHeader = ({
   const [sort, setSort] = useState('last-active');
 
   const printShowing = () => {
-    const filteredTotal = friends.length;
+    const filteredTotal = listView.length;
     if (!filteredTotal) return 'Showing 0 of 0';
 
-    return `Showing ${startIndex + 1}-${endIndex + 1} of ${filteredTotal}`;
+    return `Showing ${startIndex + 1}-${Math.min(
+      endIndex + 1,
+      filteredTotal
+    )} of ${filteredTotal}`;
   };
   const getPaginationSettings = () => {
     const parsed = queryString.parse(location.search);
@@ -26,7 +29,7 @@ const FriendsListHeader = ({
       ''
     );
     const page = parseInt(parsed['page']) || 1;
-    const total = friends.length;
+    const total = listView.length;
 
     return {
       perPage: 30,
@@ -39,7 +42,8 @@ const FriendsListHeader = ({
   };
 
   useEffect(() => {
-    if (location.state?.filter) setFilterLetter(location.state.filter);
+    const parsed = queryString.parse(location.search);
+    setFilterLetter(parsed.letter || 'all');
   }, [location]);
 
   const handleFilterChange = e => {
@@ -58,7 +62,7 @@ const FriendsListHeader = ({
     );
 
     setFilterLetter(filterClicked);
-    history.push(filterLink, { filter: filterClicked });
+    history.push(filterLink);
   };
 
   const handleSortChange = e => {
@@ -96,7 +100,7 @@ const FriendsListHeader = ({
             </button>
           </span>
 
-          {'abcdefghijklmnopqrstuvwxyz'.split('').map((l, i) => (
+          {'abcdefghijklmnopqrstuvwxyz'.split('').map(l => (
             <button
               key={l}
               className={`filter-button${

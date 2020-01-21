@@ -127,7 +127,8 @@ exports.getProfile = catchAsync(async (req, res, next) => {
     }
 
     profile = profile.toJSON();
-    // remove the overfetched data that was needed for virtual props
+    console.log(profile);
+    // // remove the overfetched data that was needed for virtual props
     profile.friends.forEach(fr => {
       delete fr.profile.books;
       delete fr.profile.friends;

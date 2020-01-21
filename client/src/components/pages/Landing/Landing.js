@@ -1,7 +1,7 @@
 import React from 'react';
 import LandingRegistration from './LandingRegistration';
 
-const Landing = ({ history }) => {
+const Landing = () => {
   return (
     <div className="Landing">
       <main>
@@ -10,7 +10,7 @@ const Landing = ({ history }) => {
             <div className="banner__headline">
               <h1 id="banner-lead">Meet your next favourite book.</h1>
             </div>
-            <LandingRegistration history={history} />
+            <LandingRegistration />
           </div>
         </div>
 

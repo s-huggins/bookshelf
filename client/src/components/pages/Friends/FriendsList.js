@@ -2,12 +2,12 @@ import React from 'react';
 import Friend from './Friend';
 import { useSelector } from 'react-redux';
 
-const FriendsList = ({ friendsView }) => {
+const FriendsList = ({ friends }) => {
   const ownFriends = useSelector(state => state.auth.user.profile.friends);
   const ownFriendsSet = new Set(ownFriends.map(fr => fr.profileId));
   return (
     <div className="FriendsList">
-      {friendsView.friends.map(fr => (
+      {friends.map(fr => (
         <Friend
           key={fr.profileId}
           profileId={fr.profileId}

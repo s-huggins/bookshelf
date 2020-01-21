@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 
 const FriendsIcon = ({ friendRequests }) => {
   const outstandingRequests = friendRequests.filter(
-    req => req.kind === 'Received'
+    req => req.kind === 'Received' && !req.ignored
   );
 
   const numFriendRequests = outstandingRequests.length;
   const iconLink =
-    numFriendRequests > 0 ? '/user/friends/requests' : '/user/friends/';
+    numFriendRequests > 0 ? '/user/friends/requests' : '/user/friends';
 
   return (
     <Fragment>
