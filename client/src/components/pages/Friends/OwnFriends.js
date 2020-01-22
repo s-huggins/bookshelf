@@ -1,15 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Loader from '../../common/Loader';
 import useLoadProfile from '../Profile/Hooks/useLoadProfile';
-import { Redirect, withRouter } from 'react-router-dom';
+import { Redirect, withRouter, useLocation } from 'react-router-dom';
 import PrivateProfile from '../Profile/PrivateProfile';
 import FriendsPage from './FriendsPage';
 import AddFriendsPage from './AddFriendsPage';
 
 const OwnFriends = () => {
   const [loadingProfile, profile] = useLoadProfile();
-
+  const location = useLocation();
   const [activeNavLink, setActiveNavLink] = useState('friends');
+
+  // if arriving from friend-requests page, location will contain state to choose display
+  useEffect(() => {
+    if (location?.state?.activeNavLink)
+      setActiveNavLink(location?.state?.activeNavLink);
+  }, []);
 
   const handleNavChange = e => {
     if (loadingProfile) return;

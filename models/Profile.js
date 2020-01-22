@@ -520,7 +520,7 @@ ProfileSchema.statics.getOtherProfile = async function(filterObj, ownFriends) {
   // remove userdata declared private
   // TODO: IF NOT A FRIEND
   Object.keys(profile).forEach(k => {
-    if (profile[k].private) {
+    if (profile[k] && profile[k].private) {
       delete profile[k];
     }
   });

@@ -1,22 +1,15 @@
 .Modal {
-  z-index: 99999;
+  z-index: 999999;
   background-color: $bg-primary;
   position: fixed;
   margin: 0 auto;
   left: 50%;
-  transform: translateX(-50%);
+  top: 50%;
+  transform: translate(-50%, -50%);
   width: 40rem;
   border: 1px solid black;
   border-radius: 2px;
   box-shadow: 4px 4px 6px rgba(0, 0, 0, 0.7);
-  // padding: 0.5rem;
-
-  // &__close {
-  //   cursor: pointer;
-  //   float: right;
-  //   font-size: 1.4rem;
-  //   color: #999;
-  // }
 
   &__close-container {
     &::after {

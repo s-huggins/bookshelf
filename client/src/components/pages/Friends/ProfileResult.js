@@ -2,14 +2,10 @@ import React from 'react';
 import Avatar from '../Profile/Avatar';
 import { Link } from 'react-router-dom';
 import { useSelector } from 'react-redux';
+import FriendButton from '../../common/FriendButton';
 
 const ProfileResult = ({ location, id, displayName, avatar_id }) => {
-  const handleAddFriend = e => {};
-
-  const friendRequests = useSelector(
-    state => state.auth.user.profile.friendRequests
-  );
-  const friends = useSelector(state => state.auth.user.profile.friends);
+  const ownId = useSelector(state => state.auth.user.profile.id);
 
   return (
     <div className="ProfileResult">
@@ -21,9 +17,14 @@ const ProfileResult = ({ location, id, displayName, avatar_id }) => {
           <Link to={`/user/${id}`}>{displayName}</Link>
         </span>
         {location && location.value && <span>{location.value}</span>}
-        <button className="btn btn--light" onClick={handleAddFriend}>
+        {/* <button className="btn btn--light" onClick={handleAddFriend}>
           Add as a Friend
-        </button>
+        </button> */}
+        {id === ownId ? (
+          <span className="text-muted">This is you</span>
+        ) : (
+          <FriendButton profileId={id} displayName={displayName} />
+        )}
       </div>
     </div>
   );
