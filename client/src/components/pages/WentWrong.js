@@ -2,7 +2,12 @@ import React, { useEffect } from 'react';
 
 const WentWrong = ({ history, location }) => {
   useEffect(() => {
-    const { pushTo, timeout = 2500 } = location.state;
+    let pushTo = null;
+    let timeout = 2500;
+    if (location.state) {
+      let { pushTo = null, timeout = 2500 } = location.state;
+    }
+
     if (pushTo) setTimeout(() => history.push(pushTo), timeout);
   }, []);
 

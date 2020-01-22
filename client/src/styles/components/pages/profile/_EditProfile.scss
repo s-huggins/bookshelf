@@ -42,6 +42,11 @@ h1 {
   // border: 1px solid red;
   // margin: 0 1.8rem;
 }
+.social-fields-header {
+  font-family: $font-secondary;
+  margin-top: 1.75rem;
+  margin-bottom: 1rem;
+}
 
 .form-control--edit {
   border-top: 1px solid rgba(0, 0, 0, 0.3);
@@ -71,6 +76,9 @@ h1 {
       }
 
       .form-control--edit__label {
+        margin-bottom: 0.2rem;
+      }
+      .form-control--edit__label-dropdown {
         margin-bottom: 0.2rem;
       }
 
@@ -151,15 +159,17 @@ h1 {
 
     .form-control--edit__field--dob {
       margin-bottom: 1rem;
-
       select {
         margin: 0 0.15rem;
 
         &[name='dob-year'] {
-          width: 22%;
+          width: 4rem;
+        }
+        &[name='dob-month'] {
+          width: 7rem;
         }
         &[name='dob-day'] {
-          width: 16%;
+          width: 4rem;
         }
       }
     }

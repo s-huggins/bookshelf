@@ -7,7 +7,10 @@ const BookResultList = ({ books }) => {
     const BookResultWithUpdatingRating = withUpdatingRating(BookResult);
     return (
       <BookResultWithUpdatingRating
-        props={{ ...work, ...work.best_book }}
+        props={{
+          ...work,
+          ...work.best_book
+        }}
         key={work.id}
       />
     );

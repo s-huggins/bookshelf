@@ -1,0 +1,45 @@
+.AddFriendsPage {
+  .add-friends-header {
+    margin-top: 1.5rem;
+    padding: 0.4rem 0.6rem;
+    font-size: 1.35rem;
+    font-family: $font-secondary;
+  }
+
+  .friends-address-search {
+    margin: 1rem 0;
+    margin-bottom: 0;
+    margin-left: 1.5rem;
+    label {
+      display: inline-block;
+      // border: 1px solid red;
+      // width: 15rem;
+      padding: 0.2rem;
+      font-size: 1rem;
+    }
+    input {
+      height: 1.75rem;
+      margin-right: 0.4rem;
+      width: 16rem;
+    }
+    .input-email {
+    }
+    button {
+      padding: 0.25rem 0.6rem;
+    }
+  }
+
+  .friend-results {
+    margin-top: 1.5rem;
+    .bold-text {
+      font-weight: bold;
+    }
+    .results-text {
+      margin: 0.75rem 0;
+      margin-bottom: 1.5rem;
+    }
+    .no-results-text {
+      padding: 0.4rem 0.6rem;
+    }
+  }
+}

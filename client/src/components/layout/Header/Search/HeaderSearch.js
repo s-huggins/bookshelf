@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { withRouter } from 'react-router-dom';
 import SearchSpinner from './SearchSpinner';
 import debounce from 'debounce-async';
@@ -47,24 +47,26 @@ const fetchBooks = (searchString, setSearching, cancelSearch) => {
 };
 
 /* DEBOUNCED HANDLER */
-const runFetchBooks = debounce(fetchBooks, 250, {});
+const runFetchBooks = debounce(fetchBooks, 200, {});
 
 const HeaderSearch = ({ history }) => {
   const [searching, setSearching] = useState(false);
   const [books, setBooks] = useState(null);
   const [inFocus, setInFocus] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+  const [searchQuery, setSearchQuery] = useState({
+    active: '',
+    cached: ''
+  });
   const [previewInFocus, setPreviewInFocus] = useState(null);
   const cancelSearch = useRef(false);
   const searchField = useRef(null);
+  // const resultsRef = useRef(null);
 
   const handleTyping = e => {
     // enter key
     if (e.keyCode === 13) {
       cancelSearch.current = true;
       setSearching(false);
-      // setBooks(null);
-      // setInFocus(false);
       searchField.current.blur();
       return;
     }
@@ -73,18 +75,25 @@ const HeaderSearch = ({ history }) => {
       return;
     }
 
+    const userInput = e.target.value;
     setPreviewInFocus(null);
-    setSearchQuery(e.target.value);
-    runFetchBooks(e.target.value, setSearching, cancelSearch)
-      .then(data => {
-        if (data !== null) {
-          const books =
-            data.works && data.works.slice(0, 5).map(work => work.best_book);
+    if (userInput.trim().length) {
+      setSearchQuery({ active: userInput, cached: userInput });
+      runFetchBooks(userInput, setSearching, cancelSearch)
+        .then(data => {
+          if (data !== null) {
+            const books =
+              data.works && data.works.slice(0, 5).map(work => work.best_book);
 
-          setBooks(books);
-        }
-      })
-      .catch(e => {});
+            setBooks(books);
+          }
+        })
+        .catch(e => {
+          /* debounce-async swallows this */
+        });
+    } else {
+      setBooks(null);
+    }
   };
 
   const handleArrowPress = e => {
@@ -101,16 +110,19 @@ const HeaderSearch = ({ history }) => {
     }
   };
 
-  const handleBlur = e => {
-    const relatedTarget = e.nativeEvent.relatedTarget;
-    if (relatedTarget && relatedTarget.classList.contains('searchPreviewLink'))
-      return searchField.current.focus();
+  // effect to close previews if clicked away
+  useEffect(() => {
+    if (inFocus) {
+      const closeResults = e => {
+        const clickedInput = searchField.current?.contains(e.target);
+        if (!clickedInput) setInFocus(false);
+      };
 
-    setInFocus(false);
-    setPreviewInFocus(null);
-  };
+      document.addEventListener('click', closeResults);
 
-  const blurInput = () => searchField.current.blur();
+      return () => document.removeEventListener('click', closeResults);
+    }
+  }, [inFocus]);
 
   const handleSearch = e => {
     e.preventDefault();
@@ -118,13 +130,14 @@ const HeaderSearch = ({ history }) => {
     if (previewInFocus) {
       const id = books[previewInFocus - 1].id;
       history.push(`/book/${id}`);
-      setSearchQuery('');
+      setSearchQuery({ ...searchQuery, active: '' });
       return;
     }
 
-    if (searchQuery.trim() === '') return;
+    if (searchQuery.active.trim() === '') return;
 
-    history.push(`/search?q=${searchQuery}`);
+    history.push(`/search?q=${searchQuery.active}`);
+    setSearchQuery({ ...searchQuery, active: '' });
   };
 
   return (
@@ -134,11 +147,12 @@ const HeaderSearch = ({ history }) => {
           type="text"
           className="form-control"
           placeholder="Search books"
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
+          value={searchQuery.active}
+          onChange={e =>
+            setSearchQuery({ active: e.target.value, cached: e.target.value })
+          }
           onKeyUp={handleTyping}
           onKeyDown={handleArrowPress}
-          onBlur={handleBlur}
           onFocus={() => setInFocus(true)}
           onClick={() => setPreviewInFocus(null)}
           ref={searchField}
@@ -153,10 +167,9 @@ const HeaderSearch = ({ history }) => {
       {inFocus && books && (
         <ResultsPreview
           works={books}
-          searchString={searchQuery}
+          searchQuery={searchQuery}
           previewInFocus={previewInFocus}
           setPreviewInFocus={setPreviewInFocus}
-          blurInput={blurInput}
           setSearchQuery={setSearchQuery}
         />
       )}

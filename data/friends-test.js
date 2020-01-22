@@ -3,12 +3,42 @@ const fs = require('fs');
 const path = require('path');
 const request = require('request-promise-native');
 
-if (process.argv[2] === '--run') {
-  runTest(+process.argv[3] || 1);
-} else if (process.argv[2] === '--clean') {
-  cleanupTest();
-} else {
-  console.log('Unrecognized command. Use --run or --clean');
+// if (process.argv[2] === '--run') {
+//   runTest(+process.argv[3] || 1);
+// } else if (process.argv[2] === '--clean') {
+//   cleanupTest();
+// } else {
+//   console.log('Unrecognized command. Use --run or --clean');
+// }
+
+// addCurrentlyReading();
+
+function addCurrentlyReading() {
+  try {
+    const data = fs.readFileSync(
+      path.resolve(__dirname, 'friends-test.json'),
+      'utf8'
+    );
+    const tokens = JSON.parse(data);
+    for (let i = 0; i < tokens.length; i++) {
+      const token = tokens[i];
+
+      request.patch({
+        url: 'http://localhost:5000/api/v1/profile/bookshelves',
+        json: true,
+        auth: {
+          bearer: token
+        },
+        body: {
+          shelf: 'reading',
+          bookId: 377965
+        }
+      });
+    }
+  } catch (err) {
+    console.log('ERROR IN ADD BOOKS', err);
+    process.exit(1);
+  }
 }
 
 async function runTest(count) {

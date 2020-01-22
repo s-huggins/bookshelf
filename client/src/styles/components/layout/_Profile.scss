@@ -113,23 +113,5 @@
 
   &__footer {
     padding-bottom: 0.3rem;
-
-    ul.social-links {
-      text-align: center;
-      margin: 0 auto;
-      margin-top: 0.5rem;
-      li {
-        display: inline-block;
-        font-size: 1.5rem;
-        padding: 0.2rem 0.5rem;
-      }
-    }
-
-    .handle {
-      display: block;
-      text-align: right;
-      font-size: 0.8rem;
-      color: $txt-light;
-    }
   }
 }

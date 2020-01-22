@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useRef, useState } from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 
 /* Extracts the first line of text before a linebreak */
@@ -24,9 +24,9 @@ const ResultPreview = ({
   work,
   inFocus,
   setPreviewInFocus,
-  blurInput,
   previewNum,
-  setSearchQuery
+  setSearchQuery,
+  searchQuery
 }) => {
   const title = useRef();
 
@@ -44,10 +44,10 @@ const ResultPreview = ({
     <Link
       className="searchPreviewLink"
       to={`/book/${work.id}`}
-      onMouseMove={() => setPreviewInFocus(previewNum)}
+      // onMouseMove={() => setPreviewInFocus(previewNum)}
+      onMouseEnter={() => setPreviewInFocus(previewNum)}
       onClick={() => {
-        blurInput();
-        setSearchQuery('');
+        setSearchQuery({ ...searchQuery, active: '' });
       }}
     >
       <div className={`ResultPreview${inFocus ? ' inFocus' : ''}`}>

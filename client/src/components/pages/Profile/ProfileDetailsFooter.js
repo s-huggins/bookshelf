@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ProfileDetailsFooter = ({ social, handle }) => {
   return (
@@ -6,36 +7,42 @@ const ProfileDetailsFooter = ({ social, handle }) => {
       <ul className="social-links">
         {social.facebook && (
           <li>
-            <a href="#!">
+            <a href={social.facebook} target="_blank">
               <i className="fab fa-facebook-square"></i>
             </a>
           </li>
         )}
         {social.youtube && (
           <li>
-            <a href="#!">
+            <a href={social.youtube} target="_blank">
               <i className="fab fa-youtube"></i>
             </a>
           </li>
         )}
         {social.twitter && (
           <li>
-            <a href="#!">
-              <i className="fab fa-twitter"> </i>
+            <a
+              href={`https://www.twitter.com/${social.twitter}`}
+              target="_blank"
+            >
+              <i className="fab fa-twitter"></i>
             </a>
           </li>
         )}
         {social.instagram && (
           <li>
-            <a href="#!">
+            <a
+              href={`https://www.instagram.com/${social.instagram}`}
+              target="_blank"
+            >
               <i className="fab fa-instagram"> </i>
             </a>
           </li>
         )}
-        {social.tumblr && (
+        {social.linkedin && (
           <li>
-            <a href="#!">
-              <i className="fab fa-tumblr-square"> </i>
+            <a href={social.instagram} target="_blank">
+              <i className="fab fa-linkedin-in"></i>
             </a>
           </li>
         )}

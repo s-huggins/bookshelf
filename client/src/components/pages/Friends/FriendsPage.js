@@ -8,7 +8,7 @@ import queryString from 'query-string';
 import { useState } from 'react';
 import FriendsSearch from './FriendsSearch';
 
-const FriendsPage = ({ profile }) => {
+const FriendsPage = ({ profile, setActiveNavLink }) => {
   const location = useLocation();
   const [filteredView, setFilteredView] = useState({
     sortedFriends: profile.friends, // cache sorted friends
@@ -105,7 +105,6 @@ const FriendsPage = ({ profile }) => {
     });
   }, [location, searchString]);
 
-  console.log(profile);
   const numFriendRequests = profile.friendRequests.filter(fReq => !fReq.ignored)
     .length;
   return (
@@ -114,15 +113,6 @@ const FriendsPage = ({ profile }) => {
         <FriendsSearch setSearchString={setSearchString} />
         <FriendsListHeader friendsView={filteredView} />
         <FriendsList
-          // friends={filteredView.friends.slice(
-          //   filteredView.startIndex,
-          //   filteredView.endIndex
-          // )}
-          // friends={searchFriends(
-          //   filteredView.letterFriends,
-          //   searchString
-          // ).slice(filteredView.startIndex, filteredView.endIndex)}
-
           friends={filteredView.listView.slice(
             filteredView.startIndex,
             filteredView.endIndex
@@ -149,7 +139,7 @@ const FriendsPage = ({ profile }) => {
             </li>
           </ul>
         </div>
-        <FindFriendsPanel />
+        <FindFriendsPanel setActiveNavLink={setActiveNavLink} />
       </div>
     </div>
   );

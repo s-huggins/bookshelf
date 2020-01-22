@@ -25,6 +25,8 @@ router.get(
   profileController.checkHandleAvailability
 );
 
+router.get('/friends/reading', protect, profileController.getFriendsReading);
+
 router.delete('/friends/:profileId', protect, profileController.removeFriend);
 
 router
@@ -38,6 +40,8 @@ router
   .all(protect)
   .post(profileController.acceptFriendRequest)
   .delete(profileController.rejectFriendRequest);
+
+router.get('/search', protect, profileController.searchProfiles);
 
 router
   .route('/:id?')

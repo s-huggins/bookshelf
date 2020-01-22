@@ -4,11 +4,10 @@ import { Link } from 'react-router-dom';
 
 const ResultsPreview = ({
   works,
-  searchString,
   previewInFocus,
   setPreviewInFocus,
-  blurInput,
-  setSearchQuery
+  setSearchQuery,
+  searchQuery
 }) => {
   return (
     <div className="ResultsPreview">
@@ -20,15 +19,15 @@ const ResultsPreview = ({
             previewNum={i + 1}
             inFocus={i + 1 === previewInFocus}
             setPreviewInFocus={setPreviewInFocus}
-            blurInput={blurInput}
             setSearchQuery={setSearchQuery}
+            searchQuery={searchQuery}
           />
         ))}
       </div>
       <Link
-        to={`/search?q=${searchString}&page=1`}
+        to={`/search?q=${searchQuery.cached}&page=1`}
+        onClick={() => setSearchQuery({ ...searchQuery, active: '' })}
         className="see-all searchPreviewLink"
-        onClick={() => blurInput()}
       >
         <span className="green-link">See all results</span>
       </Link>

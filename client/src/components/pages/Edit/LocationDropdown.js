@@ -3,7 +3,9 @@ import React from 'react';
 const LocationDropdown = ({ value, handleDropdownChange }) => {
   return (
     <div className="form-control--edit__field--location">
-      <label htmlFor="location">Location</label>
+      <label htmlFor="location" className="form-control--edit__label-dropdown">
+        Location
+      </label>
       <select
         name="location"
         id="location"

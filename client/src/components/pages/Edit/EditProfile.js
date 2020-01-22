@@ -15,6 +15,7 @@ import {
 import debounce from 'debounce-async';
 import Avatar from '../Profile/Avatar';
 import Loader from '../../common/Loader';
+import pluralize from '../../../util/pluralize';
 
 /* USERNAME/HANDLE VALIDATOR TO BE DEBOUNCED */
 const handleValidator = handle => {
@@ -100,6 +101,26 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
       valid: true
     },
     aboutMe: {
+      value: '',
+      valid: true
+    },
+    facebook: {
+      value: '',
+      valid: true
+    },
+    twitter: {
+      value: '',
+      valid: true
+    },
+    instagram: {
+      value: '',
+      valid: true
+    },
+    youtube: {
+      value: '',
+      valid: true
+    },
+    linkedin: {
       value: '',
       valid: true
     }
@@ -192,6 +213,26 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
         },
         aboutMe: {
           value: profile.aboutMe || '',
+          valid: true
+        },
+        facebook: {
+          value: profile.social.facebook || '',
+          valid: true
+        },
+        twitter: {
+          value: profile.social.twitter || '',
+          valid: true
+        },
+        instagram: {
+          value: profile.social.instagram || '',
+          valid: true
+        },
+        youtube: {
+          value: profile.social.youtube || '',
+          valid: true
+        },
+        linkedin: {
+          value: profile.social.linkedin || '',
           valid: true
         }
       });
@@ -291,6 +332,16 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
     update.interests = formState.interests.value;
     update.favBooks = formState.favBooks.value;
     update.aboutMe = formState.aboutMe.value;
+
+    const social = {
+      facebook: formState.facebook.value,
+      twitter: formState.twitter.value,
+      instagram: formState.instagram.value,
+      youtube: formState.youtube.value,
+      linkedin: formState.linkedin.value
+    };
+    update.social = social;
+
     setLoadingEdit(true);
     dispatch(editProfile(update));
   };
@@ -315,7 +366,7 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
 
   const maxLengthValidator = (maxlen, label) => val =>
     val.length > maxlen
-      ? `${label} cannot exceed ${maxlen} character${maxlen > 1 ? 's' : ''}.`
+      ? `${label} cannot exceed ${maxlen} ${pluralize('character', maxlen)}.`
       : '';
 
   const validators = {
@@ -345,7 +396,7 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
     },
     website: {
       validate: val => {
-        const lengthError = maxLengthValidator(80, 'Website')(val);
+        const lengthError = maxLengthValidator(120, 'Website')(val);
         if (lengthError) return lengthError;
 
         if (val && !validator.isURL(val)) return 'Not a valid URL.';
@@ -367,6 +418,11 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
     },
     aboutMe: {
       validate: val => maxLengthValidator(2000, 'Your about me section')(val),
+
+      onBlur: true
+    },
+    social: {
+      validate: val => maxLengthValidator(120, 'Social fields')(val),
 
       onBlur: true
     }
@@ -447,7 +503,12 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
         />
         {/* GENDER */}
         <div className="form-control--edit__field">
-          <label htmlFor="gender">Gender</label>
+          <label
+            htmlFor="gender"
+            className="form-control--edit__label-dropdown"
+          >
+            Gender
+          </label>
           <select
             name="gender"
             id="gender"
@@ -604,6 +665,57 @@ const EditProfile = ({ profile, setLoadingEdit }) => {
           inputChanged={handleTextInputChanged}
           validityChanged={handleValidityChanged}
           textarea
+        />
+        <h3 className="social-fields-header">Social Links</h3>
+        {/* Facebook */}
+        <EditTextInput
+          labelText="Facebook"
+          fieldName="facebook"
+          value={formState.facebook.value}
+          validator={validators.social}
+          inputChanged={handleTextInputChanged}
+          validityChanged={handleValidityChanged}
+          exampleText="(full link to your profile)"
+        />
+        {/* Twitter */}
+        <EditTextInput
+          labelText="Twitter"
+          fieldName="twitter"
+          value={formState.twitter.value}
+          validator={validators.social}
+          inputChanged={handleTextInputChanged}
+          validityChanged={handleValidityChanged}
+          exampleText="(your handle, without the @)"
+        />
+        {/* Instagram */}
+        <EditTextInput
+          labelText="Instagram"
+          fieldName="instagram"
+          value={formState.instagram.value}
+          validator={validators.social}
+          inputChanged={handleTextInputChanged}
+          validityChanged={handleValidityChanged}
+          exampleText="(your handle, without the @)"
+        />
+        {/* Youtube */}
+        <EditTextInput
+          labelText="Youtube"
+          fieldName="youtube"
+          value={formState.youtube.value}
+          validator={validators.social}
+          inputChanged={handleTextInputChanged}
+          validityChanged={handleValidityChanged}
+          exampleText="(full link to your profile)"
+        />
+        {/* LinkedIn */}
+        <EditTextInput
+          labelText="LinkedIn"
+          fieldName="linkedin"
+          value={formState.linkedin.value}
+          validator={validators.social}
+          inputChanged={handleTextInputChanged}
+          validityChanged={handleValidityChanged}
+          exampleText="(full link to your profile)"
         />
         <button
           className="btn btn--light"

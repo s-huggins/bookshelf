@@ -183,7 +183,9 @@ const DoBDropdown = ({ birthday, handleChange }) => {
       </div>
 
       <div className="form-control--edit__field--dob">
-        <label htmlFor="dob">Date of Birth</label>
+        <label htmlFor="dob" className="form-control--edit__label-dropdown">
+          Date of Birth
+        </label>
         <div>
           <select
             name="dob-year"

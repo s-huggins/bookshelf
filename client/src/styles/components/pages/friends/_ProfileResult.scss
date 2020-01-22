@@ -1,0 +1,23 @@
+.ProfileResult {
+  display: flex;
+
+  img {
+    max-width: 80px;
+    margin-right: 0.5rem;
+  }
+
+  .display-name {
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 0.4rem;
+  }
+
+  button {
+    padding: 0.4rem 0.4rem;
+  }
+
+  &__details {
+    display: flex;
+    flex-direction: column;
+  }
+}

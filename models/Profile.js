@@ -4,6 +4,7 @@ const validator = require('validator');
 const autoIncrementModelId = require('./Counter');
 const Book = require('./Book');
 const Avatar = require('./Avatar');
+const catchAsync = require('../utils/asyncErrorWrapper');
 
 const { Schema } = mongoose;
 
@@ -198,7 +199,7 @@ const ProfileSchema = new Schema(
     },
     website: {
       type: String,
-      maxlength: 80,
+      maxlength: 120,
       validate: {
         validator: function(val) {
           if (val) return validator.default.isURL(val);
@@ -235,23 +236,28 @@ const ProfileSchema = new Schema(
     social: {
       facebook: {
         type: String,
-        maxlength: 80
+        maxlength: 120,
+        default: ''
       },
       twitter: {
         type: String,
-        maxlength: 80
+        maxlength: 120,
+        default: ''
       },
       instagram: {
         type: String,
-        maxlength: 80
+        maxlength: 120,
+        default: ''
       },
       youtube: {
         type: String,
-        maxlength: 80
+        maxlength: 120,
+        default: ''
       },
       linkedin: {
         type: String,
-        maxlength: 80
+        maxlength: 120,
+        default: ''
       }
     },
     dateCreated: {
@@ -271,14 +277,59 @@ ProfileSchema.pre('save', function(next) {
   next();
 });
 
+const formatURL = link => {
+  if (!link.startsWith('http://') && !link.startsWith('https://')) {
+    return `https://${link}`;
+  }
+  return link;
+};
+
 ProfileSchema.pre('findOneAndUpdate', function(next) {
+  // const { website } = this._update;
+  // if (
+  //   website &&
+  //   !website.startsWith('http://') &&
+  //   !website.startsWith('https://')
+  // ) {
+  //   this._update.website = `https://${this._update.website}`;
+  // }
+
   const { website } = this._update;
-  if (
-    website &&
-    !website.startsWith('http://') &&
-    !website.startsWith('https://')
-  ) {
-    this._update.website = `https://${this._update.website}`;
+  if (website) {
+    this._update.website = formatURL(website);
+  }
+  next();
+});
+
+ProfileSchema.pre('findOneAndUpdate', function(next) {
+  const { social } = this._update;
+  if (!social) {
+    return next();
+  }
+  if (social.twitter) {
+    let { twitter } = social;
+    if (twitter.charAt(0) === '@') {
+      twitter = twitter.substring(1);
+    }
+    // twitter = `https://twitter.com/${twitter}`;
+    social.twitter = twitter;
+  }
+  if (social.instagram) {
+    let { instagram } = social;
+    if (instagram.charAt(0) === '@') {
+      instagram = instagram.substring(1);
+    }
+    // instagram = `https://www.instagram.com/${instagram}`;
+    social.instagram = instagram;
+  }
+  if (social.facebook) {
+    social.facebook = formatURL(social.facebook);
+  }
+  if (social.youtube) {
+    social.youtube = formatURL(social.youtube);
+  }
+  if (social.linkedin) {
+    social.linkedin = formatURL(social.linkedin);
   }
 
   next();
@@ -392,6 +443,90 @@ ProfileSchema.virtual('numBooks').get(function() {
   if (!this.books) return undefined;
   return this.books.length;
 });
+
+// wrap in catchAsync
+ProfileSchema.statics.getOwnProfile = async function(filterObj) {
+  let profile;
+  try {
+    // let profile = await this.findOne(filterObj)
+    profile = await this.findOne(filterObj)
+      .populate('books.bookId')
+      .populate(
+        'friendRequests.profile',
+        'displayName avatar_id location friends books'
+      )
+      .populate({
+        path: 'friends.profile',
+        select: 'displayName avatar_id friends books lastActive',
+        populate: {
+          path: 'books.bookId'
+        }
+      });
+  } catch (err) {
+    return null;
+  }
+
+  if (!profile) return null;
+
+  profile = profile.toJSON();
+  // console.log('jsonprofile', profile);
+  // remove the overfetched data that was only needed for virtual props
+  profile.friends.forEach(fr => {
+    delete fr.profile.books;
+    delete fr.profile.friends;
+  });
+  profile.friendRequests.forEach(fReq => {
+    delete fReq.profile.books;
+    delete fReq.profile.friends;
+  });
+  return profile;
+};
+
+// TODO: private profile friends
+ProfileSchema.statics.getOtherProfile = async function(filterObj, ownFriends) {
+  let profile = await this.findOne(filterObj)
+    .select('-friendRequests')
+    .populate('books.bookId')
+    .populate({
+      path: 'friends.profile',
+      select: 'displayName avatar_id friends books lastActive',
+      // match for non private profiles
+      populate: {
+        path: 'books.bookId'
+      }
+    });
+
+  if (!profile) return null;
+
+  profile = profile.toJSON();
+
+  // TODO: AND NOT A FRIEND
+  if (!profile.isPublic) {
+    return {
+      isPublic: profile.isPublic,
+      id: profile.id,
+      displayName: profile.displayName,
+      handle: profile.handle,
+      avatar: profile.avatar
+    };
+  }
+
+  // remove the overfetched data that was only needed for virtual props
+  profile.friends.forEach(fr => {
+    delete fr.profile.books;
+    delete fr.profile.friends;
+  });
+
+  // remove userdata declared private
+  // TODO: IF NOT A FRIEND
+  Object.keys(profile).forEach(k => {
+    if (profile[k].private) {
+      delete profile[k];
+    }
+  });
+
+  return profile;
+};
 
 const Profile = mongoose.model('Profile', ProfileSchema);
 

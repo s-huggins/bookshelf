@@ -22,14 +22,15 @@ const OwnFriends = () => {
   const selectFriendsPage = navLink => {
     switch (navLink) {
       case 'friends':
-        return <FriendsPage profile={profile} />;
+        return (
+          <FriendsPage profile={profile} setActiveNavLink={setActiveNavLink} />
+        );
       case 'add-friends':
         return <AddFriendsPage />;
     }
   };
 
   if (!loadingProfile && profile == null) return <Redirect to="/not-found" />;
-
   // TODO: and if not a friend
   if (!loadingProfile && !profile.isPublic) {
     return <PrivateProfile profile={profile} />;

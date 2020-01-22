@@ -1,30 +1,35 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const FindFriendsPanel = () => {
+const FindFriendsPanel = ({ setActiveNavLink }) => {
   return (
     <div className="FindFriendsPanel">
       <h2 className="sidebar__header">Find friends from</h2>
       <div className="sidebar__panel find-friends">
         <ul>
           <li>
-            {' '}
-            <i className="fas fa-envelope"></i>{' '}
-            <Link to="#!" className="green-link">
+            <i className="fas fa-envelope"></i>
+
+            <button
+              className="green-link button-link"
+              onClick={() => setActiveNavLink('add-friends')}
+            >
               Mail
-            </Link>
+            </button>
           </li>
 
           <li>
-            {' '}
-            <i className="fab fa-twitter"></i>{' '}
-            <Link to="#!" className="green-link">
+            <i className="fab fa-twitter"></i>
+            <button
+              className="green-link button-link"
+              onClick={() => setActiveNavLink('add-friends')}
+            >
               Twitter
-            </Link>
+            </button>
           </li>
           <li>
-            {' '}
-            <i className="fas fa-user-friends"></i>{' '}
+            <i className="fas fa-user-friends"></i>
+
             <Link to="#!" className="green-link">
               Friends of friends
             </Link>

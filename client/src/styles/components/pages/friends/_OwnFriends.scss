@@ -153,32 +153,3 @@
     }
   }
 }
-
-.AddFriendsPage {
-  .add-friends-header {
-    margin-top: 1.5rem;
-    padding: 0.4rem 0.6rem;
-    font-size: 1.35rem;
-    font-family: $font-secondary;
-  }
-
-  .friends-address-search {
-    margin: 1rem 0;
-    margin-left: 1.5rem;
-    input {
-      height: 1.75rem;
-      margin-right: 0.15rem;
-      width: 16rem;
-    }
-    button {
-      padding: 0.25rem 0.6rem;
-    }
-  }
-
-  .friend-result {
-    margin-top: 0.5rem;
-    .no-results-text {
-      padding: 0.4rem 0.6rem;
-    }
-  }
-}
