@@ -19,7 +19,7 @@ const ProfileDetails = ({ profile }) => {
       <div className="profile__header">
         <h1 className="profile__header-text">
           {`${profile.displayName} ${profile.handle &&
-            '(' + profile.handle + ')'} `}
+            '<' + profile.handle + '>'} `}
           {profile.ownProfile && (
             <Link className="green-link edit-profile" to="/user/edit">
               (edit profile)

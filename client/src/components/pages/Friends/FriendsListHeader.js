@@ -18,22 +18,25 @@ const FriendsListHeader = ({
     if (!filteredTotal) return 'Showing 0 of 0';
 
     return `Showing ${startIndex + 1}-${Math.min(
-      endIndex + 1,
+      endIndex,
       filteredTotal
     )} of ${filteredTotal}`;
   };
   const getPaginationSettings = () => {
     const parsed = queryString.parse(location.search);
-    const baseLink = `${location.pathname}${location.search}`.replace(
-      /(\?page=(\d+))|(&page=(\d+))/,
-      ''
-    );
-    const page = parseInt(parsed['page']) || 1;
+    // const baseLink = `${location.pathname}${location.search}`.replace(
+    //   /(\?page=(\d+))|(&page=(\d+))/,
+    //   ''
+    // );
+
+    let page = parseInt(parsed['page']) || 1;
+    if (page <= 0) page = 1;
+
     const total = listView.length;
 
     return {
       perPage: 30,
-      baseLink,
+      // baseLink,
       page,
       total,
       useQueryParam: true,

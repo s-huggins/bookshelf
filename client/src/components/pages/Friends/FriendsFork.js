@@ -8,6 +8,7 @@ const FriendsFork = ({ match }) => {
   const userProfile = useSelector(state => state.auth.user.profile);
 
   let friendsPage = null;
+
   if (match.params.id) {
     const profId = +match.params.id;
     // if (profId === userProfile.id) friendsPage = <OwnFriends />;

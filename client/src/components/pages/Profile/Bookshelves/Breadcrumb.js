@@ -38,9 +38,7 @@ const Breadcrumb = ({ buildBookshelfLink, activeShelf, displayName }) => {
         {printShelf() && (
           <>
             <span className="breadcrumb"> &gt; </span>
-            <Link className="green-link" to={buildBookshelfLink(activeShelf)}>
-              {printShelf()}
-            </Link>
+            {printShelf()}
           </>
         )}
       </h1>

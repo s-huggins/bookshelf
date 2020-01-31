@@ -1,233 +1,9 @@
+/* eslint-disable no-param-reassign */
 const Profile = require('../models/Profile');
 const User = require('../models/User');
 const Book = require('../models/Book');
 const catchAsync = require('../utils/asyncErrorWrapper');
 const AppError = require('../utils/AppError');
-
-// TODO: factor this out into a helper function to be exported into usersController
-// OR work out a forwarding to this route
-// OR use a mongoose middleware somehow
-// a profile will be initialized on account registration
-
-// exports.createProfile = catchAsync(async (req, res, next) => {
-//   res.status(201).json();
-// });
-
-// @DESC: For fetching profiles by id. Returns any public profile, and returns a
-// private profile if it belongs to the user or a friend of the user.
-// @ACCESS: private
-// @NB: Optional id param references either an auto-incrementing id field (which is not MongoDB's _id)
-// or profile handle from the Profile model. The profile handle cannot begin with a digit, which is
-// how we distinguish the parameter type.
-// TODO: refactor into separate handlers based on profile fetch condition - use middleware to fork request
-// exports.getProfile = catchAsync(async (req, res, next) => {
-//   let profile;
-//   if (!req.params.id) {
-//     // user fetching own profile
-//     // acount-editing pages fetch the user's profile this way
-//     profile = await Profile.findOne({
-//       user: req.user._id
-//     })
-//       .populate('books.bookId')
-//       .populate(
-//         'friendRequests.profile',
-//         'displayName avatar_id location friends books'
-//       )
-//       .populate('friends.profile', 'displayName avatar_id friends books');
-//     if (!profile) {
-//       return next(new AppError('This profile does not exist.', 404));
-//     }
-//   } else {
-//     // fetching a profile by id.
-//     const nums = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
-//     // if regex matches, search profile by handle, else search by profile id
-//     if (!nums.has(req.params.id[0])) {
-//       // profile = await Profile.findOne({
-//       //   handle: req.params.id
-//       // });
-
-//       const reg = new RegExp(`^${req.params.id}$`, 'i');
-//       profile = await Profile.findOne({ handle: { $regex: reg } }).populate(
-//         'books.bookId'
-//       );
-//     } else {
-//       profile = await Profile.findOne({
-//         id: req.params.id
-//       }).populate('books.bookId');
-//     }
-
-//     if (!profile) {
-//       return next(new AppError('This profile does not exist.', 404));
-//     }
-
-//     // if not own profile
-//     if (!(profile.user.toString() === req.user.id)) {
-//       // TODO: check if it is a friend's profile, and if so, return it regardless
-
-//       if (!profile.isPublic) {
-//         return res.status(200).json({
-//           status: 'success',
-//           code: 'PRIVATE',
-//           message: 'This profile is private.',
-//           data: {
-//             profile: {
-//               isPublic: false,
-//               displayName: profile.displayName,
-//               handle: profile.handle,
-//               avatar: profile.avatar
-//             }
-//           }
-//         });
-//       }
-
-//       // remove userdata declared private
-//       // const profileJson = profile.toJSON();
-//       // console.log(profile._doc);
-//       Object.keys(profile._doc).forEach(k => {
-//         if (profile._doc[k].private) {
-//           delete profile._doc[k];
-//         }
-//       });
-
-//       delete profile._doc.friendRequests;
-//     }
-//   }
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       profile
-//     }
-//   });
-// });
-
-// exports.getProfile = catchAsync(async (req, res, next) => {
-//   let profile;
-//   if (!req.params.id) {
-//     // user fetching own profile
-//     // acount-editing pages fetch the user's profile this way
-//     profile = await Profile.findOne({
-//       user: req.user._id
-//     })
-//       .populate('books.bookId')
-//       .populate(
-//         'friendRequests.profile',
-//         'displayName avatar_id location friends books'
-//       )
-//       // .populate('friends.profile', 'displayName avatar_id friends books');
-//       .populate({
-//         path: 'friends.profile',
-//         select: 'displayName avatar_id friends books lastActive',
-//         populate: {
-//           path: 'books.bookId'
-//         }
-//       });
-
-//     if (!profile) {
-//       return next(new AppError('This profile does not exist.', 404));
-//     }
-
-//     profile = profile.toJSON();
-//     // // remove the overfetched data that was needed for virtual props
-//     profile.friends.forEach(fr => {
-//       delete fr.profile.books;
-//       delete fr.profile.friends;
-//     });
-//     profile.friendRequests.forEach(fReq => {
-//       delete fReq.profile.books;
-//       delete fReq.profile.friends;
-//     });
-//   } else {
-//     // fetching a profile by id.
-//     const nums = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
-//     // if regex matches, search profile by handle, else search by profile id
-//     if (!nums.has(req.params.id[0])) {
-//       const reg = new RegExp(`^${req.params.id}$`, 'i');
-//       profile = await Profile.findOne({ handle: { $regex: reg } }).populate(
-//         'books.bookId'
-//       );
-//     } else {
-//       profile = await Profile.findOne({
-//         id: req.params.id
-//       }).populate('books.bookId');
-//     }
-
-//     if (!profile) {
-//       return next(new AppError('This profile does not exist.', 404));
-//     }
-
-//     // if not own profile
-//     if (!(profile.user.toString() === req.user.id)) {
-//       // TODO: check if it is a friend's profile, and if so, return it regardless
-
-//       if (!profile.isPublic) {
-//         return res.status(200).json({
-//           status: 'success',
-//           code: 'PRIVATE',
-//           message: 'This profile is private.',
-//           data: {
-//             profile: {
-//               isPublic: false,
-//               displayName: profile.displayName,
-//               handle: profile.handle,
-//               avatar: profile.avatar
-//             }
-//           }
-//         });
-//       }
-
-//       // remove userdata declared private
-//       // const profileJson = profile.toJSON();
-//       // console.log(profile._doc);
-//       Object.keys(profile._doc).forEach(k => {
-//         if (profile._doc[k].private) {
-//           delete profile._doc[k];
-//         }
-//       });
-
-//       delete profile._doc.friendRequests;
-//     }
-//   }
-
-//   res.status(200).json({
-//     status: 'success',
-//     data: {
-//       profile
-//     }
-//   });
-// });
-
-// const fetchOwnProfile = catchAsync(async (filterObj) => {
-//   const ownProfile = await Profile.findOne(filterObj)
-//     .populate('books.bookId')
-//     .populate(
-//       'friendRequests.profile',
-//       'displayName avatar_id location friends books'
-//     )
-//     .populate({
-//       path: 'friends.profile',
-//       select: 'displayName avatar_id friends books lastActive',
-//       populate: {
-//         path: 'books.bookId'
-//       }
-//     });
-// });
-
-// const isFetchingOwnProfile = req => {
-//   // if no identifier, then always fetching own profile
-//   if (!req.params.id) return true;
-
-//   const identifier = req.params.id;
-
-//   const nums = new Set(['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']);
-//   if (!nums.has(identifier.charAt(0))) {
-//     // fetching a profile by handle
-//     return req.user.profile.handle.toLowerCase() === identifier.toLowerCase();
-//   }
-
-//   // else fetching profile by id
-//   return +req.user.profile.id === +identifier;
-// };
 
 const prepareGetProfile = req => {
   let [fetchingOwn, filterObj] = [null, null];
@@ -263,10 +39,7 @@ exports.getProfile = catchAsync(async (req, res, next) => {
   if (fetchingOwn) {
     profile = await Profile.getOwnProfile(filterObj);
   } else {
-    profile = await Profile.getOtherProfile(
-      filterObj,
-      req.user.profile.friends
-    );
+    profile = await Profile.getOtherProfile(filterObj, req.user.profile);
   }
 
   if (!profile) {
@@ -300,21 +73,22 @@ exports.checkHandleAvailability = catchAsync(async (req, res) => {
   });
 });
 
-exports.getProfileByUserId = catchAsync(async (req, res, next) => {
-  const profile = await Profile.findOne({
-    user: req.params.userId
-  });
-  if (!profile) {
-    return next(new AppError('No user owning this profile exists.', 404));
-  }
+// // would need admin credentials
+// exports.getProfileByUserId = catchAsync(async (req, res, next) => {
+//   const profile = await Profile.findOne({
+//     user: req.params.userId
+//   });
+//   if (!profile) {
+//     return next(new AppError('No user owning this profile exists.', 404));
+//   }
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      profile
-    }
-  });
-});
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       profile
+//     }
+//   });
+// });
 
 exports.updateProfile = catchAsync(async (req, res, next) => {
   const updatedProfile = await Profile.findOneAndUpdate(
@@ -365,7 +139,7 @@ exports.updateProfile = catchAsync(async (req, res, next) => {
  * Book collection.
  *
  */
-exports.updateBookshelves = catchAsync(async (req, res, next) => {
+exports.updateBookshelves = catchAsync(async (req, res) => {
   let profile;
   const bookId = +req.body.bookId;
   if (req.body.shelf === '') {
@@ -435,7 +209,7 @@ exports.updateBookshelves = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.handleRating = catchAsync(async (req, res) => {
+exports.handleRating = catchAsync(async (req, res, next) => {
   // update ratings in user profile
   // create book if it doesn't exist
   // update ratings on book
@@ -447,6 +221,10 @@ exports.handleRating = catchAsync(async (req, res) => {
   const removedRating = !rating; // no `rating` field or rating of 0 implies user revoked a rating
 
   const profile = await Profile.findOne({ user: req.user._id });
+  if (!profile) {
+    return next(new AppError('Profile does not exist.', 404));
+  }
+
   const ix = profile.ratings.findIndex(r => r.bookId === bookId);
 
   if (ix !== -1) {
@@ -515,7 +293,12 @@ exports.handleRating = catchAsync(async (req, res) => {
     }
   }
 
-  res.status(200).json({ status: 'success' });
+  res.status(200).json({
+    status: 'success',
+    data: {
+      profile
+    }
+  });
 });
 
 // // admin
@@ -828,27 +611,37 @@ exports.getFriendsReading = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.searchProfiles = catchAsync(async (req, res, next) => {
+exports.searchProfiles = catchAsync(async (req, res) => {
   const { email, twitter, search } = req.query;
   let profiles = [];
   if (twitter) {
     const twitterReg = new RegExp(`^${twitter.trim()}$`, 'i');
     profiles = await Profile.find({
       'social.twitter': { $regex: twitterReg }
-    }).select('displayName avatar_id location id'); // returns array
+    }).select('displayName handle avatar_id location id'); // returns array
   } else if (email) {
     const emailReg = new RegExp(`^${email.trim()}$`, 'i');
 
     const user = await User.findOne({ email: { $regex: emailReg } }).populate(
       'profile',
-      'displayName avatar_id location id'
+      'displayName handle avatar_id location id'
     );
     if (user) {
       profiles[0] = user.profile;
     }
-  } else {
+  } else if (search) {
     // search lookup
-    // profiles = await Profile.find({$or: [{email}, {twitter}, {displayName}]})
+    const regEx = new RegExp(search.trim(), 'i');
+    profiles = await Profile.find({
+      $or: [
+        { 'social.twitter': { $regex: regEx } },
+        { 'social.instagram': { $regex: regEx } },
+        { firstName: { $regex: regEx } },
+        { lastName: { $regex: regEx } },
+        { displayName: { $regex: regEx } },
+        { handle: { $regex: regEx } }
+      ]
+    }).select('displayName handle avatar_id location id');
   }
 
   profiles.forEach(prof => {
@@ -859,6 +652,73 @@ exports.searchProfiles = catchAsync(async (req, res, next) => {
     status: 'success',
     data: {
       profiles
+    }
+  });
+});
+
+exports.getFriendsOfFriends = catchAsync(async (req, res, next) => {
+  const profile = await Profile.findById(req.user.profile._id)
+    .populate({
+      path: 'friends.profile',
+      select: 'friends id displayName',
+      populate: {
+        path: 'friends.profile'
+      }
+    })
+    .lean();
+
+  if (!profile) {
+    return next(new AppError('Profile does not exist.', 404));
+  }
+
+  // for each friend
+  // for each friend of friend
+  // skip if self
+  // check if in map by profile id
+  // if not
+  // take displayName & avatar_id
+  // create friend obj with these
+  // add friends array to friend obj and push in the outer friend
+  // push to map
+  // if so
+  // push outer friend to friends array
+  const ownFriendsMap = {};
+  req.user.profile.friends.forEach(fr => {
+    ownFriendsMap[fr.profileId] = fr;
+  });
+
+  const friendsMap = {};
+  profile.friends.forEach(fr => {
+    fr.profile.friends.forEach(frFr => {
+      if (
+        frFr.profile.id === req.user.profile.id ||
+        ownFriendsMap[frFr.profile.id]
+      )
+        return; // skip self and friends
+
+      if (!friendsMap[frFr.profile.id]) {
+        friendsMap[frFr.profile.id] = {
+          friendsWith: [],
+          id: frFr.profile.id,
+          displayName: frFr.profile.displayName,
+          avatar_id: frFr.profile.avatar_id,
+          handle: frFr.profile.handle
+        };
+      }
+
+      friendsMap[frFr.profile.id].friendsWith.push({
+        id: fr.profile.id,
+        displayName: fr.profile.displayName
+      });
+    });
+  });
+
+  profile.friendsOfFriends = Object.values(friendsMap);
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      profile
     }
   });
 });

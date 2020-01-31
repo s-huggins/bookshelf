@@ -1,0 +1,27 @@
+.MessageSpool {
+  max-width: 60rem;
+  margin: unset;
+
+  .alert-container {
+    .alert {
+      margin: 0;
+    }
+    height: 3rem;
+  }
+
+  &__top {
+    display: flex;
+    justify-content: space-between;
+    .MessageActions {
+      margin-left: 0rem;
+    }
+  }
+
+  &__spool {
+    margin-top: 2rem;
+  }
+
+  &__spool-container {
+    width: 70%;
+  }
+}

@@ -22,7 +22,9 @@ import {
   CLEAR_FAILED_SIGNUP,
   CLEAR_FAILED_SIGNIN,
   CLEAR_LANDING_AUTH_FAIL,
-  REMOVED_FRIEND
+  REMOVED_FRIEND,
+  RATE_BOOK,
+  UPDATE_INBOX_HEADER
 } from './authTypes';
 
 const initialState = {
@@ -285,6 +287,27 @@ export default (state = initialState, action) => {
           profile: {
             ...state.user.profile,
             friends: action.payload
+          }
+        }
+      };
+
+    case RATE_BOOK:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profile: action.payload
+        }
+      };
+
+    case UPDATE_INBOX_HEADER:
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          profile: {
+            ...state.user.profile,
+            inbox: action.payload.inbox
           }
         }
       };

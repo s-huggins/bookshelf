@@ -17,5 +17,6 @@ export default new Set([
   'handleCheck',
   'rating',
   'friendRequests',
-  'friends'
+  'friends',
+  'message'
 ]);

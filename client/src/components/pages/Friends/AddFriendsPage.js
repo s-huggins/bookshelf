@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import Friend from './Friend';
 import { useSelector } from 'react-redux';
 import ProfileResult from './ProfileResult';
 import { useRef } from 'react';
+import SearchMembers from './SearchMembers';
 
 const AddFriendsPage = () => {
   const [searchInputs, setSearchInputs] = useState({ email: '', twitter: '' });
@@ -119,12 +119,6 @@ const AddFriendsPage = () => {
           </form>
         </div>
         <div className="friend-results">
-          {/* <ProfileResult
-            id={2}
-            avatar_id="5e28390ca4001b30148578d1"
-            displayName="Stu"
-            location={{ private: true }}
-          /> */}
           {currentSearch.current && resultsString}
           {profileResults && profileResults.length === 0 && (
             <span className="no-results-text">No profiles found.</span>
@@ -137,11 +131,14 @@ const AddFriendsPage = () => {
       </main>
       <aside className="Friends__page-side sidebar">
         <div className="sidebar__panel link-list">
-          <ul>
+          <ul className="find-friends">
             <li>
-              <Link to="#!" className="green-link">
+              <Link to="/user/friends/of-friends" className="green-link">
                 View friends of friends
               </Link>
+            </li>
+            <li>
+              <SearchMembers />
             </li>
           </ul>
         </div>

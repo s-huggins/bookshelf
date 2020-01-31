@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import Loader from '../../common/Loader';
 import useLoadProfile from '../Profile/Hooks/useLoadProfile';
 import { Redirect, withRouter, useLocation } from 'react-router-dom';
-import PrivateProfile from '../Profile/PrivateProfile';
 import FriendsPage from './FriendsPage';
 import AddFriendsPage from './AddFriendsPage';
 
@@ -36,11 +35,10 @@ const OwnFriends = () => {
     }
   };
 
-  if (!loadingProfile && profile == null) return <Redirect to="/not-found" />;
-  // TODO: and if not a friend
-  if (!loadingProfile && !profile.isPublic) {
-    return <PrivateProfile profile={profile} />;
-  }
+  // if (!loadingProfile && profile == null) return <Redirect to="/not-found" />;
+  if (!loadingProfile && profile == null)
+    return <Redirect to="/something-went-wrong" />;
+
   return (
     <div className="Friends page-container">
       <div className="container">

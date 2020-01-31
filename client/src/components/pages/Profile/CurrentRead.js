@@ -16,7 +16,6 @@ const CurrentRead = ({
   updateRatingDisplay
 }) => {
   const location = useLocation();
-
   // const [averageRating, setAverageRating] = useState(average_rating);
   // const [ratingsCount, setRatingsCount] = useState(ratings_count);
 

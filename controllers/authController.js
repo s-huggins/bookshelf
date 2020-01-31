@@ -79,7 +79,6 @@ exports.protect = catchAsync(async (req, res, next) => {
       )
     );
   }
-
   // if here, grant access
   req.user = user._doc;
   next();
@@ -133,6 +132,7 @@ exports.signup = catchAsync(async (req, res) => {
     createAndSendToken(newUser, 201, res);
   });
 
+  // TODO: User.create(req.body);
   await User.create({
     name: req.body.name,
     email: req.body.email,

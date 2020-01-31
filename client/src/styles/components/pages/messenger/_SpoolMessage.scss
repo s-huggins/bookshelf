@@ -1,0 +1,50 @@
+.SpoolMessage {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  max-width: 40rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding-bottom: 0.75rem;
+
+  .message-body {
+    flex-basis: 60%;
+    flex-grow: 1;
+    justify-self: flex-start;
+    .message-lead {
+      margin-bottom: 0.3rem;
+    }
+  }
+
+  .message-side {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-end;
+    align-self: stretch;
+
+    .divider {
+      padding: 0 0.15rem;
+    }
+
+    .message-date {
+      font-size: 0.9rem;
+      color: $txt-light;
+      text-align: right;
+      .message-date-cal,
+      .message-date-time {
+        display: block;
+        margin-bottom: 0.1rem;
+      }
+    }
+
+    .message-action {
+      font-size: 0.9rem;
+    }
+  }
+
+  img {
+    margin-right: 0.6rem;
+    width: 30px;
+    height: 40px;
+  }
+}

@@ -23,7 +23,11 @@ const CurrentlyReadingPanel = ({
           .sort((b1, b2) => new Date(b2.dateShelved) - new Date(b1.dateShelved))
           .slice(0, 3)
           .map(_book => (
-            <CurrentRead key={_book.bookId._id} {..._book.bookId} />
+            <CurrentRead
+              key={_book.bookId._id}
+              dateShelved={_book.dateShelved}
+              {..._book.bookId}
+            />
           ))}
       </div>
       {bookCount > 3 && (

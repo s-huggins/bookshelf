@@ -1,14 +1,16 @@
 .FriendsReading {
-  background-color: #fff;
   .container {
     padding-top: 1.5rem;
   }
 
   main {
+    .content-container {
+      padding: 0 0.6rem;
+    }
     h2 {
       font-family: $font-secondary;
       margin-top: 1.5rem;
-      padding: 0.4rem 0.6rem;
+      padding: 0.4rem 0rem;
       font-size: 1.35rem;
       margin-bottom: 1rem;
     }

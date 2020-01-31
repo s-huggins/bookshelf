@@ -8,6 +8,7 @@ import { printTimeAgo } from '../../../util/lastActive';
 
 const Friend = ({
   isFriend,
+  isYou,
   profileId,
   displayName,
   numFriends,
@@ -66,7 +67,11 @@ const Friend = ({
         )}
       </div>
       <div className="friend-actions">
-        {!isFriend && <button className="btn btn--light">Add friend</button>}
+        {isYou ? (
+          <span className="small-text">This is you</span>
+        ) : !isFriend ? (
+          <button className="btn btn--light">Add friend</button>
+        ) : null}
         <Link
           to={`/user/${profileId}/bookshelves`}
           className="green-link friend-action-link"

@@ -26,6 +26,11 @@ router.get(
 );
 
 router.get('/friends/reading', protect, profileController.getFriendsReading);
+router.get(
+  '/friends/ofFriends',
+  protect,
+  profileController.getFriendsOfFriends
+);
 
 router.delete('/friends/:profileId', protect, profileController.removeFriend);
 

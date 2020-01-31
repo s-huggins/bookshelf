@@ -1,0 +1,169 @@
+.Mailbox {
+  .content-container {
+    padding: 1.5rem 0.6rem;
+  }
+
+  .trash-note {
+    font-size: 0.9rem;
+    margin-top: 1.5rem;
+  }
+}
+
+.Messenger {
+  &__header {
+    h1 {
+      padding: 0;
+    }
+    display: flex;
+
+    max-width: 55rem;
+
+    &-main {
+      display: flex;
+    }
+
+    &--with-aside {
+      justify-content: space-between;
+    }
+
+    .showing-detail {
+      align-self: center;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      margin-left: 0.75rem;
+      font-weight: bold;
+    }
+
+    .refresh-loader {
+      .Loader {
+        padding: 0;
+        margin: 0;
+      }
+    }
+  }
+
+  &__body {
+    display: flex;
+    // border: 1px solid black;
+    max-width: 60rem;
+    margin-top: 1.5rem;
+
+    &-nav {
+      margin-right: 1.5rem;
+    }
+
+    &-main {
+      // border: 1px solid black;
+      margin-top: 0rem;
+      .alert-container {
+        height: 3rem;
+        // width: 95%;
+        margin: 0 auto;
+        // display: flex;
+        // justify-content: flex-start;
+        // border: 1px solid black;
+
+        .alert {
+          margin: 0;
+        }
+      }
+      // MEDIA QUERIES
+      // FOR SCREENS OF SUFFICIENT WIDTH, SET FIXED WIDTHS FOR THE COLUMNS/CELLS
+
+      table {
+        border-collapse: collapse;
+        min-width: 46rem;
+        .cell-from,
+        .cell-to {
+          min-width: 14rem;
+        }
+        .cell-subject {
+          min-width: 16rem;
+        }
+        .cell-date {
+          min-width: 6rem;
+        }
+        .cell-actions {
+          // width: 8rem;
+        }
+        thead {
+          border-bottom: 2px solid #ebe8d5;
+          th {
+            font-weight: bold;
+            padding: 0.4rem;
+            text-align: left;
+            vertical-align: bottom;
+          }
+          .header-actions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            input {
+              display: inline-block;
+              margin-right: 0.2rem;
+              margin-left: 0.4rem;
+            }
+            .actions-dropdown {
+              margin-bottom: 0.75rem;
+              // width: 8rem;
+            }
+          }
+        }
+        tbody {
+          tr {
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+          }
+          td {
+            font-size: 0.9rem;
+            min-height: 60px;
+            padding: 0.5rem 0.6rem;
+            padding-bottom: 0.75rem;
+          }
+          .cell-from,
+          .cell-to {
+            // min-width: 14rem;
+            display: flex;
+            align-items: center;
+            img {
+              width: 35px;
+              height: 40px;
+              margin-right: 0.6rem;
+            }
+          }
+          .cell-subject,
+          .cell-to,
+          .cell-from {
+            &:hover {
+              cursor: pointer;
+            }
+          }
+          .cell-date {
+            // min-width: 6rem;
+          }
+          .cell-check {
+            // min-width: 2rem;
+            input {
+              display: inline-block;
+            }
+            text-align: right;
+            vertical-align: middle;
+          }
+          .cell-date {
+            .date-cal,
+            .date-time {
+              display: block;
+            }
+          }
+          .cell-no-messages {
+            padding: 1.8rem;
+          }
+        }
+      }
+    }
+  }
+
+  &__pagination {
+    text-align: right;
+    margin-top: 0.5rem;
+  }
+}

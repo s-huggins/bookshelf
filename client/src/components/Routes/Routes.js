@@ -10,6 +10,8 @@ import AccountRoutes from './AccountRoutes';
 import AuthorRoutes from './AuthorRoutes';
 import UserRoutes from './UserRoutes';
 import HandleRoutes from './HandleRoutes';
+import NotFound from '../pages/NotFound';
+import MessageRoutes from './MessageRoutes';
 
 const Routes = () => {
   return (
@@ -23,7 +25,9 @@ const Routes = () => {
         <PrivateRoute exact path="/search" component={Search} />
         <PrivateRoute exact path="/book/:id" component={Book} />
         {UserRoutes('/user')}
+        {MessageRoutes}
         {HandleRoutes('/:handle')}
+        <Route exact component={NotFound} />
       </Switch>
     </>
   );

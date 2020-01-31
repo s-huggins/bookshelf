@@ -1,12 +1,16 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const MessageIcon = () => {
+const MessageIcon = ({ inbox }) => {
+  const unreadMessages = inbox.filter(msg => !msg.trash.trashed && !msg.read)
+    .length;
   return (
     <>
-      <Link to="#!">
+      <Link to="/message/inbox">
         <i className="fas fa-envelope" title="Messages"></i>
-        {/* <span className="notification-badge"></span>  TODO: ADD BACK IN*/}
+        {unreadMessages > 0 && (
+          <span className="notification-badge">{unreadMessages}</span>
+        )}
       </Link>
     </>
   );

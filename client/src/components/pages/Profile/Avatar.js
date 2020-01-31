@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import avatar from '../../../img/avatar.png';
+import avatar from '../../../img/avatar1.png';
 
 const Avatar = ({ avatar_id }) => {
   const token = useSelector(state => state.auth.token);

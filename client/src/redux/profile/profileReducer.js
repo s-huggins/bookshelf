@@ -12,7 +12,15 @@ import {
   CLEAR_EDIT_AVATAR_STATUS,
   // UPDATE_PROFILE_RATINGS,
   SIGNAL_BOOK_WAS_RATED,
-  RESET_BOOK_WAS_RATED_SIGNAL
+  RESET_BOOK_WAS_RATED_SIGNAL,
+  MARK_MESSAGE,
+  MARK_MESSAGE_FAILURE,
+  TRASH_MESSAGE,
+  TRASH_MESSAGE_FAILURE,
+  OPEN_NEW_MESSAGE,
+  DELETE_MESSAGE,
+  DELETE_MESSAGE_FAILURE,
+  UPDATE_MAILBOX
 } from './profileTypes';
 
 /* editStatus one of '', 'success', 'fail' */
@@ -105,6 +113,67 @@ export default (state = initialState, action) => {
       return {
         ...state,
         bookRatedSignal: 'off'
+      };
+
+    // case MARK_MESSAGE:
+    //   return {
+    //     ...state,
+    //     editStatus: 'success',
+    //     loadedProfile: {
+    //       ...state.loadedProfile,
+    //       inbox: action.payload.inbox,
+    //       outbox: action.payload.outbox
+    //     }
+    //   };
+
+    case MARK_MESSAGE_FAILURE:
+      return {
+        ...state,
+        editStatus: 'fail'
+      };
+
+    // case TRASH_MESSAGE:
+    //   return {
+    //     ...state,
+    //     editStatus: 'success',
+    //     loadedProfile: {
+    //       ...state.loadedProfile,
+    //       inbox: action.payload.inbox,
+    //       outbox: action.payload.outbox
+    //     }
+    //   };
+
+    case TRASH_MESSAGE_FAILURE:
+      return {
+        ...state,
+        editStatus: 'fail'
+      };
+
+    case OPEN_NEW_MESSAGE:
+      return {
+        ...state,
+        loadedProfile: {
+          ...state.loadedProfile,
+          inbox: action.payload.inbox,
+          outbox: action.payload.outbox
+        }
+      };
+
+    case UPDATE_MAILBOX:
+      return {
+        ...state,
+        editStatus: 'success',
+        loadedProfile: {
+          ...state.loadedProfile,
+          inbox: action.payload.inbox,
+          outbox: action.payload.outbox
+        }
+      }
+  
+    case DELETE_MESSAGE_FAILURE: 
+      return {
+        ...state,
+        editStatus: 'fail'
       };
 
     default:

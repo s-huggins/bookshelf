@@ -7,6 +7,7 @@
 
   .find-friends {
     ul {
+      margin-bottom: 1rem;
       li {
         i {
           padding-right: 0.3rem;
@@ -32,17 +33,17 @@
     }
     display: block;
 
-    .search-members {
-      margin-top: 1rem;
-      margin-left: 0.5rem;
-      input {
-        margin-right: 0.4rem;
-        width: 70%;
-      }
-      button {
-        padding: 0.25rem 0.6rem;
-        margin-top: 0.2rem;
-      }
-    }
+    // .search-members {
+    //   margin-top: 1rem;
+    //   margin-left: 0.5rem;
+    //   input {
+    //     margin-right: 0.4rem;
+    //     width: 70%;
+    //   }
+    //   button {
+    //     padding: 0.25rem 0.6rem;
+    //     margin-top: 0.2rem;
+    //   }
+    // }
   }
 }

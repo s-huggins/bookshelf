@@ -26,6 +26,7 @@ mongoose.connection
       console.log(
         'Unrecognized command. Available options:\n\n--import\timport user data\n--delete\tdrop database'
       );
+      process.exit();
     }
   })
   .on('error', err => {

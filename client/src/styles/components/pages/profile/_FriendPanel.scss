@@ -1,11 +1,16 @@
 .FriendPanel {
   display: flex;
   margin: 0.6rem 0;
+  height: 4rem;
 
   &__avatar {
-    max-height: 65px;
-    max-width: 50px;
     margin-right: 0.5rem;
+
+    img {
+      // max-height: 65px;
+      height: 65px;
+      max-width: 50px;
+    }
   }
 
   &__content {

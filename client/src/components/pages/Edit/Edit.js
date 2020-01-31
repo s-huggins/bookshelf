@@ -26,14 +26,15 @@ const Edit = () => {
         type: 'info',
         message: 'The changes to your profile have been saved.'
       });
+      dispatch(clearEditStatus());
     } else if (editStatus === 'fail') {
       setAlert({
         type: 'warning',
         message:
           'Your updates were not saved. Please check your inputs and try again.'
       });
+      dispatch(clearEditStatus());
     }
-    dispatch(clearEditStatus());
   }, [editStatus]);
 
   useEffect(() => {

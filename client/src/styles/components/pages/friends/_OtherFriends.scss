@@ -1,7 +1,7 @@
 .OtherFriends {
-  .small-text {
+  .showing-detail {
     font-size: 0.9rem;
-    margin-left: 0.25rem;
+    margin-left: 0.75rem;
   }
 
   .Friends__header--other {
@@ -27,6 +27,10 @@
       display: flex;
       justify-content: space-between;
       margin-bottom: 1rem;
+    }
+    .list-footer {
+      text-align: right;
+      margin-top: 1rem;
     }
   }
 }

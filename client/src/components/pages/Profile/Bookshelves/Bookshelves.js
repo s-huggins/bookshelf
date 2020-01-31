@@ -9,10 +9,12 @@ import Bookshelf from './Bookshelf';
 import queryString from 'query-string';
 import PaginationSettings from './PaginationSettings';
 import Breadcrumb from './Breadcrumb';
+import usePrivateProfile from '../Hooks/usePrivateProfile';
 
 const Bookshelves = ({ location }) => {
   const { user } = useSelector(state => state.auth);
   const [loadingProfile, profile] = useLoadProfile();
+  const profileIsPrivate = usePrivateProfile(profile);
 
   const [activeShelf, setActiveShelf] = useState({
     shelf: null,
@@ -20,7 +22,7 @@ const Bookshelves = ({ location }) => {
   });
 
   useEffect(() => {
-    if (loadingProfile) return;
+    if (loadingProfile || profileIsPrivate) return;
     const { shelf = '' } = queryString.parse(location.search);
 
     // skip effect if shelf hasn't changed
@@ -89,20 +91,15 @@ const Bookshelves = ({ location }) => {
   const countShelf = (books, shelf) =>
     books.filter(book => book.primaryShelf === shelf).length;
 
-  if (loadingProfile) {
-    return <Loader />;
-  }
+  if (loadingProfile) return <Loader />;
 
   if (profile == null) return <Redirect to="/not-found" />;
 
-  // TODO: and if not a friend
-  if (!profile.isPublic) {
-    return <PrivateProfile profile={profile} />;
-  }
-
   const ownBookshelves = profile.user === user._id;
 
-  return (
+  return profileIsPrivate ? (
+    <PrivateProfile profile={profile} />
+  ) : (
     <div className="Bookshelves page-container">
       <main>
         <Breadcrumb

@@ -22,8 +22,6 @@
       margin-right: 0.4rem;
       width: 16rem;
     }
-    .input-email {
-    }
     button {
       padding: 0.25rem 0.6rem;
     }
@@ -40,6 +38,12 @@
     }
     .no-results-text {
       padding: 0.4rem 0.6rem;
+    }
+  }
+
+  .find-friends {
+    li {
+      margin-bottom: 1rem;
     }
   }
 }

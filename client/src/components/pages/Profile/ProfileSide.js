@@ -2,13 +2,30 @@ import React from 'react';
 import Avatar from './Avatar';
 import pluralize from '../../../util/pluralize';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const ProfileSide = ({ profile, location, ownProfile }) => {
-  const ratingsCount = profile.ratings.length;
-  const ratingsSum = profile.ratings.reduce(
-    (sum, ratingObj) => sum + ratingObj.rating,
-    0
+  const ownRatings = useSelector(
+    state => state.auth.user.profile.ratings,
+    () => {
+      if (!ownProfile) return true; // only rerender if user changes a rating while on own profile
+    }
   );
+  let ratingsCount;
+  let ratingsSum;
+  if (!ownProfile) {
+    ratingsCount = profile.ratings.length;
+    ratingsSum = profile.ratings.reduce(
+      (sum, ratingObj) => sum + ratingObj.rating,
+      0
+    );
+  } else {
+    ratingsCount = ownRatings.length;
+    ratingsSum = ownRatings.reduce(
+      (sum, ratingObj) => sum + ratingObj.rating,
+      0
+    );
+  }
   const ratingsAvg = ratingsCount > 0 ? ratingsSum / ratingsCount : 0;
 
   const ratingsLink = ownProfile

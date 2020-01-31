@@ -123,3 +123,11 @@ body {
   color: #181818;
   border: 1px solid #ddd;
 }
+
+.button-reset {
+  background-color: transparent;
+  border: none;
+  font-family: $font-primary;
+  font-size: 1rem;
+  cursor: pointer;
+}

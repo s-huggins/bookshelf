@@ -11,7 +11,13 @@ import { useLayoutEffect } from 'react';
 const FriendsReading = () => {
   const [loading, setLoading] = useState(true);
   const [profile, setProfile] = useState(null);
+  const [booksView, setBooksView] = useState({
+    books: [],
+    startIndex: 0,
+    endIndex: 15
+  });
   const token = useSelector(state => state.auth.token);
+  const friends = useSelector(state => state.auth.user.profile.friends);
   const location = useLocation();
   // fetch user profile with friends' current reads
   const fetchData = async () => {
@@ -41,19 +47,15 @@ const FriendsReading = () => {
     }
   }, [profile]);
 
-  const [booksView, setBooksView] = useState({
-    books: [],
-    startIndex: 0,
-    endIndex: 15
-  });
-
   useLayoutEffect(() => {
     if (!booksView.books.length) {
       return;
     }
     const parsed = queryString.parse(location.search);
-    const startIndex = (parsed.page - 1) * 15 || 0;
-    const endIndex = parsed.page * 15 || 15;
+    let page = parseInt(parsed.page) || 1;
+    page = page <= 0 ? 1 : page;
+    const startIndex = (page - 1) * 15 || 0;
+    const endIndex = page * 15 || 15;
     setBooksView({ ...booksView, startIndex, endIndex });
   }, [location]);
 
@@ -104,34 +106,40 @@ const FriendsReading = () => {
             </Link>{' '}
             > Reading
           </h1>
-          <h2>Books My Friends Are Reading</h2>
-          {loading ? (
-            <Loader />
-          ) : (
-            <div className="FriendsReading__list">
-              <div className="FriendsReading__pagination">
-                <Pagination {...getPaginationSettings()} />
+          <div className="content-container">
+            <h2>Books My Friends Are Reading</h2>
+            {loading ? (
+              <Loader />
+            ) : !friends.length ? (
+              <p>You don't have any friends!</p>
+            ) : !booksView.books.length ? (
+              <p>Your friends aren't reading any books.</p>
+            ) : (
+              <div className="FriendsReading__list">
+                <div className="FriendsReading__pagination">
+                  <Pagination {...getPaginationSettings()} />
+                </div>
+                {booksView.books
+                  .slice(booksView.startIndex, booksView.endIndex)
+                  .map(book => {
+                    const CurrentReadWithUpdatingRating = withUpdatingRating(
+                      FriendCurrentRead
+                    );
+                    return (
+                      <CurrentReadWithUpdatingRating
+                        key={book.friendId}
+                        props={{
+                          ...book
+                        }}
+                      />
+                    );
+                  })}
+                <div className="FriendsReading__pagination">
+                  <Pagination {...getPaginationSettings()} />
+                </div>
               </div>
-              {booksView.books
-                .slice(booksView.startIndex, booksView.endIndex)
-                .map(book => {
-                  const CurrentReadWithUpdatingRating = withUpdatingRating(
-                    FriendCurrentRead
-                  );
-                  return (
-                    <CurrentReadWithUpdatingRating
-                      key={book.friendId}
-                      props={{
-                        ...book
-                      }}
-                    />
-                  );
-                })}
-              <div className="FriendsReading__pagination">
-                <Pagination {...getPaginationSettings()} />
-              </div>
-            </div>
-          )}
+            )}
+          </div>
         </main>
       </div>
     </div>

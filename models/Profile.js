@@ -4,7 +4,7 @@ const validator = require('validator');
 const autoIncrementModelId = require('./Counter');
 const Book = require('./Book');
 const Avatar = require('./Avatar');
-const catchAsync = require('../utils/asyncErrorWrapper');
+const Message = require('./Message');
 
 const { Schema } = mongoose;
 
@@ -187,6 +187,43 @@ const ProfileSchema = new Schema(
         ref: 'Review'
       }
     ],
+
+    inbox: [
+      {
+        message: {
+          type: Schema.Types.ObjectId,
+          ref: 'Message'
+        },
+
+        read: {
+          type: Boolean,
+          default: false
+        },
+        trash: {
+          trashed: {
+            type: Boolean,
+            default: false
+          },
+          dateTrashed: {
+            type: Date
+          }
+        },
+        saved: {
+          type: Boolean,
+          default: false
+        }
+      }
+    ],
+
+    outbox: [
+      {
+        message: {
+          type: Schema.Types.ObjectId,
+          ref: 'Message'
+        }
+      }
+    ],
+
     location: {
       value: {
         type: String,
@@ -409,6 +446,20 @@ ProfileSchema.post('remove', async function(doc, next) {
   next();
 });
 
+// update the profileLinks arrays on all messages linked with this account
+// messages with an empty profileLinks array are removed from the DB
+ProfileSchema.post('remove', async function(doc, next) {
+  await Message.deleteMany({ profileLinks: [doc.id] });
+  await Message.updateMany(
+    { profileLinks: doc.id },
+    {
+      $pull: { profileLinks: doc.id }
+    }
+  );
+
+  next();
+});
+
 ProfileSchema.virtual('age').get(function() {
   // return this.birthday
   //   ? getAge(this.birthday.value)
@@ -424,14 +475,13 @@ ProfileSchema.virtual('age').get(function() {
 });
 
 ProfileSchema.virtual('currentRead').get(function() {
-  if (!this.books) return undefined;
+  if (!this.books || this.books.length === 0) return undefined;
   const reading = this.books.filter(book => book.primaryShelf === 'reading');
   let latest = null;
   reading.forEach(book => {
     if (!latest) latest = book;
     else if (book.dateShelved > latest.dateShelved) latest = book;
   });
-
   return latest;
 });
 
@@ -444,12 +494,10 @@ ProfileSchema.virtual('numBooks').get(function() {
   return this.books.length;
 });
 
-// wrap in catchAsync
 ProfileSchema.statics.getOwnProfile = async function(filterObj) {
   let profile;
   try {
-    // let profile = await this.findOne(filterObj)
-    profile = await this.findOne(filterObj)
+    profile = await this.findOne(filterObj, { inbox: 0, outbox: 0 })
       .populate('books.bookId')
       .populate(
         'friendRequests.profile',
@@ -482,15 +530,13 @@ ProfileSchema.statics.getOwnProfile = async function(filterObj) {
   return profile;
 };
 
-// TODO: private profile friends
-ProfileSchema.statics.getOtherProfile = async function(filterObj, ownFriends) {
+ProfileSchema.statics.getOtherProfile = async function(filterObj, ownProfile) {
   let profile = await this.findOne(filterObj)
     .select('-friendRequests')
     .populate('books.bookId')
     .populate({
       path: 'friends.profile',
       select: 'displayName avatar_id friends books lastActive',
-      // match for non private profiles
       populate: {
         path: 'books.bookId'
       }
@@ -500,14 +546,25 @@ ProfileSchema.statics.getOtherProfile = async function(filterObj, ownFriends) {
 
   profile = profile.toJSON();
 
-  // TODO: AND NOT A FRIEND
-  if (!profile.isPublic) {
+  const isFriend = ownProfile.friends.some(
+    fr => fr.profileId === ownProfile.id
+  );
+
+  // if private and not a friend
+  if (!profile.isPublic && !isFriend) {
+    const ratingsCount = profile.ratings.length;
+    const ratingsSum = profile.ratings.reduce((sum, r) => sum + r.rating, 0);
+    const ratingsAverage = ratingsCount === 0 ? 0 : ratingsSum / ratingsCount;
+
     return {
       isPublic: profile.isPublic,
       id: profile.id,
       displayName: profile.displayName,
       handle: profile.handle,
-      avatar: profile.avatar
+      avatar_id: profile.avatar_id,
+      ratingsCount,
+      ratingsAverage,
+      reviewsCount: profile.reviews.length
     };
   }
 
@@ -517,13 +574,14 @@ ProfileSchema.statics.getOtherProfile = async function(filterObj, ownFriends) {
     delete fr.profile.friends;
   });
 
-  // remove userdata declared private
-  // TODO: IF NOT A FRIEND
-  Object.keys(profile).forEach(k => {
-    if (profile[k] && profile[k].private) {
-      delete profile[k];
-    }
-  });
+  // remove userdata declared private to non-friends
+  if (!isFriend) {
+    Object.keys(profile).forEach(k => {
+      if (profile[k] && profile[k].private) {
+        delete profile[k];
+      }
+    });
+  }
 
   return profile;
 };

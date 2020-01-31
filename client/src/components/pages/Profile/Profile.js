@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import { useSelector } from 'react-redux';
 import Loader from '../../common/Loader';
 import PrivateProfile from './PrivateProfile';
@@ -11,24 +11,31 @@ import useLoadProfile from './Hooks/useLoadProfile';
 import BookshelvesPanel from './BookshelvesPanel';
 import CurrentlyReadingPanel from './CurrentlyReadingPanel';
 import RecentUpdatesPanel from './RecentUpdatesPanel';
+import usePrivateProfile from './Hooks/usePrivateProfile';
 
 const Profile = ({ location }) => {
-  const { user } = useSelector(state => state.auth);
+  const { id: ownProfileId, friends: ownFriends } = useSelector(
+    state => state.auth.user.profile
+  );
   const [loadingProfile, profile] = useLoadProfile();
+  const profileIsPrivate = usePrivateProfile(profile);
 
   /**
    * The server does not return private fields of non-friends.
    */
-  const buildProfileDetails = profile => {
-    const profileDetails = { profileId: profile.id };
 
-    profileDetails.ownProfile = profile.user === user._id;
+  const profileDetails = useMemo(() => {
+    if (!profile) return {};
 
-    profileDetails.displayName = profile.displayName;
+    const profDetails = { profileId: profile.id };
+
+    profDetails.ownProfile = profile.id === ownProfileId;
+
+    profDetails.displayName = profile.displayName;
 
     const firstName = profile.firstName;
     const lastName = profile.lastName ? profile.lastName.value : '';
-    profileDetails.name = [firstName, lastName].filter(v => !!v).join(' ');
+    profDetails.name = [firstName, lastName].filter(v => !!v).join(' ');
 
     const age =
       profile.age && profile.age.value ? 'Age ' + profile.age.value : '';
@@ -40,35 +47,33 @@ const Profile = ({ location }) => {
         : '';
     const location =
       profile.location && profile.location.value ? profile.location.value : '';
-    profileDetails.details = [age, gender, location]
-      .filter(v => !!v)
-      .join(', ');
+    profDetails.details = [age, gender, location].filter(v => !!v).join(', ');
 
     const birthday =
       profile.birthday && profile.birthday.value
         ? new Date(profile.birthday.value)
         : '';
-    profileDetails.birthday = birthday
+    profDetails.birthday = birthday
       ? `${getMonth(birthday.getMonth())} ${birthday.getDate()}`
       : '';
 
-    profileDetails.handle = profile.handle || '';
-    profileDetails.website = profile.website || '';
-    profileDetails.interests = profile.interests || '';
-    profileDetails.favBooks = profile.favBooks || '';
-    profileDetails.aboutMe = profile.aboutMe || '';
+    profDetails.handle = profile.handle || '';
+    profDetails.website = profile.website || '';
+    profDetails.interests = profile.interests || '';
+    profDetails.favBooks = profile.favBooks || '';
+    profDetails.aboutMe = profile.aboutMe || '';
 
-    profileDetails.social = { ...profile.social } || {};
+    profDetails.social = { ...profile.social } || {};
     const joinedDate = new Date(profile.dateCreated);
     let activity = `Joined in ${getMonth(
       joinedDate.getMonth()
     )} ${joinedDate.getFullYear()}, `;
     activity += lastActive(profile.lastActive);
 
-    profileDetails.activity = activity;
+    profDetails.activity = activity;
 
-    return profileDetails;
-  };
+    return profDetails;
+  }, [profile]);
 
   const buildProfileSide = profile => {
     const { _id: profileId, avatar_id, ratings, reviews } = profile;
@@ -76,11 +81,7 @@ const Profile = ({ location }) => {
       profileId,
       avatar_id,
       ratings,
-      reviews,
-      reviewsAverage:
-        reviews.length > 0
-          ? reviews.reduce((acc, next) => acc + next, 0) / reviews.length
-          : 0.0
+      reviews
     };
   };
 
@@ -92,35 +93,27 @@ const Profile = ({ location }) => {
   const countShelf = (books, shelf) =>
     books.filter(book => book.primaryShelf === shelf).length;
 
-  if (loadingProfile) {
-    return <Loader />;
-  }
-  // if (profileHasLoaded && profile == null) return <Redirect to="/not-found" />;
+  if (loadingProfile) return <Loader />;
   if (profile == null) return <Redirect to="/not-found" />;
 
-  // TODO: and if not a friend
-  if (!profile.isPublic) {
-    return <PrivateProfile profile={profile} />;
-  }
-
-  // const ownProfile = profile.user === user._id;
-
-  return (
+  return profileIsPrivate ? (
+    <PrivateProfile profile={profile} />
+  ) : (
     <div className="Profile page-container">
       <main>
         <div className="profile">
           <ProfileSide
             location={location}
             profile={buildProfileSide(profile)}
-            ownProfile={profile.user === user._id}
+            ownProfile={profile.id === ownProfileId}
           />
-          <ProfileDetails profile={buildProfileDetails(profile)} />
+          <ProfileDetails profile={profileDetails} />
         </div>
 
         <BookshelvesPanel
           books={profile.books}
           displayName={profile.displayName}
-          ownProfile={profile.user === user._id}
+          ownProfile={profile.id === ownProfileId}
           buildBookshelfLink={buildBookshelfLink}
           countShelf={countShelf}
         />
@@ -128,7 +121,7 @@ const Profile = ({ location }) => {
         <CurrentlyReadingPanel
           books={profile.books.filter(book => book.primaryShelf === 'reading')}
           displayName={profile.displayName}
-          ownProfile={profile.user === user._id}
+          ownProfile={profile.id === ownProfileId}
           buildBookshelfLink={buildBookshelfLink}
           bookCount={countShelf(profile.books, 'reading')}
         />
@@ -136,12 +129,12 @@ const Profile = ({ location }) => {
         <RecentUpdatesPanel
           books={profile.books}
           displayName={profile.displayName}
-          ownProfile={profile.user === user._id}
+          ownProfile={profile.id === ownProfileId}
           buildBookshelfLink={buildBookshelfLink}
         />
       </main>
       <aside>
-        <FriendsSidebar />
+        <FriendsSidebar profile={profile} />
       </aside>
     </div>
   );

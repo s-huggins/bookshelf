@@ -1,0 +1,30 @@
+.Compose {
+  &__label {
+    width: 5rem;
+    display: inline-block;
+    font-weight: bold;
+    &--block {
+      display: block;
+      margin-bottom: 0.6rem;
+    }
+  }
+
+  &__form {
+    padding: 0rem 0.6rem;
+
+    &-input {
+      margin: 0.5rem 0rem;
+    }
+
+    .input-to {
+      width: 16rem;
+    }
+    .input-subject {
+      width: 30rem;
+    }
+    .input-body {
+      width: 36rem;
+      height: 15rem;
+    }
+  }
+}

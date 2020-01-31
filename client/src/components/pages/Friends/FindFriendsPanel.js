@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import { useEffect } from 'react';
+import SearchMembers from './SearchMembers';
 
 const FindFriendsPanel = ({ setActiveNavLink }) => {
   const history = useHistory();
@@ -34,19 +35,12 @@ const FindFriendsPanel = ({ setActiveNavLink }) => {
           <li>
             <i className="fas fa-user-friends"></i>
 
-            <Link to="#!" className="green-link">
+            <Link to="/user/friends/of-friends" className="green-link">
               Friends of friends
             </Link>
           </li>
         </ul>
-        <form className="search-members">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Find by name or email"
-          />
-          <button className="btn btn--light">Search members</button>
-        </form>
+        <SearchMembers />
       </div>
     </div>
   );

@@ -10,7 +10,7 @@ exports.getUser = catchAsync(async (req, res) => {
   // TODO: also populate messages for header message icon
   const user = await User.findById(req.user._id).populate(
     'profile',
-    '_id id handle displayName firstName avatar_id books ratings reviews friends friendRequests'
+    '_id id handle displayName firstName avatar_id books ratings reviews friends friendRequests inbox'
   );
   await Profile.findByIdAndUpdate(req.user.profile._id, {
     lastActive: new Date()
@@ -78,6 +78,12 @@ exports.updateUser = catchAsync(async (req, res, next) => {
 // for user deleting own account
 exports.deleteUser = catchAsync(async (req, res, next) => {
   const { password } = req.body;
+
+  if (!password) {
+    return next(
+      new AppError('Your password is required to delete your account.', 401)
+    );
+  }
 
   const user = await User.findById(req.user._id).select('+password');
 

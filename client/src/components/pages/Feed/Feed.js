@@ -5,9 +5,9 @@ import FeedUpdate from './FeedUpdate';
 import useLoadProfile from '../Profile/Hooks/useLoadProfile';
 import Loader from '../../common/Loader';
 
-const Feed = ({ match }) => {
+const Feed = () => {
   // load own profile
-  const [loadingProfile, profile] = useLoadProfile(match);
+  const [loadingProfile, profile] = useLoadProfile();
 
   if (loadingProfile) return <Loader />;
 

@@ -9,6 +9,7 @@ const usersRouter = require('./routes/api/v1/users/usersRoutes');
 const profileRouter = require('./routes/api/v1/profile/profileRoutes');
 const searchRouter = require('./routes/api/v1/search/searchRoutes');
 const authorRouter = require('./routes/api/v1/author/authorRoutes');
+const messageRouter = require('./routes/api/v1/message/messageRoutes');
 const bookRouter = require('./routes/api/v1/book/bookRoutes');
 const AppError = require('./utils/AppError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -70,6 +71,7 @@ app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/search', searchRouter);
 app.use('/api/v1/book', bookRouter);
 app.use('/api/v1/author', authorRouter);
+app.use('/api/v1/message', messageRouter);
 
 // serve static assets if in production
 if (process.env.NODE_ENV === 'production') {

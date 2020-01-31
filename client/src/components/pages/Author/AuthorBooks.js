@@ -95,12 +95,6 @@ const AuthorBooks = ({ match }) => {
             <Link to={`/author/${authorBooks.id}`} className="author-name">
               {authorBooks.name}
             </Link>
-            {/* <span className="author-stats">
-              Average rating 3.92 <span className="stats-separator">·</span>{' '}
-              3,691 ratings <span className="stats-separator">·</span> 196
-              reviews <span className="stats-separator">·</span> shelved 14,004
-              times
-            </span> */}
             <AuthorStats
               author_average_rating={authorBooks.author_average_rating}
               author_ratings_count={authorBooks.author_ratings_count}

@@ -10,26 +10,13 @@ const PrivateRoute = ({ component: Component, componentProps, ...rest }) => {
   const dispatch = useDispatch();
   dispatch(setCurrentUser());
 
-  // return (
-  //   <Route
-  //     {...rest}
-  //     render={routerProps =>
-  //       loadingUser ? (
-  //         <Loader />
-  //       ) : isAuthenticated ? (
-  //         <Component {...routerProps} {...componentProps} />
-  //       ) : (
-  //         <Redirect to="/login" />
-  //       )
-  //     }
-  //   />
-  // );
-
   return (
     <Route
       {...rest}
       render={routerProps =>
-        loadingUser ? null : isAuthenticated ? (
+        loadingUser ? (
+          <Loader />
+        ) : isAuthenticated ? (
           <Component {...routerProps} {...componentProps} />
         ) : (
           <Redirect to="/login" />
@@ -37,6 +24,19 @@ const PrivateRoute = ({ component: Component, componentProps, ...rest }) => {
       }
     />
   );
+
+  //   return (
+  //     <Route
+  //       {...rest}
+  //       render={routerProps =>
+  //         loadingUser ? null : isAuthenticated ? (
+  //           <Component {...routerProps} {...componentProps} />
+  //         ) : (
+  //           <Redirect to="/login" />
+  //         )
+  //       }
+  //     />
+  //   );
 };
 
 export default PrivateRoute;
