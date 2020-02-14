@@ -23,6 +23,7 @@ import {
 } from './authTypes';
 
 import store from '../store';
+import { UPDATE_MAILBOX } from '../mail/mailTypes';
 
 export const clearFailedSignup = () => ({ type: CLEAR_FAILED_SIGNUP });
 export const clearFailedSignin = () => ({ type: CLEAR_FAILED_SIGNIN });
@@ -129,6 +130,10 @@ export const setCurrentUser = () => async dispatch => {
       dispatch({
         type: SET_CURRENT_USER,
         payload: json.data
+      });
+      dispatch({
+        type: UPDATE_MAILBOX,
+        payload: json.data.user.profile.mailbox
       });
     } else {
       localStorage.removeItem('jwt');

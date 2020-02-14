@@ -11,13 +11,5 @@
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\server.js"
     }
-    // {
-    //   "type": "node",
-    //   "request": "launch",
-    //   "name": "Launch Program",
-    //   "program": "${workspaceFolder}/data/friends-test.js",
-    //   "args": ["--run"],
-    //   "skipFiles": ["<node_internals>/**"]
-    // }
   ]
 }

@@ -126,11 +126,11 @@ export default (state = initialState, action) => {
     //     }
     //   };
 
-    case MARK_MESSAGE_FAILURE:
-      return {
-        ...state,
-        editStatus: 'fail'
-      };
+    // case MARK_MESSAGE_FAILURE:
+    //   return {
+    //     ...state,
+    //     editStatus: 'fail'
+    //   };
 
     // case TRASH_MESSAGE:
     //   return {
@@ -143,38 +143,38 @@ export default (state = initialState, action) => {
     //     }
     //   };
 
-    case TRASH_MESSAGE_FAILURE:
-      return {
-        ...state,
-        editStatus: 'fail'
-      };
+    // case TRASH_MESSAGE_FAILURE:
+    //   return {
+    //     ...state,
+    //     editStatus: 'fail'
+    //   };
 
-    case OPEN_NEW_MESSAGE:
-      return {
-        ...state,
-        loadedProfile: {
-          ...state.loadedProfile,
-          inbox: action.payload.inbox,
-          outbox: action.payload.outbox
-        }
-      };
+    // case OPEN_NEW_MESSAGE:
+    //   return {
+    //     ...state,
+    //     loadedProfile: {
+    //       ...state.loadedProfile,
+    //       inbox: action.payload.inbox,
+    //       outbox: action.payload.outbox
+    //     }
+    //   };
 
-    case UPDATE_MAILBOX:
-      return {
-        ...state,
-        editStatus: 'success',
-        loadedProfile: {
-          ...state.loadedProfile,
-          inbox: action.payload.inbox,
-          outbox: action.payload.outbox
-        }
-      }
-  
-    case DELETE_MESSAGE_FAILURE: 
-      return {
-        ...state,
-        editStatus: 'fail'
-      };
+    // case UPDATE_MAILBOX:
+    //   return {
+    //     ...state,
+    //     editStatus: 'success',
+    //     loadedProfile: {
+    //       ...state.loadedProfile,
+    //       inbox: action.payload.inbox,
+    //       outbox: action.payload.outbox
+    //     }
+    //   }
+
+    // case DELETE_MESSAGE_FAILURE:
+    //   return {
+    //     ...state,
+    //     editStatus: 'fail'
+    //   };
 
     default:
       return state;

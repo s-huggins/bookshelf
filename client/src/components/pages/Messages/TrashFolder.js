@@ -1,48 +1,72 @@
-import React from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import useLoadMail, { MailFolder } from './hooks/useLoadMail';
 import Folder from './Folder';
-import { useState } from 'react';
 import useMailboxAlert, { writeAlertText } from './hooks/useMailboxAlert';
-
-const TrashFolder = ({
-  folder,
-  checkMessage,
-  checkedMessages,
-  recoverFromTrash,
-  markSaved,
+import {
+  untrashMail,
+  saveMail,
   markRead,
   deleteTrash
-}) => {
+} from '../../../redux/mail/mailActions';
+import Loader from '../../common/Loader';
+
+const TrashFolder = () => {
+  const dispatch = useDispatch();
   const [action, setAction] = useState('');
   const [alertCache, alert, dismissAlert] = useMailboxAlert();
 
+  const [loadingMail, mail] = useLoadMail(MailFolder.TRASH);
+  const numTrashed = useSelector(state => state.mail.mailbox.numTrashed);
+
+  const [checkedMessages, setCheckedMessages] = useState({});
+  // uncheck messages after each action
+  useEffect(() => {
+    setCheckedMessages({});
+  }, [loadingMail]);
+
+  const checkBatch = (check, ...messageIds) => {
+    setCheckedMessages(oldState => {
+      const newState = { ...oldState };
+      messageIds.forEach(_id => {
+        newState[_id] = check;
+      });
+      return newState;
+    });
+  };
+
+  const checkMessages = (...messageIds) => checkBatch(true, ...messageIds);
+  const uncheckMessages = (...messageIds) => checkBatch(false, ...messageIds);
+
   const handleAction = e => {
-    const numChecked = Object.keys(checkedMessages).length;
+    const numChecked = Object.values(checkedMessages).filter(v => v).length;
+    if (numChecked === 0) return;
+    const messages = mail.filter(msg => checkedMessages[msg._id]);
 
     switch (e.target.value) {
       case 'inbox':
-        recoverFromTrash();
+        dispatch(untrashMail(messages));
         alertCache.current = writeAlertText(
           writeAlertText.RECOVER_FROM_TRASH,
           numChecked
         );
         break;
       case 'save':
-        markSaved();
+        dispatch(saveMail(messages));
         alertCache.current = writeAlertText(
           writeAlertText.MOVE_TO_SAVED,
           numChecked
         );
         break;
       case 'read':
-        markRead();
+        dispatch(markRead(messages));
         alertCache.current = writeAlertText(
           writeAlertText.MARK_READ,
           numChecked
         );
         break;
       case 'delete':
-        deleteTrash();
+        dispatch(deleteTrash(messages));
         alertCache.current = writeAlertText(writeAlertText.DELETE, numChecked);
         break;
     }
@@ -50,41 +74,39 @@ const TrashFolder = ({
     setAction('');
   };
 
-  return (
-    <Switch>
-      <Route exact path="/message/trash/page/:pageNum">
-        <Folder
-          messages={folder.sort(
-            (m1, m2) =>
-              new Date(m2.message.dateSent) - new Date(m1.message.dateSent)
-          )}
-          title="Trash"
-          type="trash"
-          path="/message/trash"
-          checkMessage={checkMessage}
-          checkedMessages={checkedMessages}
-          alert={alert}
-          dismissAlert={dismissAlert}
+  return loadingMail ? (
+    <Loader />
+  ) : (
+    <>
+      <Folder
+        messages={mail}
+        loading={loadingMail}
+        title="Trash"
+        totalMessages={numTrashed}
+        path="/message/trash"
+        checkMessages={checkMessages}
+        uncheckMessages={uncheckMessages}
+        checkedMessages={checkedMessages}
+        alert={alert}
+        dismissAlert={dismissAlert}
+      >
+        <select
+          name="actions"
+          className="actions-dropdown"
+          onChange={handleAction}
+          value={action}
         >
-          <select
-            name="actions"
-            className="actions-dropdown"
-            onChange={handleAction}
-            value={action}
-          >
-            <option value="">actions...</option>
-            <option value="inbox">move to inbox</option>
-            <option value="save">move to saved</option>
-            <option value="read">mark as read</option>
-            <option value="delete">delete</option>
-          </select>
-        </Folder>
-        <p className="trash-note">
-          Note: all messages in the trash will be deleted after 30 days
-        </p>
-      </Route>
-      <Redirect to="/message/trash/page/1" />
-    </Switch>
+          <option value="">actions...</option>
+          <option value="inbox">move to inbox</option>
+          <option value="save">move to saved</option>
+          <option value="read">mark as read</option>
+          <option value="delete">delete</option>
+        </select>
+      </Folder>
+      <p className="trash-note">
+        Note: all messages in the trash will be deleted after 30 days
+      </p>
+    </>
   );
 };
 

@@ -4,11 +4,13 @@ import profileReducer from './profile/profileReducer';
 import searchReducer from './search/searchReducer';
 import bookReducer from './book/bookReducer';
 import authorReducer from './author/authorReducer';
+import mailReducer from './mail/mailReducer';
 
 export default combineReducers({
   auth: authReducer,
   profile: profileReducer,
   search: searchReducer,
   book: bookReducer,
-  author: authorReducer
+  author: authorReducer,
+  mail: mailReducer
 });

@@ -59,8 +59,8 @@
 import { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
-  getProfile,
-  getMailbox
+  getProfile
+  // getMailbox
 } from '../../../../redux/profile/profileActions';
 import { useParams, useLocation } from 'react-router-dom';
 
@@ -103,9 +103,9 @@ const useLoadProfile = (
         dispatch(getProfile(profileId));
         break;
 
-      case useLoadProfile.WITH_MAIL:
-        dispatch(getMailbox());
-        break;
+      // case useLoadProfile.WITH_MAIL:
+      //   dispatch(getMailbox());
+      //   break;
     }
 
     setLoading(true);

@@ -6,30 +6,61 @@ const request = require('request-promise-native');
 // makeFriends(100);
 // addCurrentlyReading(34);
 // acceptAllFriendRequests();
+SendMessagesSync(1);
 
-sendMessage();
-// TODO: create an event emitter that logs when each message is sent? or use a .then
-async function sendMessage() {
-  const { token } = await signIn('1-test@gmail.com', '12345678');
+async function SendMessagesSync(n) {
+  await createAccount('1-test');
+  await createAccount('2-test');
+  await createAccount('3-test');
+  const { token } = await signIn('2-test@gmail.com', '12345678');
+  const to = [1, 3];
+  for (let i = 1; i <= n; i++) {
+    await request
+      .post({
+        url: `http://localhost:5000/api/v1/message`,
+        json: true,
+        auth: {
+          bearer: token
+        },
+        body: {
+          to,
+          subject: `lorem ipsum #${i}`,
+          body:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam?'
+        }
+      })
+      .then(() => console.log(`message #${i} sent`))
+      .catch(err => {
+        console.log('ERROR SENDING MAIL:', err);
+      });
+  }
+  console.log('messages sent.');
+}
+async function sendMessagesAsync() {
+  await createAccount('1-test');
+  await createAccount('2-test');
+  const { token } = await signIn('2-test@gmail.com', '12345678');
   const to = [1];
   const mail = [];
   // for (let i = 1; i <= 201; i++) {
   //   if (i !== 2) to.push(i);
   // }
-  for (let i = 1; i <= 400; i++) {
-    const message = request.post({
-      url: `http://localhost:5000/api/v1/message`,
-      json: true,
-      auth: {
-        bearer: token
-      },
-      body: {
-        to,
-        subject: `lorem ipsum #${i}`,
-        body:
-          'Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam?'
-      }
-    });
+  for (let i = 1; i <= 50; i++) {
+    const message = request
+      .post({
+        url: `http://localhost:5000/api/v1/message`,
+        json: true,
+        auth: {
+          bearer: token
+        },
+        body: {
+          to,
+          subject: `lorem ipsum #${i}`,
+          body:
+            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam?'
+        }
+      })
+      .then(() => console.log(`message #${i} sent`));
 
     mail.push(message);
   }
@@ -41,26 +72,6 @@ async function sendMessage() {
     .catch(err => {
       console.log('ERROR SENDING MAIL:', err);
     });
-  // request
-  //   .post({
-  //     url: `http://localhost:5000/api/v1/message`,
-  //     json: true,
-  //     auth: {
-  //       bearer: token
-  //     },
-  //     body: {
-  //       to,
-  //       subject: 'lorem ipsum',
-  //       body:
-  //         'Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam?'
-  //     }
-  //   })
-  //   .then(() => {
-  //     console.log('message sent');
-  //   })
-  //   .catch(err => {
-  //     console.log('ERROR SENDING MAIL:', err);
-  //   });
 }
 
 function createTestAccount(name) {

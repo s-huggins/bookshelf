@@ -5,7 +5,7 @@ const profileRouter = require('../profile/profileRoutes');
 const {
   signupValidator,
   signinValidator
-} = require('../../../../validators/authValidators');
+} = require('../../../../controllers/authValidators');
 
 // api/v1/users/
 const router = express.Router();

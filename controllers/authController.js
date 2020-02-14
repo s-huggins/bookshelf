@@ -80,7 +80,7 @@ exports.protect = catchAsync(async (req, res, next) => {
     );
   }
   // if here, grant access
-  req.user = user._doc;
+  req.user = user.toObject();
   next();
 });
 

@@ -1,22 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import Folder from './Folder';
+import { useSelector, useDispatch } from 'react-redux';
 import useMailboxAlert, { writeAlertText } from './hooks/useMailboxAlert';
 import useLoadMail, { MailFolder } from './hooks/useLoadMail';
-import { useSelector, useDispatch } from 'react-redux';
-import {
-  unsaveMail,
-  trashMail,
-  markRead
-} from '../../../redux/mail/mailActions';
+import { deleteSent } from '../../../redux/mail/mailActions';
+import Folder from './Folder';
 import Loader from '../../common/Loader';
 
-const SavedFolder = () => {
+const SentFolder = () => {
   const dispatch = useDispatch();
   const [action, setAction] = useState('');
   const [alertCache, alert, dismissAlert] = useMailboxAlert();
 
-  const [loadingMail, mail] = useLoadMail(MailFolder.SAVED);
-  const numSaved = useSelector(state => state.mail.mailbox.numSaved);
+  const [loadingMail, mail] = useLoadMail(MailFolder.SENT);
+  const numSent = useSelector(state => state.mail.mailbox.numSent);
 
   const [checkedMessages, setCheckedMessages] = useState({});
   // uncheck messages after each action
@@ -43,27 +39,9 @@ const SavedFolder = () => {
     const messages = mail.filter(msg => checkedMessages[msg._id]);
 
     switch (e.target.value) {
-      case 'inbox':
-        dispatch(unsaveMail(messages));
-        alertCache.current = writeAlertText(
-          writeAlertText.MOVE_TO_INBOX,
-          numChecked
-        );
-        break;
-      case 'trash':
-        dispatch(trashMail(messages));
-        alertCache.current = writeAlertText(
-          writeAlertText.SEND_TO_TRASH,
-          numChecked
-        );
-        break;
-      case 'read':
-        dispatch(markRead(messages));
-        alertCache.current = writeAlertText(
-          writeAlertText.MARK_READ,
-          numChecked
-        );
-        break;
+      case 'delete':
+        dispatch(deleteSent(messages));
+        alertCache.current = writeAlertText(writeAlertText.deleteSent);
     }
     setAction('');
   };
@@ -74,14 +52,15 @@ const SavedFolder = () => {
     <Folder
       messages={mail}
       loading={loadingMail}
-      title="Saved messages"
-      totalMessages={numSaved}
-      path="/message/saved"
+      totalMessages={numSent}
+      title="Sent messages"
+      path="/message/outbox"
       checkMessages={checkMessages}
       uncheckMessages={uncheckMessages}
       checkedMessages={checkedMessages}
       alert={alert}
       dismissAlert={dismissAlert}
+      mailDirection="out"
     >
       <select
         name="actions"
@@ -90,12 +69,10 @@ const SavedFolder = () => {
         value={action}
       >
         <option value="">actions...</option>
-        <option value="inbox">move to inbox</option>
-        <option value="trash">move to trash</option>
-        <option value="read">mark as read</option>
+        <option value="delete">delete</option>
       </select>
     </Folder>
   );
 };
 
-export default SavedFolder;
+export default SentFolder;

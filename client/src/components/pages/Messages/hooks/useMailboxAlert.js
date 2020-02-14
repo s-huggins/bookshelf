@@ -1,30 +1,30 @@
 import { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { clearEditStatus } from '../../../../redux/profile/profileActions';
 import pluralize from '../../../../util/pluralize';
+import { clearMailActionStatus } from '../../../../redux/mail/mailActions';
 
 export default () => {
   const [alert, setAlert] = useState(null);
   const alertCache = useRef('');
-  const editStatus = useSelector(state => state.profile.editStatus);
+  const actionStatus = useSelector(state => state.mail.actionStatus);
   const dispatch = useDispatch();
 
   const dismissAlert = () => setAlert(null);
 
   useEffect(() => {
-    if (editStatus === 'success') {
+    if (actionStatus === 'success') {
       setAlert({ type: 'info', message: alertCache.current });
-      dispatch(clearEditStatus());
-    } else if (editStatus === 'fail') {
+      dispatch(clearMailActionStatus());
+    } else if (actionStatus === 'fail') {
       setAlert({
         type: 'warning',
         message: 'Action failed. Please try again.'
       });
-      dispatch(clearEditStatus());
+      dispatch(clearMailActionStatus());
     } else {
       alertCache.current = '';
     }
-  }, [editStatus]);
+  }, [actionStatus]);
 
   return [alertCache, alert, dismissAlert];
 };

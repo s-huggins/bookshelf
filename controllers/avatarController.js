@@ -31,8 +31,7 @@ exports.uploadAvatar = catchAsync(async (req, res) => {
   const updatedUser = {
     ...req.user,
     profile: {
-      ...req.user.profile._doc,
-      // handle: updatedProfile.handle,
+      ...req.user.profile,
       avatar_id: updatedProfile.avatar_id
     }
   };
@@ -67,8 +66,7 @@ exports.deleteAvatar = catchAsync(async (req, res) => {
   const updatedUser = {
     ...req.user,
     profile: {
-      ...req.user.profile._doc,
-      // handle: updatedProfile.handle,
+      ...req.user.profile,
       avatar_id: updatedProfile.avatar_id
     }
   };

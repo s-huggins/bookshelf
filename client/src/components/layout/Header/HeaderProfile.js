@@ -7,9 +7,15 @@ import MessageIcon from './MessageIcon';
 
 const HeaderProfile = () => {
   // Parent Header component has ensured authentication, and consequently a loaded user profile
-  const { friendRequests, firstName, inbox } = useSelector(
-    state => state.auth.user.profile
+  // const {
+  //   friendRequests,
+  //   firstName,
+  // } = useSelector(state => state.auth.user.profile);
+  const friendRequests = useSelector(
+    state => state.auth.user.profile.friendRequests
   );
+  const firstName = useSelector(state => state.auth.user.profile.firstName);
+  const numUnread = useSelector(state => state.mail.mailbox.numUnread);
 
   return (
     <div className="HeaderProfile">
@@ -21,7 +27,7 @@ const HeaderProfile = () => {
           {/* <span className="notification-badge"></span> TODO: ADD BACK IN */}
         </a>
 
-        <MessageIcon inbox={inbox} />
+        <MessageIcon numUnread={numUnread} />
         <FriendsIcon friendRequests={friendRequests} />
         <ProfileIcon firstName={firstName} />
       </div>

@@ -70,7 +70,7 @@ const MessengerNav = () => {
       </li>
       <li>
         <NavLink
-          to="/message/outbox"
+          to="/message/sent"
           className="green-link"
           activeClassName="nav-active"
         >

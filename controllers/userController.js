@@ -10,7 +10,7 @@ exports.getUser = catchAsync(async (req, res) => {
   // TODO: also populate messages for header message icon
   const user = await User.findById(req.user._id).populate(
     'profile',
-    '_id id handle displayName firstName avatar_id books ratings reviews friends friendRequests inbox'
+    '_id id handle displayName firstName avatar_id books ratings reviews friends friendRequests mailbox'
   );
   await Profile.findByIdAndUpdate(req.user.profile._id, {
     lastActive: new Date()
@@ -64,7 +64,7 @@ exports.updateUser = catchAsync(async (req, res, next) => {
   });
 
   if (!updatedUser) {
-    next(new AppError('No user with that ID', 404));
+    return next(new AppError('No user with that ID', 404));
   }
 
   res.status(200).json({

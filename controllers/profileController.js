@@ -110,7 +110,9 @@ exports.updateProfile = catchAsync(async (req, res, next) => {
   const updatedUser = {
     ...req.user,
     profile: {
-      ...req.user.profile._doc,
+      // ...req.user.profile._doc,
+      // handle: updatedProfile.handle
+      ...req.user.profile,
       handle: updatedProfile.handle
     }
   };

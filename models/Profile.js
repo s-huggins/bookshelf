@@ -4,7 +4,10 @@ const validator = require('validator');
 const autoIncrementModelId = require('./Counter');
 const Book = require('./Book');
 const Avatar = require('./Avatar');
-const Message = require('./Message');
+const InboxBucket = require('./InboxBucket');
+const OutboxBucket = require('./OutboxBucket');
+const SpoolGroup = require('./SpoolGroup');
+const SpoolBucket = require('./SpoolBucket');
 
 const { Schema } = mongoose;
 
@@ -37,6 +40,7 @@ const ProfileSchema = new Schema(
       default: true
     },
     friends: {
+      // TODO: max friends validation
       type: [
         {
           profile: {
@@ -188,41 +192,103 @@ const ProfileSchema = new Schema(
       }
     ],
 
-    inbox: [
-      {
-        message: {
-          type: Schema.Types.ObjectId,
-          ref: 'Message'
+    // inbox: [
+    //   {
+    //     message: {
+    //       type: Schema.Types.ObjectId,
+    //       ref: 'Message'
+    //     },
+
+    //     read: {
+    //       type: Boolean,
+    //       default: false
+    //     },
+    //     trash: {
+    //       trashed: {
+    //         type: Boolean,
+    //         default: false
+    //       },
+    //       dateTrashed: {
+    //         type: Date
+    //       }
+    //     },
+    //     saved: {
+    //       type: Boolean,
+    //       default: false
+    //     },
+    //     dateReceived: {
+    //       type: Date,
+    //       default: Date.now,
+    //       index: true
+    //     }
+    //   }
+    // ],
+
+    // outbox: [
+    //   {
+    //     message: {
+    //       type: Schema.Types.ObjectId,
+    //       ref: 'Message'
+    //     },
+    //     dateSent: {
+    //       type: Date,
+    //       default: Date.now,
+    //       index: true
+    //     }
+    //   }
+    // ],
+
+    mailbox: {
+      // PROHOBIT MAILBOX UPDATES FROM EDIT PROFILE ROUTES
+      numInbox: {
+        type: Number,
+        default: 0
+      },
+      numTrashed: {
+        // decrement when mail is deleted, without incrementing numInbox
+        type: Number,
+        default: 0
+      },
+      lastCleaned: Date, // last trash removal
+      numSaved: {
+        type: Number,
+        default: 0
+      },
+      numUnread: {
+        type: Number,
+        default: 0
+      },
+      numSent: {
+        // decrement if sent mail is deleted
+        type: Number,
+        default: 0
+      },
+
+      buckets: {
+        inbox: {
+          type: [
+            {
+              seq: Number, // bucket number
+              size: Number,
+              numTrashed: Number,
+              numSaved: Number,
+              numDeleted: Number,
+              trashOldest: Date
+            }
+          ]
         },
 
-        read: {
-          type: Boolean,
-          default: false
-        },
-        trash: {
-          trashed: {
-            type: Boolean,
-            default: false
-          },
-          dateTrashed: {
-            type: Date
-          }
-        },
-        saved: {
-          type: Boolean,
-          default: false
+        outbox: {
+          type: [
+            {
+              seq: Number, // bucket number
+              size: Number,
+              numDeleted: Number
+            }
+          ]
         }
       }
-    ],
-
-    outbox: [
-      {
-        message: {
-          type: Schema.Types.ObjectId,
-          ref: 'Message'
-        }
-      }
-    ],
+    },
 
     location: {
       value: {
@@ -446,16 +512,52 @@ ProfileSchema.post('remove', async function(doc, next) {
   next();
 });
 
-// update the profileLinks arrays on all messages linked with this account
-// messages with an empty profileLinks array are removed from the DB
+// remove Inbox/Outbox buckets
+// update spool group profilesList
+// possibly remove spool chain if profilesList becomes empty
 ProfileSchema.post('remove', async function(doc, next) {
-  await Message.deleteMany({ profileLinks: [doc.id] });
-  await Message.updateMany(
-    { profileLinks: doc.id },
+  const cleanUpTasks = [
+    InboxBucket.deleteMany({ profile: doc._id }),
+
+    OutboxBucket.deleteMany({ profile: doc._id }),
+
+    SpoolGroup.updateMany(
+      {
+        group: doc.id,
+        profileLinks: { $ne: [doc.id] } // array length > 1
+      },
+      {
+        $pull: { profileLinks: doc.id }
+      }
+    )
+  ];
+
+  const groupsToDelete = SpoolGroup.find(
     {
-      $pull: { profileLinks: doc.id }
+      group: doc.id,
+      // profileLinks: { $size: 1 } // // array length === 1
+      profileLinks: { $eq: [doc.id] }
+    },
+    {
+      _id: 1
+    },
+    {
+      lean: true
     }
   );
+
+  cleanUpTasks.push(groupsToDelete);
+
+  const results = await Promise.all(cleanUpTasks);
+
+  const emptyGroupIds = results.pop().map(group => group._id);
+  const spoolDeletionTasks = emptyGroupIds.map(_id =>
+    SpoolBucket.deleteMany({ spoolGroup: _id })
+  );
+  spoolDeletionTasks.push(
+    SpoolGroup.deleteMany({ _id: { $in: emptyGroupIds } })
+  );
+  await Promise.all(spoolDeletionTasks);
 
   next();
 });

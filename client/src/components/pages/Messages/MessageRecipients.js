@@ -3,17 +3,19 @@ import { Link } from 'react-router-dom';
 import Avatar from '../Profile/Avatar';
 import MessageAvatar from './MessageAvatar';
 import pluralize from '../../../util/pluralize';
+import { useSelector } from 'react-redux';
 
-const MessageRecipients = ({ recipients, ownProfile, previewMax = 5 }) => {
+const MessageRecipients = ({ recipients, previewMax = 5 }) => {
   const [recipientsView, setRecipientsView] = useState({
     list: [],
     show: 0
   });
+  const ownProfileId = useSelector(state => state.auth.user.profile.id);
   useLayoutEffect(() => {
     let list = recipients;
 
     const indexSelf = recipients.findIndex(
-      recip => recip.profileId === ownProfile.id
+      recip => recip.profileId === ownProfileId
     );
 
     if (indexSelf !== -1) {
@@ -53,8 +55,9 @@ const MessageRecipients = ({ recipients, ownProfile, previewMax = 5 }) => {
         <MessageAvatar
           key={recip.profileId}
           profileId={recip.profileId}
-          profile={recip.profile}
+          avatar_id={recip.avatar_id}
           displayName={recip.displayName}
+          archived={recip.archived}
         />
       ));
     } else if (show < list.length) {
@@ -64,8 +67,9 @@ const MessageRecipients = ({ recipients, ownProfile, previewMax = 5 }) => {
             <MessageAvatar
               key={recip.profileId}
               profileId={recip.profileId}
-              profile={recip.profile}
+              avatar_id={recip.avatar_id}
               displayName={recip.displayName}
+              archived={recip.archived}
             />
           ))}
           <p>
@@ -98,8 +102,9 @@ const MessageRecipients = ({ recipients, ownProfile, previewMax = 5 }) => {
             <MessageAvatar
               key={recip.profileId}
               profileId={recip.profileId}
-              profile={recip.profile}
+              avatar_id={recip.avatar_id}
               displayName={recip.displayName}
+              archived={recip.archived}
             />
           ))}
           <button
@@ -113,19 +118,8 @@ const MessageRecipients = ({ recipients, ownProfile, previewMax = 5 }) => {
     }
   };
 
-  return (
-    <>
-      {/* {recipientsView.list.map(recip => (
-        <MessageAvatar
-          key={recip.profileId}
-          profileId={recip.profileId}
-          displayName={recip.displayName}
-          profile={recip.profile}
-        />
-      ))} */}
-      {renderRecipients()}
-    </>
-  );
+  // return <>{renderRecipients()}</>;
+  return renderRecipients();
 };
 
 export default MessageRecipients;

@@ -2,12 +2,12 @@
   max-width: 60rem;
   margin: unset;
 
-  .alert-container {
-    .alert {
-      margin: 0;
-    }
-    height: 3rem;
-  }
+  // .alert-container {
+  //   .alert {
+  //     margin: 0;
+  //   }
+  //   height: 3rem;
+  // }
 
   &__top {
     display: flex;
@@ -17,11 +17,28 @@
     }
   }
 
-  &__spool {
+  &__spool-container {
     margin-top: 2rem;
+
+    width: 70%;
+    .alert-container {
+      .alert {
+        margin: 0;
+      }
+      height: 3rem;
+    }
   }
 
-  &__spool-container {
-    width: 70%;
+  &__spool {
+    .pagination {
+      text-align: right;
+
+      &-top {
+        margin-bottom: 1rem;
+      }
+      &-bottom {
+        margin-top: 1rem;
+      }
+    }
   }
 }

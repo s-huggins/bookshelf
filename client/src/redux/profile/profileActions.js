@@ -12,14 +12,14 @@ import {
   // SHELVE_BOOK,
   // UPDATE_PROFILE_RATINGS,
   SIGNAL_BOOK_WAS_RATED,
-  RESET_BOOK_WAS_RATED_SIGNAL,
-  MARK_MESSAGE,
-  MARK_MESSAGE_FAILURE,
-  TRASH_MESSAGE,
-  TRASH_MESSAGE_FAILURE,
-  OPEN_NEW_MESSAGE,
-  DELETE_MESSAGE,
-  UPDATE_MAILBOX
+  RESET_BOOK_WAS_RATED_SIGNAL
+  // MARK_MESSAGE,
+  // MARK_MESSAGE_FAILURE,
+  // TRASH_MESSAGE,
+  // TRASH_MESSAGE_FAILURE,
+  // OPEN_NEW_MESSAGE,
+  // DELETE_MESSAGE,
+  // UPDATE_MAILBOX
 } from './profileTypes';
 
 import {
@@ -212,180 +212,180 @@ export const resetBookRatedSignal = () => ({
   type: RESET_BOOK_WAS_RATED_SIGNAL
 });
 
-export const getMailbox = () => async dispatch => {
-  dispatch(prepareGetProfile());
-  const token = store.getState().auth.token;
-  const endpoint = 'http://localhost:5000/api/v1/message';
+// export const getMailbox = () => async dispatch => {
+//   dispatch(prepareGetProfile());
+//   const token = store.getState().auth.token;
+//   const endpoint = 'http://localhost:5000/api/v1/message';
 
-  const res = await fetch(endpoint, {
-    method: 'GET',
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${token}`
-    }
-  });
+//   const res = await fetch(endpoint, {
+//     method: 'GET',
+//     headers: {
+//       Accept: 'application/json',
+//       Authorization: `Bearer ${token}`
+//     }
+//   });
 
-  const json = await res.json();
+//   const json = await res.json();
 
-  if (json.status === 'success') {
-    dispatch({
-      type: LOAD_PROFILE_SUCCESS,
-      payload: json
-    });
-  } else {
-    dispatch({
-      type: LOAD_PROFILE_FAILURE
-    });
-  }
-};
+//   if (json.status === 'success') {
+//     dispatch({
+//       type: LOAD_PROFILE_SUCCESS,
+//       payload: json
+//     });
+//   } else {
+//     dispatch({
+//       type: LOAD_PROFILE_FAILURE
+//     });
+//   }
+// };
 
-const markMessages = (messageIds, mark, markFlag) => async dispatch => {
-  const token = store.getState().auth.token;
-  const endpoint = `http://localhost:5000/api/v1/message/mark?${mark}=${markFlag}`;
+// const markMessages = (messageIds, mark, markFlag) => async dispatch => {
+//   const token = store.getState().auth.token;
+//   const endpoint = `http://localhost:5000/api/v1/message/mark?${mark}=${markFlag}`;
 
-  const res = await fetch(endpoint, {
-    method: 'PATCH',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ messageIds })
-  });
+//   const res = await fetch(endpoint, {
+//     method: 'PATCH',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${token}`
+//     },
+//     body: JSON.stringify({ messageIds })
+//   });
 
-  const json = await res.json();
+//   const json = await res.json();
 
-  if (json.status === 'success') {
-    dispatch({
-      type: UPDATE_MAILBOX,
-      payload: {
-        inbox: json.data.inbox,
-        outbox: json.data.outbox
-      }
-    });
-    dispatch({
-      type: UPDATE_INBOX_HEADER,
-      payload: {
-        inbox: json.data.inbox
-      }
-    });
-  } else {
-    dispatch({
-      type: MARK_MESSAGE_FAILURE
-    });
-  }
-};
+//   if (json.status === 'success') {
+//     dispatch({
+//       type: UPDATE_MAILBOX,
+//       payload: {
+//         inbox: json.data.inbox,
+//         outbox: json.data.outbox
+//       }
+//     });
+//     dispatch({
+//       type: UPDATE_INBOX_HEADER,
+//       payload: {
+//         inbox: json.data.inbox
+//       }
+//     });
+//   } else {
+//     dispatch({
+//       type: MARK_MESSAGE_FAILURE
+//     });
+//   }
+// };
 
-export const markRead = (messageIds, isRead) => async dispatch => {
-  dispatch(markMessages(messageIds, 'read', isRead));
-};
-export const markSaved = (messageIds, isSaved) => async dispatch => {
-  dispatch(markMessages(messageIds, 'saved', isSaved));
-};
+// export const markRead = (messageIds, isRead) => async dispatch => {
+//   dispatch(markMessages(messageIds, 'read', isRead));
+// };
+// export const markSaved = (messageIds, isSaved) => async dispatch => {
+//   dispatch(markMessages(messageIds, 'saved', isSaved));
+// };
 
-export const openNewMessage = messageId => async dispatch => {
-  const token = store.getState().auth.token;
-  const endpoint = `http://localhost:5000/api/v1/message/mark?read=true`;
+// export const openNewMessage = messageId => async dispatch => {
+//   const token = store.getState().auth.token;
+//   const endpoint = `http://localhost:5000/api/v1/message/mark?read=true`;
 
-  const res = await fetch(endpoint, {
-    method: 'PATCH',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ messageIds: [messageId] })
-  });
+//   const res = await fetch(endpoint, {
+//     method: 'PATCH',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${token}`
+//     },
+//     body: JSON.stringify({ messageIds: [messageId] })
+//   });
 
-  const json = await res.json();
+//   const json = await res.json();
 
-  if (json.status === 'success') {
-    dispatch({
-      type: OPEN_NEW_MESSAGE,
-      payload: {
-        inbox: json.data.inbox,
-        outbox: json.data.outbox
-      }
-    });
-    dispatch({
-      type: UPDATE_INBOX_HEADER,
-      payload: {
-        inbox: json.data.inbox
-      }
-    });
-  }
-};
+//   if (json.status === 'success') {
+//     dispatch({
+//       type: OPEN_NEW_MESSAGE,
+//       payload: {
+//         inbox: json.data.inbox,
+//         outbox: json.data.outbox
+//       }
+//     });
+//     dispatch({
+//       type: UPDATE_INBOX_HEADER,
+//       payload: {
+//         inbox: json.data.inbox
+//       }
+//     });
+//   }
+// };
 
-export const trashMessages = (messageIds, trashFlag) => async dispatch => {
-  const token = store.getState().auth.token;
-  const endpoint = `http://localhost:5000/api/v1/message/trash?trash=${trashFlag}`;
+// export const trashMessages = (messageIds, trashFlag) => async dispatch => {
+//   const token = store.getState().auth.token;
+//   const endpoint = `http://localhost:5000/api/v1/message/trash?trash=${trashFlag}`;
 
-  const res = await fetch(endpoint, {
-    method: 'PATCH',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ messageIds })
-  });
+//   const res = await fetch(endpoint, {
+//     method: 'PATCH',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${token}`
+//     },
+//     body: JSON.stringify({ messageIds })
+//   });
 
-  const json = await res.json();
+//   const json = await res.json();
 
-  if (json.status === 'success') {
-    dispatch({
-      type: UPDATE_MAILBOX,
-      payload: {
-        inbox: json.data.inbox,
-        outbox: json.data.outbox
-      }
-    });
-    dispatch({
-      type: UPDATE_INBOX_HEADER,
-      payload: {
-        inbox: json.data.inbox
-      }
-    });
-  } else {
-    dispatch({
-      type: TRASH_MESSAGE_FAILURE
-    });
-  }
-};
+//   if (json.status === 'success') {
+//     dispatch({
+//       type: UPDATE_MAILBOX,
+//       payload: {
+//         inbox: json.data.inbox,
+//         outbox: json.data.outbox
+//       }
+//     });
+//     dispatch({
+//       type: UPDATE_INBOX_HEADER,
+//       payload: {
+//         inbox: json.data.inbox
+//       }
+//     });
+//   } else {
+//     dispatch({
+//       type: TRASH_MESSAGE_FAILURE
+//     });
+//   }
+// };
 
-export const deleteMessages = (messageIds) => async dispatch => {
-  const token = store.getState().auth.token;
-  const endpoint = `http://localhost:5000/api/v1/message`;
+// export const deleteMessages = (messageIds) => async dispatch => {
+//   const token = store.getState().auth.token;
+//   const endpoint = `http://localhost:5000/api/v1/message`;
 
-  const res = await fetch(endpoint, {
-    method: 'DELETE',
-    headers: {
-      Accept: 'application/json',
-      'Content-Type': 'application/json',
-      Authorization: `Bearer ${token}`
-    },
-    body: JSON.stringify({ messageIds })
-  });
+//   const res = await fetch(endpoint, {
+//     method: 'DELETE',
+//     headers: {
+//       Accept: 'application/json',
+//       'Content-Type': 'application/json',
+//       Authorization: `Bearer ${token}`
+//     },
+//     body: JSON.stringify({ messageIds })
+//   });
 
-  const json = await res.json();
+//   const json = await res.json();
 
-  if (json.status === 'success') {
-    dispatch({
-      type: UPDATE_MAILBOX,
-      payload: {
-        inbox: json.data.inbox,
-        outbox: json.data.outbox
-      }
-    });
-    dispatch({
-      type: UPDATE_INBOX_HEADER,
-      payload: {
-        inbox: json.data.inbox
-      }
-    });
-  } else {
-    dispatch({
-      type: TRASH_MESSAGE_FAILURE
-    });
-  }
-}
+//   if (json.status === 'success') {
+//     dispatch({
+//       type: UPDATE_MAILBOX,
+//       payload: {
+//         inbox: json.data.inbox,
+//         outbox: json.data.outbox
+//       }
+//     });
+//     dispatch({
+//       type: UPDATE_INBOX_HEADER,
+//       payload: {
+//         inbox: json.data.inbox
+//       }
+//     });
+//   } else {
+//     dispatch({
+//       type: TRASH_MESSAGE_FAILURE
+//     });
+//   }
+// }

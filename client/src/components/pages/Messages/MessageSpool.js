@@ -1,67 +1,179 @@
+// import React, { useState, useEffect } from 'react';
+// import Message from './Message';
+// import MessageActions from './MessageActions';
+// import Spool from './Spool';
+// import Alert from '../../common/Alert';
+// import Loader from '../../common/Loader';
+// import useLoadMessage from './hooks/useLoadMessage';
+// import useLoadSpool from './hooks/useLoadSpool';
+// import { clearSpool } from '../../../redux/mail/mailActions';
+// import { useDispatch } from 'react-redux';
+
+// const MessageSpool = () => {
+//   const dispatch = useDispatch();
+//   const [alert, setAlert] = useState(null);
+
+//   const [loadingMessage, message] = useLoadMessage();
+//   const [loadingSpool, spool] = useLoadSpool(message?.spoolGroup?._id);
+
+//   useEffect(() => {
+//     // clear spool from redux store on unmount
+//     return () => dispatch(clearSpool());
+//   }, []);
+
+//   return (
+//     <div className="MessageSpool page-container">
+//       <main>
+//         <div className="MessageSpool__top">
+//           {loadingMessage ? (
+//             <Loader />
+//           ) : (
+//             <>
+//               <div className="MessageSpool__spool-container">
+//                 <div className="alert-container">
+//                   {alert && (
+//                     <Alert
+//                       type={alert.type}
+//                       message={alert.message}
+//                       handleDismiss={() => setAlert(null)}
+//                     />
+//                   )}
+//                 </div>
+//                 <Message
+//                   message={message}
+//                   trash={message.trash}
+//                   read={message.read}
+//                   saved={message.saved}
+//                 />
+//               </div>
+
+//               <MessageActions
+//                 message={message}
+//                 saved={message.saved}
+//                 read={message.read}
+//                 trash={message.trash}
+//                 setAlert={setAlert}
+//               />
+//             </>
+//           )}
+//         </div>
+//         {/* <div className="MessageSpool__spool-container">
+//           {loadingMessage ? null : loadingSpool && !spool ? (
+//             <Loader />
+//           ) : !spool ? (
+//             <Loader />
+//           ) : (
+//             <Spool
+//               spool={spool}
+//               totalMessages={message.spoolGroup.messagesTotal}
+//             />
+//           )}
+//         </div> */}
+//         <div className="MessageSpool__spool-container">
+//           {loadingMessage ? null : !spool ? (
+//             <Loader />
+//           ) : (
+//             <Spool
+//               spool={spool}
+//               totalMessages={message.spoolGroup.messagesTotal}
+//             />
+//           )}
+//         </div>
+//       </main>
+//     </div>
+//   );
+// };
+
+// export default MessageSpool;
+
 import React, { useState, useEffect } from 'react';
 import Message from './Message';
 import MessageActions from './MessageActions';
 import Spool from './Spool';
-import { useParams, Redirect } from 'react-router-dom';
 import Alert from '../../common/Alert';
-import { useSelector } from 'react-redux';
+import Loader from '../../common/Loader';
+import useLoadMessage from './hooks/useLoadMessage';
+import useLoadSpool from './hooks/useLoadSpool';
+import { clearSpool } from '../../../redux/mail/mailActions';
+import { useDispatch } from 'react-redux';
+import { useMemo } from 'react';
 
-const MessageSpool = ({ inbox, outbox }) => {
-  // const params = useParams();
-  // const messageId = params.messageId;
-  const { messageId } = useParams();
+const MessageSpool = () => {
+  const dispatch = useDispatch();
   const [alert, setAlert] = useState(null);
-  const ownProfile = useSelector(state => state.profile.loadedProfile);
-  // create a Set containing all other profiles privy to message
-  // use this set to fetch all related messages
+  const [page, setPage] = useState(1);
 
-  /**
-   * run back through inbox/outbox looking for messages with to arrays of the same size?
-   */
+  const [loadingMessage, message] = useLoadMessage();
+  const [loadingSpool, spool] = useLoadSpool(message?.spoolGroup?._id, page);
 
-  // console.log('inbox', inbox);
-  // console.log('outbox', outbox);
+  const profileMap = useMemo(() => {
+    if (!spool) return {};
+    const map = {};
+    spool.profiles.forEach(prof => {
+      map[prof.profileId] = {
+        archived: !!prof.profile,
+        profileId: prof.profileId,
+        displayName: prof?.profile?.displayName ?? prof.archived.displayName,
+        avatar_id: prof?.profile?.avatar_id
+      };
+    });
+    return map;
+  }, [spool?.spoolGroup]);
 
-  const message = inbox.find(msg => msg.message._id === messageId);
-  // useEffect(() => {
-  //   const participants = new Set([message.from.profileId, ...message.to.map(recip => recip.profileId)]);
-
-  // }, [messageId]);
-
-  if (!message) return <Redirect to="/message/inbox" />;
+  useEffect(() => {
+    // clear spool from redux store on unmount
+    return () => dispatch(clearSpool());
+  }, []);
 
   return (
     <div className="MessageSpool page-container">
       <main>
-        <div className="MessageSpool__spool-container alert-container">
-          {alert && (
-            <Alert
-              type={alert.type}
-              message={alert.message}
-              handleDismiss={() => setAlert(null)}
-            />
+        <div className="MessageSpool__top">
+          {loadingMessage ? (
+            <Loader />
+          ) : (
+            <>
+              <div className="MessageSpool__spool-container">
+                <div className="alert-container">
+                  {alert && (
+                    <Alert
+                      type={alert.type}
+                      message={alert.message}
+                      handleDismiss={() => setAlert(null)}
+                    />
+                  )}
+                </div>
+                <Message
+                  message={message}
+                  trash={message.trash}
+                  read={message.read}
+                  saved={message.saved}
+                />
+              </div>
+
+              <MessageActions
+                message={message}
+                saved={message.saved}
+                read={message.read}
+                trash={message.trash}
+                setAlert={setAlert}
+              />
+            </>
           )}
         </div>
-        <div className="MessageSpool__top">
-          <div className="MessageSpool__spool-container">
-            <Message
-              message={message.message}
-              trash={message.trash}
-              read={message.read}
-              saved={message.saved}
-              ownProfile={ownProfile}
+        <div className="MessageSpool__spool-container">
+          {loadingMessage ? null : !spool ? (
+            <Loader />
+          ) : (
+            <Spool
+              page={page}
+              setPage={setPage}
+              spool={spool}
+              // totalMessages={message.spoolGroup.messagesTotal}
+              totalMessages={spool.groupData.messagesTotal}
+              profileMap={profileMap}
             />
-          </div>
-          <MessageActions
-            messageId={messageId}
-            saved={message.saved}
-            read={message.read}
-            trash={message.trash}
-            setAlert={setAlert}
-          />
-        </div>
-        <div className="MessageSpool__spool MessageSpool__spool-container">
-          <Spool />
+          )}
         </div>
       </main>
     </div>
