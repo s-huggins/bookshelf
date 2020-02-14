@@ -6,14 +6,14 @@ const request = require('request-promise-native');
 // makeFriends(100);
 // addCurrentlyReading(34);
 // acceptAllFriendRequests();
-SendMessagesSync(1);
+SendMessagesSync(51);
 
 async function SendMessagesSync(n) {
   await createAccount('1-test');
   await createAccount('2-test');
   await createAccount('3-test');
   const { token } = await signIn('2-test@gmail.com', '12345678');
-  const to = [1, 3];
+  const to = [1, 2, 3];
   for (let i = 1; i <= n; i++) {
     await request
       .post({

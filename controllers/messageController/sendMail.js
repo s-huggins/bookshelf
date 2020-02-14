@@ -311,6 +311,8 @@ exports.sendMessage = catchAsync(async (req, res) => {
     if (n1 === n2) return 0;
     return 1;
   });
+  group = group.join(':');
+  group = `:${group}:`;
 
   // profileLinks array is used to track living profiles with a connection to the spool
   let profileLinks = recipients.map(recip => recip.get('id'));
@@ -338,25 +340,18 @@ exports.sendMessage = catchAsync(async (req, res) => {
   //   }
   // );
 
-  let spoolGroup;
-  console.log(group);
-  try {
-    console.log('GROUP IS', group);
-    spoolGroup = await SpoolGroup.findOneAndUpdate(
-      {
-        group: { $eq: group } // ordered array
-      },
-      { profileLinks, group }, // if upsert required
-      {
-        upsert: true,
-        new: true,
-        lean: true,
-        setDefaultsOnInsert: true
-      }
-    );
-  } catch (err) {
-    console.log(err);
-  }
+  const spoolGroup = await SpoolGroup.findOneAndUpdate(
+    {
+      group
+    },
+    { profileLinks, group }, // if upsert required
+    {
+      upsert: true,
+      new: true,
+      lean: true,
+      setDefaultsOnInsert: true
+    }
+  );
 
   const spoolBucket = await updateSpools(
     spoolGroup._id,

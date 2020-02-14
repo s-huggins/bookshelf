@@ -315,7 +315,12 @@ exports.fetchSpool = catchAsync(async (req, res, next) => {
   const spoolGroup = await SpoolGroup.findById(groupId).lean(true);
   if (!spoolGroup) return next(new AppError('Spool group not found.', 404));
 
-  if (!spoolGroup.group.includes(req.user.profile.id))
+  if (
+    !spoolGroup.group
+      .split(':')
+      .slice(1, -1)
+      .includes(`${req.user.profile.id}`)
+  )
     return next(new AppError('You are not part of this spool.', 401));
 
   const { messagesTotal, newestSpoolBucket } = spoolGroup;

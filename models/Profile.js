@@ -523,7 +523,8 @@ ProfileSchema.post('remove', async function(doc, next) {
 
     SpoolGroup.updateMany(
       {
-        group: doc.id,
+        // group: doc.id,
+        $text: { $search: `${doc.id}` },
         profileLinks: { $ne: [doc.id] } // array length > 1
       },
       {
@@ -534,8 +535,9 @@ ProfileSchema.post('remove', async function(doc, next) {
 
   const groupsToDelete = SpoolGroup.find(
     {
-      group: doc.id,
+      // group: doc.id,
       // profileLinks: { $size: 1 } // // array length === 1
+      $text: { $search: `${doc.id}` },
       profileLinks: { $eq: [doc.id] }
     },
     {

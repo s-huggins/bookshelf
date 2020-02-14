@@ -34,10 +34,18 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const SpoolGroupSchema = new Schema({
+  // group: {
+  //   type: [Number], // array of profile IDs in ascending order
+  // required: [true, 'The spool group is required.'],
+  // index: true,
+  // unique: true
+  // },
+
   group: {
-    type: [Number], // array of profile IDs in ascending order
+    type: String,
     required: [true, 'The spool group is required.'],
-    index: true,
+    // index: true,
+    text: true,
     unique: true
   },
 
