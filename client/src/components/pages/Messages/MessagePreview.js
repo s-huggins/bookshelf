@@ -1,8 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import Avatar from '../Profile/Avatar';
 import { useHistory } from 'react-router-dom';
 import moment from 'moment';
-import { useSelector } from 'react-redux';
 
 const MessagePreview = ({
   subject,
@@ -14,28 +13,24 @@ const MessagePreview = ({
   checkMessage,
   uncheckMessage,
   seq,
-  messageDirection
+  messageDirection,
+  folder
 }) => {
   const history = useHistory();
   const handleCheckMessage = () => {
     if (checked) uncheckMessage();
     else checkMessage();
   };
-  const ownProfileId = useSelector(state => state.auth.user.profile.id);
 
   const buildLink = () => {
-    const sent = from.profileId === ownProfileId;
+    const sent = folder === 'sent';
 
     return `/message/show/${messageId}${sent ? 1 : 0}${seq}`;
   };
 
   return (
     <tr className="MessagePreview">
-      <td
-        className="cell-from"
-        // onClick={() => history.push(`/message/show/${messageId}`)}
-        onClick={() => history.push(buildLink())}
-      >
+      <td className="cell-from" onClick={() => history.push(buildLink())}>
         <Avatar avatar_id={from.avatar_id} />
         <span className="green-link">
           {from.displayName || from.archived.displayName}

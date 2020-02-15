@@ -524,7 +524,8 @@ ProfileSchema.post('remove', async function(doc, next) {
     SpoolGroup.updateMany(
       {
         // group: doc.id,
-        $text: { $search: `${doc.id}` },
+        // $text: { $search: `${doc.id}` },
+        group: { $regex: `/:${doc.id}:/` },
         profileLinks: { $ne: [doc.id] } // array length > 1
       },
       {
@@ -537,7 +538,8 @@ ProfileSchema.post('remove', async function(doc, next) {
     {
       // group: doc.id,
       // profileLinks: { $size: 1 } // // array length === 1
-      $text: { $search: `${doc.id}` },
+      // $text: { $search: `${doc.id}` },
+      group: { $regex: `/:${doc.id}:/` },
       profileLinks: { $eq: [doc.id] }
     },
     {

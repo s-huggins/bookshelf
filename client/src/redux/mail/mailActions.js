@@ -26,6 +26,12 @@ const fetchMail = async (endpoint, dispatch, fetchType) => {
   const json = await res.json();
 
   if (json.status === 'success') {
+    if (fetchType === FETCH_SENT) {
+      json.data.messages.forEach(msg => (msg.folder = 'sent'));
+    } else if (fetchType !== FETCH_SPOOL) {
+      json.data.messages.forEach(msg => (msg.folder = 'inbox'));
+    }
+
     dispatch({
       type: fetchType,
       payload: json.data.messages
@@ -133,3 +139,32 @@ export const deleteTrash = messages => async dispatch => {
 };
 
 export const clearMailActionStatus = () => ({ type: CLEAR_MAIL_ACTION_STATUS });
+
+export const sendMessage = async (msgRecipients, msgSubject, msgBody) => {
+  const token = store.getState().auth.token;
+  const body = {
+    to: msgRecipients,
+    subject: msgSubject,
+    body: msgBody
+  };
+  const res = await fetch('http://localhost:5000/api/v1/message', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`
+    },
+    body: JSON.stringify(body)
+  });
+
+  const json = await res.json();
+
+  if (json.status !== 'success') return null;
+
+  const { sent, mailbox } = json.data;
+  const seq = mailbox.buckets.outbox.length - 1;
+  const messageId = sent._id;
+  const messageCode = `${messageId}${1}${seq}`;
+
+  return messageCode;
+};

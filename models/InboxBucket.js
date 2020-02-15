@@ -12,9 +12,9 @@ const InboxBucketSchema = new Schema({
   seq: {
     // position in bucket chain, to start from 0
     type: Number,
-    index: true,
-    required: [true, 'Bucket number is required.'],
-    unique: true
+    // index: true,
+    required: [true, 'Bucket number is required.']
+    // unique: true
   },
   dateBucketCreated: {
     type: Date,
@@ -65,7 +65,7 @@ const InboxBucketSchema = new Schema({
         body: {
           type: String,
           trim: true,
-          maxlength: 20000,
+          maxlength: 30000,
           required: [true, 'A message body is required.']
         },
         spoolBucket: {
@@ -107,6 +107,8 @@ const InboxBucketSchema = new Schema({
     ]
   }
 });
+
+InboxBucketSchema.index({ profile: 1, seq: 1 }, { unique: true });
 
 const InboxBucket = mongoose.model('InboxBucket', InboxBucketSchema);
 

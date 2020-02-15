@@ -232,6 +232,72 @@ exports.handleFetchFolder = folder => {
       limit
     );
 
+    // const messages = await bucketModel
+    //   .aggregate()
+    //   .match({
+    //     profile: req.user.profile._id,
+    //     seq: { $in: targetBuckets }
+    //   })
+    //   .sort({ seq: -1 }) // sorts most recent first
+    //   .project({ __v: 0, profile: 0, dateBucketCreated: 0 })
+    //   .unwind('$messages')
+    //   .addFields({ 'messages.message_id': '$messages._id', bucket_id: '$_id' })
+    //   .replaceRoot({
+    //     $mergeObjects: ['$$ROOT', '$$ROOT.messages']
+    //   })
+    //   .project({ messages: 0 })
+    //   .match(messageFilter)
+    //   .sort({ dateCreated: -1 })
+    //   .skip(messagesToSkip)
+    //   .limit(limit)
+    //   .lookup({
+    //     from: 'profiles',
+    //     let: { from_id: '$from.profile' },
+    //     pipeline: [
+    //       { $match: { $expr: { $eq: ['$_id', '$$from_id'] } } },
+    //       { $project: { profileId: 1, displayName: 1, avatar_id: 1 } }
+    //     ],
+    //     as: 'from.profile'
+    //   })
+    //   .unwind({ path: '$from.profile', preserveNullAndEmptyArrays: true })
+    //   .addFields({
+    //     'from._id': '$from.profile._id',
+    //     'from.displayName': '$from.profile.displayName',
+    //     'from.avatar_id': '$from.profile.avatar_id'
+    //   })
+    //   .project({ 'from.profile': 0 })
+    //   // .unwind('$to')
+    //   .unwind({ path: '$to', preserveNullAndEmptyArrays: true })
+    //   .project({ 'to._id': 0 })
+    //   .lookup({
+    //     from: 'profiles',
+    //     let: { to_id: '$to.profile' },
+    //     pipeline: [
+    //       { $match: { $expr: { $eq: ['$_id', '$$to_id'] } } },
+    //       { $project: { profileId: 1, displayName: 1, avatar_id: 1 } }
+    //     ],
+    //     as: 'to.profile'
+    //   })
+    //   .unwind({ path: '$to', preserveNullAndEmptyArrays: true })
+    //   .addFields({
+    //     'to._id': '$to.profile._id',
+    //     'to.displayName': '$to.profile.displayName',
+    //     'to.avatar_id': '$to.profile.avatar_id'
+    //   })
+    //   .project({ 'to.profile': 0 })
+    //   .lookup({
+    //     from: 'spoolgroups',
+    //     let: { group_id: '$spoolGroup' },
+    //     pipeline: [
+    //       { $match: { $expr: { $eq: ['$_id', '$$group_id'] } } },
+    //       { $project: { newestSpoolBucket: 1, messagesTotal: 1 } }
+    //     ],
+    //     as: 'spoolGroup'
+    //   })
+    //   .unwind('$spoolGroup')
+    //   .group(groupStage)
+    //   .sort({ dateCreated: -1 });
+
     const messages = await bucketModel
       .aggregate()
       .match({
@@ -278,8 +344,8 @@ exports.handleFetchFolder = folder => {
         ],
         as: 'to.profile'
       })
-      // .unwind('$to.profile')
       .unwind({ path: '$to', preserveNullAndEmptyArrays: true })
+      .unwind('$to.profile')
       .addFields({
         'to._id': '$to.profile._id',
         'to.displayName': '$to.profile.displayName',
@@ -527,14 +593,16 @@ const findInboxNext = async (_idProfile, message) => {
       seq: { $gte: message.seq },
       messages: {
         $elemMatch: {
-          dateCreated: { $gt: new Date(message.dateCreated) }
+          dateCreated: { $gt: new Date(message.dateCreated) },
+          spoolGroup: message.spoolGroup._id
         }
       }
     })
     .unwind('$messages')
     .match({
       'messages.dateCreated': { $gt: new Date(message.dateCreated) },
-      'messages.deleted': false
+      // 'messages.deleted': false,
+      'messages.spoolGroup': message.spoolGroup._id
     })
     .sort({ 'messages.dateCreated': 1 })
     .limit(1)
@@ -552,14 +620,16 @@ const findInboxPrevious = async (_idProfile, message) => {
       seq: { $lte: message.seq },
       messages: {
         $elemMatch: {
-          dateCreated: { $lt: new Date(message.dateCreated) }
+          dateCreated: { $lt: new Date(message.dateCreated) },
+          spoolGroup: message.spoolGroup._id
         }
       }
     })
     .unwind('$messages')
     .match({
       'messages.dateCreated': { $lt: new Date(message.dateCreated) },
-      'messages.deleted': false
+      // 'messages.deleted': false,
+      'messages.spoolGroup': message.spoolGroup._id
     })
     .sort({ 'messages.dateCreated': -1 })
     .limit(1)
@@ -616,6 +686,7 @@ exports.fetchOutboxMessage = catchAsync(async (req, res, next) => {
     })
     // .unwind('$to.profile')
     .unwind({ path: '$to', preserveNullAndEmptyArrays: true })
+    .unwind({ path: '$to.profile', preserveNullAndEmptyArrays: true })
     .addFields({
       'to._id': '$to.profile._id',
       'to.displayName': '$to.profile.displayName',
@@ -643,7 +714,8 @@ exports.fetchOutboxMessage = catchAsync(async (req, res, next) => {
       seq: { $first: '$seq' },
       message_id: { $first: '$message_id' },
       bucket_id: { $first: '$bucket_id' },
-      spoolGroup: { $first: '$spoolGroup' }
+      spoolGroup: { $first: '$spoolGroup' },
+      deleted: { $first: '$deleted' }
     });
 
   if (!message) return next(new AppError('Message not found.', 404));
@@ -673,16 +745,18 @@ const findOutboxNext = async (_idProfile, message) => {
       seq: { $gte: message.seq },
       messages: {
         $elemMatch: {
-          dateCreated: { $gt: new Date(message.dateCreated) }
+          dateCreated: { $gt: new Date(message.dateCreated) },
+          spoolGroup: message.spoolGroup._id
         }
       }
     })
     .unwind('$messages')
     .match({
       'messages.dateCreated': { $gt: new Date(message.dateCreated) },
-      'messages.deleted': false
+      // 'messages.deleted': false,
+      'messages.spoolGroup': message.spoolGroup._id
     })
-    .sort({ dateCreated: 1 })
+    .sort({ 'messages.dateCreated': 1 })
     .limit(1)
     .project({ 'messages._id': 1, seq: 1 })
     .addFields({ _id: '$messages._id' })
@@ -698,16 +772,18 @@ const findOutboxPrevious = async (_idProfile, message) => {
       seq: { $lte: message.seq },
       messages: {
         $elemMatch: {
-          dateCreated: { $lt: new Date(message.dateCreated) }
+          dateCreated: { $lt: new Date(message.dateCreated) },
+          spoolGroup: message.spoolGroup._id
         }
       }
     })
     .unwind('$messages')
     .match({
       'messages.dateCreated': { $lt: new Date(message.dateCreated) },
-      'messages.deleted': false
+      // 'messages.deleted': false,
+      'messages.spoolGroup': message.spoolGroup._id
     })
-    .sort({ dateCreated: -1 })
+    .sort({ 'messages.dateCreated': -1 })
     .limit(1)
     .project({ 'messages._id': 1, seq: 1 })
     .addFields({ _id: '$messages._id' })

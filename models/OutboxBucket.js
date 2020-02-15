@@ -106,8 +106,8 @@ const OutboxBucketSchema = new Schema({
     // position in bucket chain, to start from 0
     type: Number,
     index: true,
-    required: [true, 'Bucket number is required.'],
-    unique: true
+    required: [true, 'Bucket number is required.']
+    // unique: true
   },
   dateBucketCreated: {
     type: Date,
@@ -183,6 +183,8 @@ const OutboxBucketSchema = new Schema({
     ]
   }
 });
+
+OutboxBucketSchema.index({ profile: 1, seq: 1 }, { unique: true });
 
 const OutboxBucket = mongoose.model('OutboxBucket', OutboxBucketSchema);
 

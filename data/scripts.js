@@ -3,7 +3,7 @@ const fs = require('fs');
 const path = require('path');
 const request = require('request-promise-native');
 
-// makeFriends(100);
+// makeFriends(20);
 // addCurrentlyReading(34);
 // acceptAllFriendRequests();
 SendMessagesSync(51);
@@ -13,7 +13,7 @@ async function SendMessagesSync(n) {
   await createAccount('2-test');
   await createAccount('3-test');
   const { token } = await signIn('2-test@gmail.com', '12345678');
-  const to = [1, 2, 3];
+  const to = [1, 3];
   for (let i = 1; i <= n; i++) {
     await request
       .post({
@@ -25,8 +25,7 @@ async function SendMessagesSync(n) {
         body: {
           to,
           subject: `lorem ipsum #${i}`,
-          body:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam?'
+          body: `${i} - Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam? Lorem ipsum dolor sit amet consectetur adipisicing elit. Alias iure quibusdam tempora eligendi aspernatur atque ipsa voluptatem praesentium libero quisquam?`
         }
       })
       .then(() => console.log(`message #${i} sent`))
@@ -212,10 +211,15 @@ function addCurrentlyReading(bookId) {
 }
 
 async function makeFriends(count) {
+  try {
+    fs.unlinkSync(path.resolve(__dirname, 'friends-test.json'));
+  } catch (err) {
+    /* file already cleaned */
+  }
   let i;
   try {
     for (i = 1; i <= count; i++) {
-      const { token, name } = await createAccount(`${i}-test`);
+      const { token, name } = await createAccount(`test-${i}`);
       console.log(`Account ${name} created.`);
       saveToken(token); // synchronous function
       console.log('Token saved.');

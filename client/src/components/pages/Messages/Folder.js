@@ -129,7 +129,6 @@ const Folder = ({
       return <Redirect to={`${path}/page/${pageNum}`} />;
     }
   }
-
   /** RENDER */
   return (
     <main className="Messenger">

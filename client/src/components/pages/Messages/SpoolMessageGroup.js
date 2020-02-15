@@ -4,17 +4,18 @@ import Avatar from '../Profile/Avatar';
 import moment from 'moment';
 
 const SpoolMessageGroup = ({ ownMessage, from, body, messageDate }) => {
-  const renderMessageLead = ownMessage => {
+  // console.log(from);
+
+  const renderMessageLead = () => {
     if (ownMessage)
       return (
         <p className="message-lead">
           <Link to="/user" className="green-link">
             you
           </Link>{' '}
-          said
+          said:
         </p>
       );
-
     return (
       <p className="message-lead">
         {from.archived ? (
@@ -24,16 +25,33 @@ const SpoolMessageGroup = ({ ownMessage, from, body, messageDate }) => {
             {from.displayName}
           </Link>
         )}{' '}
-        said
+        said:
       </p>
+    );
+  };
+
+  const renderAvatar = () => {
+    if (ownMessage)
+      return (
+        <Link to="/user">
+          <Avatar avatar_id={from.avatar_id} />
+        </Link>
+      );
+
+    return from.archived ? (
+      <Avatar avatar_id={from.avatar_id} />
+    ) : (
+      <Link to={`/user/${from.profileId}`}>
+        <Avatar avatar_id={from.avatar_id} />
+      </Link>
     );
   };
 
   return (
     <div className="SpoolMessage">
-      <Avatar avatar_id={from.avatar_id} />
+      {renderAvatar()}
       <div className="message-body">
-        {renderMessageLead(ownMessage)}
+        {renderMessageLead()}
 
         <p className="message-text">{body}</p>
       </div>
@@ -47,8 +65,8 @@ const SpoolMessageGroup = ({ ownMessage, from, body, messageDate }) => {
           </span>
         </div>
 
+        {/* VIEW / SAVE / DELETE
         <div className="message-actions">
-          {/* VIEW / SAVE / DELETE */}
           <button className="button-reset green-link message-action">
             view
           </button>
@@ -56,7 +74,7 @@ const SpoolMessageGroup = ({ ownMessage, from, body, messageDate }) => {
           <button className="button-reset green-link message-action">
             delete
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

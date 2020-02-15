@@ -43,10 +43,10 @@ const SpoolGroupSchema = new Schema({
 
   group: {
     type: String,
-    required: [true, 'The spool group is required.'],
+    required: [true, 'The spool group is required.']
     // index: true,
-    text: true,
-    unique: true
+    // text: true,
+    // unique: true
   },
 
   profileLinks: [Number], // remaining live profiles of the group, delete the spool chain when this becomes empty
@@ -68,6 +68,8 @@ const SpoolGroupSchema = new Schema({
     }
   }
 });
+
+SpoolGroupSchema.index({ group: 1, seq: 1 }, { unique: true });
 
 const SpoolGroup = mongoose.model('SpoolGroup', SpoolGroupSchema);
 

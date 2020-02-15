@@ -5,11 +5,14 @@ import useLoadMail, { MailFolder } from './hooks/useLoadMail';
 import { deleteSent } from '../../../redux/mail/mailActions';
 import Folder from './Folder';
 import Loader from '../../common/Loader';
+import { useLayoutEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const SentFolder = () => {
   const dispatch = useDispatch();
   const [action, setAction] = useState('');
   const [alertCache, alert, dismissAlert] = useMailboxAlert();
+  const location = useLocation();
 
   const [loadingMail, mail] = useLoadMail(MailFolder.SENT);
   const numSent = useSelector(state => state.mail.mailbox.numSent);
@@ -19,6 +22,10 @@ const SentFolder = () => {
   useEffect(() => {
     setCheckedMessages({});
   }, [loadingMail]);
+
+  // useLayoutEffect(() => {
+  //   console.log(location.state);
+  // }, []);
 
   const checkBatch = (check, ...messageIds) => {
     setCheckedMessages(oldState => {

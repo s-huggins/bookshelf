@@ -55,12 +55,12 @@ module.exports = catchAsync(async (req, res, next) => {
 
   const { to, subject, body } = req.body;
 
-  if (!validator.default.isLength(subject, { max: 250 })) {
+  if (!validator.default.isLength(subject, { max: 252 })) {
     errors.subject =
-      'Your message subject cannot be longer than 250 characters.';
+      'Your message subject cannot be longer than 252 characters.';
   }
-  if (!validator.default.isLength(body, { max: 20000 })) {
-    errors.body = 'Your message body cannot be longer than 20000 characters.';
+  if (!validator.default.isLength(body, { max: 30000 })) {
+    errors.body = 'Your message body cannot be longer than 30000 characters.';
   }
   if (validator.default.isEmpty(body)) {
     errors.body = 'Your message body cannot be empty.';

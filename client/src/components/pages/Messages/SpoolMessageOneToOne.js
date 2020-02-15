@@ -11,7 +11,7 @@ const SpoolMessageOneToOne = ({
   from,
   messageDate
 }) => {
-  const renderMessageLead = ownMessage => {
+  const renderMessageLead = () => {
     if (ownMessage)
       return (
         <p className="message-lead">
@@ -26,6 +26,7 @@ const SpoolMessageOneToOne = ({
               {otherProfile.profile.displayName}
             </Link>
           )}
+          :
         </p>
       );
 
@@ -40,17 +41,34 @@ const SpoolMessageOneToOne = ({
         )}{' '}
         said to{' '}
         <Link to="/user" className="green-link">
-          you
+          you:
         </Link>
       </p>
     );
   };
 
+  const renderAvatar = () => {
+    if (ownMessage)
+      return (
+        <Link to="/user">
+          <Avatar avatar_id={from.avatar_id} />
+        </Link>
+      );
+
+    return from.archived ? (
+      <Avatar avatar_id={from.avatar_id} />
+    ) : (
+      <Link to={`/user/${from.profileId}`}>
+        <Avatar avatar_id={from.avatar_id} />
+      </Link>
+    );
+  };
+
   return (
     <div className="SpoolMessage">
-      <Avatar avatar_id={from.avatar_id} />
+      {renderAvatar()}
       <div className="message-body">
-        {renderMessageLead(ownMessage)}
+        {renderMessageLead()}
 
         <p className="message-text">{body}</p>
       </div>
@@ -64,8 +82,8 @@ const SpoolMessageOneToOne = ({
           </span>
         </div>
 
+        {/* VIEW / SAVE / DELETE
         <div className="message-actions">
-          {/* VIEW / SAVE / DELETE */}
           <button className="button-reset green-link message-action">
             view
           </button>
@@ -73,7 +91,7 @@ const SpoolMessageOneToOne = ({
           <button className="button-reset green-link message-action">
             delete
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

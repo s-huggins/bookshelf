@@ -91,7 +91,7 @@ const updateBuckets = async (modelName, profile_id, message) => {
   let done = false; // flip to signal finished
   let seq = 0;
   let pos; // array index of newly inserted message
-  // let bucket;
+  let bucketResult;
 
   // entry point is most recent bucket
   const [bucket] = await mongoose
@@ -114,7 +114,7 @@ const updateBuckets = async (modelName, profile_id, message) => {
        * will fail since seq is a unique field. In that case, the catch block will increment seq and we move
        * up the bucket chain to try again.
        */
-      const bucketResult = await mongoose.model(modelName).findOneAndUpdate(
+      bucketResult = await mongoose.model(modelName).findOneAndUpdate(
         {
           profile: profile_id,
           seq,
@@ -147,7 +147,7 @@ const updateBuckets = async (modelName, profile_id, message) => {
     }
   }
 
-  return [seq, pos];
+  return [seq, pos, bucketResult];
 };
 
 // const updateOutboxBuckets = async (profile_id, message) => {
@@ -187,7 +187,7 @@ const updateBuckets = async (modelName, profile_id, message) => {
 // };
 
 const updateOutboxBuckets = async (profile_id, message) => {
-  const [bucketNum, messageIndex] = await updateBuckets(
+  const [bucketNum, messageIndex, bucketResult] = await updateBuckets(
     'OutboxBucket',
     profile_id,
     message
@@ -209,7 +209,7 @@ const updateOutboxBuckets = async (profile_id, message) => {
         select: 'mailbox'
       }
     );
-    return mailbox;
+    return [mailbox, bucketResult];
   }
 
   // otherwise not the first bucket message
@@ -232,7 +232,7 @@ const updateOutboxBuckets = async (profile_id, message) => {
     );
 
     // done = true;
-    if (update) return update.mailbox;
+    if (update) return [update.mailbox, bucketResult];
   }
 };
 
@@ -282,7 +282,6 @@ const updateInboxBuckets = async (recip, message) => {
 // a 'fan-out-on-write' esque implementation
 exports.sendMessage = catchAsync(async (req, res) => {
   const { recipients } = req; // prepared in message validation middleware
-
   const from = {
     profileId: req.user.profile.id,
     profile: req.user.profile._id,
@@ -344,7 +343,7 @@ exports.sendMessage = catchAsync(async (req, res) => {
     {
       group
     },
-    { profileLinks, group }, // if upsert required
+    { profileLinks }, // if upsert required
     {
       upsert: true,
       new: true,
@@ -352,6 +351,19 @@ exports.sendMessage = catchAsync(async (req, res) => {
       setDefaultsOnInsert: true
     }
   );
+
+  // const spoolGroup = await SpoolGroup.findOneAndUpdate(
+  //   {
+  //     group
+  //   },
+  //   { profileLinks }, // if upsert required
+  //   {
+  //     upsert: true,
+  //     new: true,
+  //     lean: true,
+  //     setDefaultsOnInsert: true
+  //   }
+  // );
 
   const spoolBucket = await updateSpools(
     spoolGroup._id,
@@ -394,12 +406,13 @@ exports.sendMessage = catchAsync(async (req, res) => {
   recipients.forEach(recip => tasks.push(updateInboxBuckets(recip, message)));
 
   const results = await Promise.all(tasks);
-  const mailbox = results[0];
+  const [mailbox, outboxBucket] = results[0];
 
   res.status(200).json({
     status: 'success',
     data: {
-      mailbox
+      mailbox,
+      sent: outboxBucket.messages[outboxBucket.messages.length - 1]
     }
   });
 });

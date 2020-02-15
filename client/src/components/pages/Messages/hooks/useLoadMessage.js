@@ -43,7 +43,8 @@ const useLoadMessage = () => {
   // check for message in redux store. if there, we can skip the fetch
   useLayoutEffect(() => {
     const messageId = messageCode.slice(0, 24);
-    const received = !!messageCode[24];
+    // const received = !!messageCode[24];
+    const received = messageCode[24] === '0';
     const seq = messageCode.slice(25);
 
     // if (received) {

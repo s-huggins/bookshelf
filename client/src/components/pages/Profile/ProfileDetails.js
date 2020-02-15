@@ -1,9 +1,10 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import ProfileDetailsFooter from './ProfileDetailsFooter';
 import FriendButton from '../../common/FriendButton';
 
 const ProfileDetails = ({ profile }) => {
+  const history = useHistory();
   const [seeMore, setSeeMore] = useState({
     isNeeded: profile && profile.aboutMe && profile.aboutMe.length > 400,
     show: true
@@ -11,6 +12,12 @@ const ProfileDetails = ({ profile }) => {
 
   const handleSeeMore = () => {
     setSeeMore({ ...seeMore, show: !seeMore.show });
+  };
+
+  const handleSendMessage = () => {
+    history.push('/message/new', {
+      to: [{ displayName: profile.displayName, profileId: profile.profileId }]
+    });
   };
 
   if (!profile) return null;
@@ -34,7 +41,12 @@ const ProfileDetails = ({ profile }) => {
               profileId={profile.profileId}
               displayName={profile.displayName}
             />
-            <button className="btn btn--light btn--action">Message</button>
+            <button
+              className="btn btn--light btn--action"
+              onClick={handleSendMessage}
+            >
+              Message
+            </button>
           </div>
         )}
         <ul className="profile__details profile__details--user-profile">

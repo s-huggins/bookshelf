@@ -5,31 +5,30 @@ import { useSelector, useDispatch } from 'react-redux';
 import MessageRecipients from './MessageRecipients';
 import { markRead } from '../../../redux/mail/mailActions';
 
-const Message = ({ message }) => {
+const Message = ({ message, dismissAlert }) => {
   const history = useHistory();
   const dispatch = useDispatch();
+  const ownProfileId = useSelector(state => state.auth.user.profile.id);
+
   const handleReply = () => {
+    const from = {
+      profileId: message.from.profileId,
+      displayName: message.from.displayName || message.from.archived.displayName
+    };
+    const to = message.to.map(recip => ({
+      profileId: recip.profileId,
+      displayName: recip.displayName || recip.archived.displayName
+    }));
+
+    const recipients = [...to, from].filter(
+      recip => recip.profileId !== ownProfileId
+    );
+
     history.push('/message/new', {
-      to: {
-        displayName:
-          message.from.displayName || message.from.archived.displayName,
-        profileId: message.from.profileId
-      },
+      to: recipients,
       subject: `re: ${message.subject}`
     });
   };
-
-  const handleNext = () => {
-    let messageCode = message.nextMessage._id;
-
-    if (message.folder === 'inbox') messageCode += '0';
-    else messageCode += '1';
-
-    messageCode += message.nextMessage.seq;
-
-    history.push(`/message/show/${messageCode}`);
-  };
-
   const renderNext = () => {
     if (!message.nextMessage) return <span>next</span>;
 
@@ -43,7 +42,10 @@ const Message = ({ message }) => {
     return (
       <button
         className="button-reset green-link"
-        onClick={() => history.push(`/message/show/${messageCode}`)}
+        onClick={() => {
+          dismissAlert();
+          history.push(`/message/show/${messageCode}`);
+        }}
       >
         next
       </button>
@@ -62,31 +64,23 @@ const Message = ({ message }) => {
     return (
       <button
         className="button-reset green-link"
-        onClick={() => history.push(`/message/show/${messageCode}`)}
+        onClick={() => {
+          dismissAlert();
+          history.push(`/message/show/${messageCode}`);
+        }}
       >
         previous
       </button>
     );
   };
-
-  const handlePrevious = () => {
-    let messageCode = message.previousMessage._id;
-
-    if (message.folder === 'inbox') messageCode += '0';
-    else messageCode += '1';
-
-    messageCode += message.previousMessage.seq;
-
-    history.push(`/message/show/${messageCode}`);
-  };
-
   useEffect(() => {
     // opening an unread message marks it as read
-    if (!message.read) {
+    // false and not undefined
+    if (message.read === false) {
       dispatch(markRead([message]));
     }
   }, [message]);
-  console.log(message);
+
   return (
     <div className="Message">
       <h2>
@@ -94,15 +88,8 @@ const Message = ({ message }) => {
         {message.from.displayName || message.from.archived.displayName}
       </h2>
       <div className="Message__action-bar">
-        {/* <button className="button-reset green-link" onClick={handleNext}>
-          next
-        </button> */}
         {renderNext()}
-        <span className="middle-dot">·</span>{' '}
-        {/* <button className="button-reset green-link" onClick={handlePrevious}>
-          previous
-        </button> */}
-        {renderPrevious()}
+        <span className="middle-dot">·</span> {renderPrevious()}
       </div>
       <table>
         <tbody>

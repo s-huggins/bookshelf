@@ -23,6 +23,14 @@ const MessageActions = ({ message, setAlert }) => {
   });
 
   useEffect(() => {
+    setMessageState({
+      read: true,
+      saved: message.saved,
+      trashed: message.trash.trashed
+    });
+  }, [message]);
+
+  useEffect(() => {
     if (actionStatus === 'success') {
       switch (action.current.type) {
         case 'save':
@@ -78,6 +86,7 @@ const MessageActions = ({ message, setAlert }) => {
       });
 
       dispatch(clearMailActionStatus());
+      action.current = { type: '', flag: null };
     }
   }, [actionStatus]);
 

@@ -10,7 +10,6 @@ const Avatar = ({ avatar_id }) => {
     if (!avatar_id) {
       return setAvatarUrl('');
     }
-
     const uri = `http://localhost:5000/api/v1/profile/avatar/${avatar_id}`;
     const res = await fetch(uri, {
       method: 'GET',

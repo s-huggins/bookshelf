@@ -1,58 +1,4 @@
-// import React, {useState} from 'react';
-// import SpoolMessage from './SpoolMessage';
-// import Pagination from '../../common/Pagination';
-// import { useLocation, useHistory } from 'react-router-dom';
-// import queryString from 'query-string';
-
-// const Spool = ({ spool, totalMessages, perPage = 20 }) => {
-//   const location = useLocation();
-//   const history = useHistory();
-
-//   const maxPage = Math.ceil(totalMessages / perPage);
-//   let { page } = queryString.parse(location.search);
-//   page = parseInt(page, 10) || 1;
-//   page = page <= 0 ? 1 : page;
-//   if (page > maxPage) history.push(`${location.pathname}?page=${maxPage}`);
-
-//   console.log(spool);
-//   console.log(totalMessages);
-
-//   const getPaginationSettings = () => {
-//     return {
-//       perPage,
-//       total: totalMessages,
-//       page,
-//       useQueryParam: true,
-//       noLimit: true
-//     };
-//   };
-
-//   return (
-//     <div className="MessageSpool__spool">
-//       <div className="pagination pagination-top">
-//         <Pagination {...getPaginationSettings()} />
-//       </div>
-//       <SpoolMessage />
-//       <SpoolMessage />
-//       <SpoolMessage />
-//       {/* {spool.messages.map(msg => (
-//         <SpoolMessage
-//           subject={msg.subject}
-//           body={msg.body}
-//           date={msg.dateCreated}
-//         />
-//       ))} */}
-//       <div className="pagination pagination-bottom">
-//         <Pagination {...getPaginationSettings()} />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Spool;
-
-import React, { useState } from 'react';
-import SpoolMessage from './SpoolMessage';
+import React from 'react';
 import StatePagination from '../../common/StatePagination';
 import { useSelector } from 'react-redux';
 import SpoolMessageOneToOne from './SpoolMessageOneToOne';
@@ -66,8 +12,6 @@ const Spool = ({
   setPage,
   profileMap
 }) => {
-  console.log(spool);
-
   const ownProfileId = useSelector(state => state.auth.user.profile.id);
   const isOneToOne = spool.profiles.length === 2;
 
