@@ -3,7 +3,14 @@ import Rating from './Rating';
 import { useDispatch, useSelector } from 'react-redux';
 import { rateBook } from '../../redux/profile/profileActions';
 
-const InlineRating = ({ _id, title, authors, image_url, updateDisplay }) => {
+const InlineRating = ({
+  _id,
+  title,
+  authors,
+  image_url,
+  updateDisplay,
+  rate
+}) => {
   const [rating, setRating] = useState(0);
   const dispatch = useDispatch();
   const userRatings = useSelector(state => state.auth.user.profile.ratings);
@@ -27,6 +34,7 @@ const InlineRating = ({ _id, title, authors, image_url, updateDisplay }) => {
     }
 
     updateDisplay && updateDisplay(oldRating, newRating);
+    rate && rate(newRating);
     const authorsData = authors.map(author => ({
       ...author,
       authorId: +author.id

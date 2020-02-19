@@ -126,12 +126,12 @@ const Profile = ({ location }) => {
           bookCount={countShelf(profile.books, 'reading')}
         />
 
-        <RecentUpdatesPanel
+        {/* <RecentUpdatesPanel
           books={profile.books}
           displayName={profile.displayName}
           ownProfile={profile.id === ownProfileId}
           buildBookshelfLink={buildBookshelfLink}
-        />
+        /> */}
       </main>
       <aside>
         <FriendsSidebar profile={profile} />

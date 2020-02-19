@@ -22,10 +22,10 @@ const HeaderProfile = () => {
       <HeaderSearch />
 
       <div className="icons-container">
-        <a href="#!">
+        {/* <a href="#!">
           <i className="fas fa-bell" title="Notifications"></i>
-          {/* <span className="notification-badge"></span> TODO: ADD BACK IN */}
-        </a>
+          <span className="notification-badge"></span> TODO: ADD BACK IN
+        </a> */}
 
         <MessageIcon numUnread={numUnread} />
         <FriendsIcon friendRequests={friendRequests} />

@@ -52,7 +52,7 @@ const AuthorStats = ({
       <span className="middle-dot">·</span>{' '}
       {stats.ratingsCount.toLocaleString('en')}{' '}
       {pluralize('rating', stats.ratingsCount)}{' '}
-      <span className="middle-dot">·</span> 5,151 reviews{' '}
+      {/* <span className="middle-dot">·</span> 5,151 reviews{' '} */}
       <span className="middle-dot">·</span>{' '}
       <Link to={`/author/${authorId}/books`}>
         {works_count.toLocaleString('en')} distinct{' '}

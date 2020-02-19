@@ -48,11 +48,11 @@ const ProfileSide = ({ profile, location, ownProfile }) => {
             )} (${ratingsAvg.toFixed(2)} avg)`}
           </Link>
         </li>
-        <li>
+        {/* <li>
           <a href="#!" className="green-link">
             0 reviews
           </a>
-        </li>
+        </li> */}
       </ul>
     </div>
   );

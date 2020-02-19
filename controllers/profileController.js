@@ -20,6 +20,7 @@ const prepareGetProfile = req => {
       const reg = new RegExp(`^${identifier}$`, 'i');
 
       fetchingOwn =
+        req.user.profile.handle &&
         req.user.profile.handle.toLowerCase() === identifier.toLowerCase();
       filterObj = { handle: { $regex: reg } };
     } else {

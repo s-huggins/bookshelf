@@ -105,7 +105,7 @@ const Book = ({ match }) => {
             <div className="details-container">
               <BookDetails data={book} />
             </div>
-            <h2>My Activity</h2>
+            {/* <h2>My Activity</h2>
             <ul>
               <li>Shelves</li>
               <li>Status</li>
@@ -114,7 +114,7 @@ const Book = ({ match }) => {
             <h2>Friend Reviews (1)</h2>
             <ul>
               <li>Jordy added it</li>
-            </ul>
+            </ul> */}
           </div>
         </div>
       </div>

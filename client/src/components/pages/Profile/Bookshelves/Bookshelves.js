@@ -14,24 +14,94 @@ import usePrivateProfile from '../Hooks/usePrivateProfile';
 const Bookshelves = ({ location }) => {
   const { user } = useSelector(state => state.auth);
   const [loadingProfile, profile] = useLoadProfile();
+  const ownProfile = useSelector(state => state.auth.user.profile);
   const profileIsPrivate = usePrivateProfile(profile);
+
+  const [allBooks, setAllBooks] = useState(null);
+
+  // const updateBookRatingsData = (bookId, selectedRating) => {
+  //   const newBooks = allBooks.map(book => {
+  //     if (book.bookId._id !== bookId) return book;
+
+  //     // otherwise found target book
+  //     // const {average_rating, ratings_count} = book;
+  //     const oldAverageRating = book.bookId.average_rating;
+  //     const oldRatingsCount = book.bookId.ratings_count;
+  //     const oldSumRatings = oldAverageRating * oldRatingsCount;
+  //     // check if app user has rated this book
+  //     let oldUserRating = ownProfile.ratings.find(
+  //       _rating => _rating.bookId === bookId
+  //     )?.rating; // does rating a book as 0 remove it from prof? check this
+
+  //     // if book was not previously rated by user
+  //     if (!oldUserRating) {
+  //       const newSumRatings = oldSumRatings + selectedRating;
+  //       const newRatingsCount = oldRatingsCount + 1;
+  //       const newAverageRating = newSumRatings / newRatingsCount;
+
+  //       return {
+  //         ...book,
+  //         bookId: {
+  //           ...book.bookId,
+  //           average_rating: newAverageRating,
+  //           ratings_count: newRatingsCount
+  //         }
+  //       };
+  //     } else {
+  //       if (selectedRating !== 0) {
+  //         // user amended their previous rating but did not remove rating
+  //         const newSumRatings = oldSumRatings - oldUserRating + selectedRating;
+  //         // ratings count hasn't changed
+  //         const newAverageRating = newSumRatings / oldRatingsCount;
+  //         return {
+  //           ...book,
+  //           bookId: { ...book.bookId, average_rating: newAverageRating }
+  //         };
+  //       } else {
+  //         // user removed a rating
+  //         const newSumRatings = oldSumRatings - oldUserRating;
+  //         const newRatingsCount = oldRatingsCount - 1;
+  //         const newAverageRating =
+  //           newRatingsCount !== 0 ? newSumRatings / newRatingsCount : 0;
+
+  //         return {
+  //           ...book,
+  //           bookId: {
+  //             ...book.bookId,
+  //             average_rating: newAverageRating,
+  //             ratings_count: newRatingsCount
+  //           }
+  //         };
+  //       }
+  //     }
+  //   });
+
+  //   setAllBooks(newBooks);
+  // };
 
   const [activeShelf, setActiveShelf] = useState({
     shelf: null,
-    shelfBooks: []
+    shelfBooks: null
   });
 
   useEffect(() => {
     if (loadingProfile || profileIsPrivate) return;
-    const { shelf = '' } = queryString.parse(location.search);
 
+    setAllBooks(profile.books);
+  }, [loadingProfile]);
+
+  useEffect(() => {
+    if (loadingProfile || profileIsPrivate) return;
+    if (!allBooks) return;
+
+    const { shelf = '' } = queryString.parse(location.search);
     // skip effect if shelf hasn't changed
-    if (shelf === activeShelf.shelf) return;
+    // if (shelf === activeShelf.shelf) return;
 
     let shelfBooks =
       shelf && shelf !== 'all'
-        ? profile.books.filter(book => book.primaryShelf === shelf)
-        : [...profile.books];
+        ? allBooks.filter(book => book.primaryShelf === shelf)
+        : [...allBooks];
 
     shelfBooks = shelfBooks.map(book => {
       // add user rating
@@ -55,7 +125,7 @@ const Bookshelves = ({ location }) => {
       shelf,
       shelfBooks
     });
-  }, [location, loadingProfile]);
+  }, [location, loadingProfile, allBooks]);
 
   const buildBookshelfLink = shelf => {
     const baseURL = shelf
@@ -91,7 +161,7 @@ const Bookshelves = ({ location }) => {
   const countShelf = (books, shelf) =>
     books.filter(book => book.primaryShelf === shelf).length;
 
-  if (loadingProfile) return <Loader />;
+  if (loadingProfile || !activeShelf.shelfBooks) return <Loader />;
 
   if (profile == null) return <Redirect to="/not-found" />;
 
@@ -118,6 +188,8 @@ const Bookshelves = ({ location }) => {
             books={activeShelf.shelfBooks}
             shelf={activeShelf.shelf}
             ownBookshelf={ownBookshelves}
+            // rateBook={updateBookRatingsData}
+            rateBook={null}
           >
             <PaginationSettings ownBookshelf={ownBookshelves} />
           </Bookshelf>

@@ -3,7 +3,6 @@ import withUpdatingRating from '../Profile/withUpdatingRating';
 import AuthorBook from './AuthorBook';
 
 const AuthorBooksList = ({ books }) => {
-  // console.log(books);
   return (
     <>
       {books.map(book => {

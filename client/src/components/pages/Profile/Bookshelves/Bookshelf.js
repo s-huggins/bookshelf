@@ -7,7 +7,7 @@ import queryString from 'query-string';
 import BookshelfBookListHeader from './BookshelfBookListHeader';
 import BookshelfFilter from './BookshelfFilter';
 
-const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
+const Bookshelf = ({ books, ownBookshelf, children, shelf, rateBook }) => {
   const [allBooks, setAllBooks] = useState(books);
   const [booksView, setBooksView] = useState({
     books, // a copy of books is passed down, not a ref
@@ -221,15 +221,12 @@ const Bookshelf = ({ books, ownBookshelf, children, shelf }) => {
         </thead>
         <tbody>
           <BookshelfBookList
-            // books={booksView.books.slice(
-            //   booksView.startIndex,
-            //   booksView.endIndex
-            // )}
             books={filterBooks(booksView.books).slice(
               booksView.startIndex,
               booksView.endIndex
             )}
             ownBookshelf={ownBookshelf}
+            rateBook={rateBook}
           />
         </tbody>
       </table>

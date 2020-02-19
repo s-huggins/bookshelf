@@ -75,10 +75,10 @@ const CurrentRead = ({
           <span className="book-panel__date">
             {moment(dateShelved).format('Do MMM, YYYY hh:mm A')}
           </span>
-          <span className="middle-dot">&#183;</span>
+          {/* <span className="middle-dot">&#183;</span>
           <span>
             <Link to="#!">1 comment</Link>
-          </span>
+          </span> */}
         </span>
       </div>
       <div className="book-panel__actions">

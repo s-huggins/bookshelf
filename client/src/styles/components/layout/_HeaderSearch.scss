@@ -8,10 +8,10 @@
     align-items: center;
     position: relative;
 
-    @media (max-width: $mobile-width) {
-      margin-right: 0;
-      width: 100%;
-    }
+    // @media (max-width: $mobile-width) {
+    //   margin-right: 0;
+    //   width: 100%;
+    // }
 
     input {
       width: 100%;
