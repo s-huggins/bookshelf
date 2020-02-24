@@ -11,7 +11,8 @@ const BookshelfBookEditPane = React.forwardRef(
       image_url,
       editPaneActive,
       setEditPaneActive,
-      setBookShelved
+      setBookShelved,
+      editShelf
     },
     ref
   ) => {
@@ -38,6 +39,7 @@ const BookshelfBookEditPane = React.forwardRef(
 
       dispatch(shelveBook(bookData, newShelf));
       // update view ??
+      editShelf(_id, newShelf);
     };
 
     return (

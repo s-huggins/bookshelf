@@ -25,6 +25,7 @@ const userSchema = new Schema({
     type: String,
     required: [true, 'You must have an email to register.'],
     unique: true,
+    lowercase: true,
     validate: [validator.default.isEmail, 'Email is invalid'],
     maxlength: [100, 'Your email cannot be greater than 100 characters.'],
     index: true

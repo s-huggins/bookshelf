@@ -19,65 +19,83 @@ const Bookshelves = ({ location }) => {
 
   const [allBooks, setAllBooks] = useState(null);
 
-  // const updateBookRatingsData = (bookId, selectedRating) => {
-  //   const newBooks = allBooks.map(book => {
-  //     if (book.bookId._id !== bookId) return book;
+  const updateBookShelfData = (bookId, shelf) => {
+    let newBooks;
+    if (shelf) {
+      newBooks = allBooks.map(book => {
+        if (book.bookId._id !== bookId) return book;
 
-  //     // otherwise found target book
-  //     // const {average_rating, ratings_count} = book;
-  //     const oldAverageRating = book.bookId.average_rating;
-  //     const oldRatingsCount = book.bookId.ratings_count;
-  //     const oldSumRatings = oldAverageRating * oldRatingsCount;
-  //     // check if app user has rated this book
-  //     let oldUserRating = ownProfile.ratings.find(
-  //       _rating => _rating.bookId === bookId
-  //     )?.rating; // does rating a book as 0 remove it from prof? check this
+        return {
+          ...book,
+          primaryShelf: shelf
+        };
+      });
+    } else {
+      newBooks = allBooks.filter(book => book.bookId._id !== bookId);
+    }
 
-  //     // if book was not previously rated by user
-  //     if (!oldUserRating) {
-  //       const newSumRatings = oldSumRatings + selectedRating;
-  //       const newRatingsCount = oldRatingsCount + 1;
-  //       const newAverageRating = newSumRatings / newRatingsCount;
+    setAllBooks(newBooks);
+  };
 
-  //       return {
-  //         ...book,
-  //         bookId: {
-  //           ...book.bookId,
-  //           average_rating: newAverageRating,
-  //           ratings_count: newRatingsCount
-  //         }
-  //       };
-  //     } else {
-  //       if (selectedRating !== 0) {
-  //         // user amended their previous rating but did not remove rating
-  //         const newSumRatings = oldSumRatings - oldUserRating + selectedRating;
-  //         // ratings count hasn't changed
-  //         const newAverageRating = newSumRatings / oldRatingsCount;
-  //         return {
-  //           ...book,
-  //           bookId: { ...book.bookId, average_rating: newAverageRating }
-  //         };
-  //       } else {
-  //         // user removed a rating
-  //         const newSumRatings = oldSumRatings - oldUserRating;
-  //         const newRatingsCount = oldRatingsCount - 1;
-  //         const newAverageRating =
-  //           newRatingsCount !== 0 ? newSumRatings / newRatingsCount : 0;
+  const updateBookRatingsData = (bookId, selectedRating) => {
+    const newBooks = allBooks.map(book => {
+      if (book.bookId._id !== bookId) return book;
 
-  //         return {
-  //           ...book,
-  //           bookId: {
-  //             ...book.bookId,
-  //             average_rating: newAverageRating,
-  //             ratings_count: newRatingsCount
-  //           }
-  //         };
-  //       }
-  //     }
-  //   });
+      // otherwise found target book
+      // const {average_rating, ratings_count} = book;
+      const oldAverageRating = book.bookId.average_rating;
+      const oldRatingsCount = book.bookId.ratings_count;
+      const oldSumRatings = oldAverageRating * oldRatingsCount;
+      // check if app user has rated this book
+      let oldUserRating = ownProfile.ratings.find(
+        _rating => _rating.bookId === bookId
+      )?.rating; // does rating a book as 0 remove it from prof? check this
 
-  //   setAllBooks(newBooks);
-  // };
+      // if book was not previously rated by user
+      if (!oldUserRating) {
+        const newSumRatings = oldSumRatings + selectedRating;
+        const newRatingsCount = oldRatingsCount + 1;
+        const newAverageRating = newSumRatings / newRatingsCount;
+
+        return {
+          ...book,
+          bookId: {
+            ...book.bookId,
+            average_rating: newAverageRating,
+            ratings_count: newRatingsCount
+          }
+        };
+      } else {
+        if (selectedRating !== 0) {
+          // user amended their previous rating but did not remove rating
+          const newSumRatings = oldSumRatings - oldUserRating + selectedRating;
+          // ratings count hasn't changed
+          const newAverageRating = newSumRatings / oldRatingsCount;
+          return {
+            ...book,
+            bookId: { ...book.bookId, average_rating: newAverageRating }
+          };
+        } else {
+          // user removed a rating
+          const newSumRatings = oldSumRatings - oldUserRating;
+          const newRatingsCount = oldRatingsCount - 1;
+          const newAverageRating =
+            newRatingsCount !== 0 ? newSumRatings / newRatingsCount : 0;
+
+          return {
+            ...book,
+            bookId: {
+              ...book.bookId,
+              average_rating: newAverageRating,
+              ratings_count: newRatingsCount
+            }
+          };
+        }
+      }
+    });
+
+    setAllBooks(newBooks);
+  };
 
   const [activeShelf, setActiveShelf] = useState({
     shelf: null,
@@ -86,7 +104,7 @@ const Bookshelves = ({ location }) => {
 
   useEffect(() => {
     if (loadingProfile || profileIsPrivate) return;
-
+    if (allBooks && allBooks.length) return; // already loaded in book
     setAllBooks(profile.books);
   }, [loadingProfile]);
 
@@ -182,14 +200,15 @@ const Bookshelves = ({ location }) => {
           <BookshelvesNav
             countShelf={countShelf}
             buildBookshelfLink={buildBookshelfLink}
-            books={profile.books}
+            books={allBooks}
           />
           <Bookshelf
             books={activeShelf.shelfBooks}
             shelf={activeShelf.shelf}
             ownBookshelf={ownBookshelves}
-            // rateBook={updateBookRatingsData}
-            rateBook={null}
+            rateBook={updateBookRatingsData}
+            editShelf={updateBookShelfData}
+            // rateBook={null}
           >
             <PaginationSettings ownBookshelf={ownBookshelves} />
           </Bookshelf>

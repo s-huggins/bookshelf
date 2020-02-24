@@ -12,7 +12,7 @@ const sendErrorDev = (err, res) => {
 };
 
 const sendErrorProd = (err, res) => {
-  if (err.isOperational && !`${err.status}`.beginsWith('5')) {
+  if (err.isOperational && !`${err.status}`.startsWith('5')) {
     // trusted error
     res.status(err.statusCode).json({
       status: err.status,

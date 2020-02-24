@@ -31,10 +31,17 @@ module.exports = class Email {
     this.from = `Stuart Huggins <${process.env.EMAIL_FROM}>`;
   }
 
+  // internal
   createTransport() {
     if (process.env.NODE_ENV === 'production') {
       // sendgrid
-      return 1;
+      return nodemailer.createTransport({
+        service: 'SendGrid',
+        auth: {
+          user: process.env.SENDGRID_USERNAME,
+          pass: process.env.SENDGRID_PASSWORD
+        }
+      });
     }
 
     return nodemailer.createTransport({
@@ -47,6 +54,7 @@ module.exports = class Email {
     });
   }
 
+  // internal
   async send(subject, text) {
     const mailOptions = {
       from: this.from,
@@ -58,6 +66,7 @@ module.exports = class Email {
     await this.createTransport().sendMail(mailOptions);
   }
 
+  // public method
   async sendPasswordReset(resetUrl) {
     const text = `Hi, ${this.name}! Visit the following link to reset your password. It expires in 10 minutes.\n\n${resetUrl}`;
     await this.send('Password reset', text);

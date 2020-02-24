@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter, useParams } from 'react-router-dom';
 import Loader from '../common/Loader';
 
 const ResetPassword = ({ match }) => {
@@ -9,6 +9,7 @@ const ResetPassword = ({ match }) => {
   const [password, setPassword] = useState('');
   const [passwordConfirm, setPasswordConfirm] = useState('');
   const [loading, setLoading] = useState(false);
+  // const {resetToken} = useParams();
   const onSubmit = async e => {
     e.preventDefault();
 
@@ -42,7 +43,6 @@ const ResetPassword = ({ match }) => {
 
     setLoading(false);
     const json = await res.json();
-    console.log(json);
 
     if (res.status !== 200) {
       setResetErrors(
@@ -79,9 +79,18 @@ const ResetPassword = ({ match }) => {
                     ))}
                   </ul>
 
-                  <Link to="/forgot-password" className="btn btn--back">
+                  {/* <Link to="/forgot-password" className="btn btn--back">
+                    Retry
+                  </Link> */}
+                  {/* <Link to="/forgot-password" className="btn btn--back">
                     Back
-                  </Link>
+                  </Link> */}
+                  <button
+                    onClick={() => setResetErrors([])}
+                    className="btn btn--back"
+                  >
+                    Back
+                  </button>
                 </div>
               ) : requestSent ? (
                 <div className="reset-success-container">

@@ -95,7 +95,6 @@ const useLoadProfile = (reloadWithoutPathChange = false, ...deps) => {
 
     lastPathname.current = location.pathname; // update cached path
     const profileId = params.id || params.handle || '';
-    console.log('profileId', profileId);
     dispatch(getProfile(profileId));
     setLoading(true);
   }, [params, ...deps]);

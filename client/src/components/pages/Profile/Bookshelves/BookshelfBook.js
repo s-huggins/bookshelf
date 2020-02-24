@@ -125,7 +125,8 @@ const BookshelfBook = ({
   image_url,
   average_rating,
   userRating,
-  rateBook
+  rateBook,
+  editShelf
 }) => {
   // console.log('rendering book');
   // const ownBooks = useSelector(state => state.auth.user.profile.books);
@@ -190,7 +191,7 @@ const BookshelfBook = ({
           authors={authors}
           image_url={image_url}
           // updateDisplay={updateRatingDisplay}
-          // rate={rating => rateBook(_id, rating)}
+          rate={rating => rateBook(_id, rating)}
         />
         <span className="shelf-action" onClick={handleEditPane}>
           {bookShelved ? 'edit shelves' : 'add to shelves'}
@@ -205,6 +206,7 @@ const BookshelfBook = ({
           editPaneActive={editPaneActive}
           setEditPaneActive={setEditPaneActive}
           setBookShelved={setBookShelved}
+          editShelf={editShelf}
         />
       </td>
 

@@ -28,7 +28,7 @@ import React from 'react';
 import withUpdatingRating from '../withUpdatingRating';
 import BookshelfBook from './BookshelfBook';
 
-const BookshelfBookList = ({ books, ownBookshelf, rateBook }) => {
+const BookshelfBookList = ({ books, ownBookshelf, rateBook, editShelf }) => {
   // const ownBooks = useSelector(state => state.auth.user.profile.books);
 
   const bookList = books.map(book => {
@@ -45,8 +45,9 @@ const BookshelfBookList = ({ books, ownBookshelf, rateBook }) => {
         title={book.bookId.title}
         averageRating={book.average_rating}
         // ratingsCount={book.ratings_count}
-        // rate={rating => rateBook(book.bookId._id, rating)}
+        rate={rating => rateBook(book.bookId._id, rating)}
         rateBook={rateBook}
+        editShelf={editShelf}
       />
     );
   });

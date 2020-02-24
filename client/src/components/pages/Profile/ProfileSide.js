@@ -35,18 +35,22 @@ const ProfileSide = ({ profile, location, ownProfile }) => {
   return (
     <div className="profile__side">
       <div className="profile__avatar">
-        <a href="#!">
-          <Avatar avatar_id={profile.avatar_id} />
-        </a>
+        <Avatar avatar_id={profile.avatar_id} />
       </div>
       <ul>
-        <li>
+        {/* <li>
           <Link to={ratingsLink} className="green-link">
             {`${ratingsCount.toLocaleString('en')} ${pluralize(
               'rating',
               ratingsCount
             )} (${ratingsAvg.toFixed(2)} avg)`}
           </Link>
+        </li> */}
+        <li>
+          {`${ratingsCount.toLocaleString('en')} ${pluralize(
+            'rating',
+            ratingsCount
+          )} (${ratingsAvg.toFixed(2)} avg)`}
         </li>
         {/* <li>
           <a href="#!" className="green-link">
