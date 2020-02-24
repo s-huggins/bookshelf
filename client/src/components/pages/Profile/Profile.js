@@ -12,6 +12,7 @@ import BookshelvesPanel from './BookshelvesPanel';
 import CurrentlyReadingPanel from './CurrentlyReadingPanel';
 import RecentUpdatesPanel from './RecentUpdatesPanel';
 import usePrivateProfile from './Hooks/usePrivateProfile';
+import ProfilePanels from './ProfilePanels';
 
 const Profile = ({ location }) => {
   const { id: ownProfileId, friends: ownFriends } = useSelector(
@@ -19,7 +20,6 @@ const Profile = ({ location }) => {
   );
   const [loadingProfile, profile] = useLoadProfile();
   const profileIsPrivate = usePrivateProfile(profile);
-
   /**
    * The server does not return private fields of non-friends.
    */
@@ -90,9 +90,6 @@ const Profile = ({ location }) => {
     else return `${location.pathname}/bookshelves`;
   };
 
-  const countShelf = (books, shelf) =>
-    books.filter(book => book.primaryShelf === shelf).length;
-
   if (loadingProfile) return <Loader />;
   if (profile == null) return <Redirect to="/not-found" />;
 
@@ -110,7 +107,13 @@ const Profile = ({ location }) => {
           <ProfileDetails profile={profileDetails} />
         </div>
 
-        <BookshelvesPanel
+        <ProfilePanels
+          profile={profile}
+          ownProfile={profile.id === ownProfileId}
+          buildBookshelfLink={buildBookshelfLink}
+        />
+
+        {/* <BookshelvesPanel
           books={profile.books}
           displayName={profile.displayName}
           ownProfile={profile.id === ownProfileId}
@@ -126,7 +129,7 @@ const Profile = ({ location }) => {
           bookCount={countShelf(profile.books, 'reading')}
         />
 
-        {/* <RecentUpdatesPanel
+        <RecentUpdatesPanel
           books={profile.books}
           displayName={profile.displayName}
           ownProfile={profile.id === ownProfileId}

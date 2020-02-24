@@ -20,8 +20,8 @@ const CurrentlyReadingPanel = ({
       </div>
       <div className="panel__body">
         {books
-          .sort((b1, b2) => new Date(b2.dateShelved) - new Date(b1.dateShelved))
-          .slice(0, 3)
+          .sort((b1, b2) => new Date(b2.dateShelved) - new Date(b1.dateShelved)) // sort from most recent
+          .slice(0, 3) // display the three most recent
           .map(_book => (
             <CurrentRead
               key={_book.bookId._id}

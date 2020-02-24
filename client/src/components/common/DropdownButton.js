@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { shelveBook } from '../../redux/profile/profileActions';
 
-const DropdownButton = ({ book }) => {
+const DropdownButton = ({ book, onShelfChange }) => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
   const [shelf, setShelf] = useState('');
 
@@ -92,6 +92,7 @@ const DropdownButton = ({ book }) => {
       image_url: book.image_url
     };
     dispatch(shelveBook(bookData, shelf));
+    onShelfChange && onShelfChange(+book.id, shelf);
     // update profile api, update book api for num times shelved?
   };
   return (

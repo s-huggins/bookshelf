@@ -15,7 +15,7 @@ const InlineRating = ({
   const [rating, setRating] = useState(0);
   const dispatch = useDispatch();
   const userRatings = useSelector(state => state.auth.user.profile.ratings);
-  const [ratingTimedOut, setRatingTimedOut] = useState(false);
+  const [ratingTimedOut, setRatingTimedOut] = useState(false); // hotfix to ensure a rerender before a rerating
 
   // retrieve the user's own rating on mount
   useEffect(() => {
