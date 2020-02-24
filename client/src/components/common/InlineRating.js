@@ -9,11 +9,13 @@ const InlineRating = ({
   authors,
   image_url,
   updateDisplay,
-  rate
+  rate,
+  timeout = 500
 }) => {
   const [rating, setRating] = useState(0);
   const dispatch = useDispatch();
   const userRatings = useSelector(state => state.auth.user.profile.ratings);
+  const [ratingTimedOut, setRatingTimedOut] = useState(false);
 
   // retrieve the user's own rating on mount
   useEffect(() => {
@@ -22,6 +24,8 @@ const InlineRating = ({
   }, []);
 
   const handleRating = starNumClicked => {
+    if (ratingTimedOut) return;
+
     const oldRating = rating;
     let newRating;
     // clicking the star again disables the rating
@@ -47,6 +51,10 @@ const InlineRating = ({
       image_url
     };
     dispatch(rateBook(bookData, newRating)); // persists profile & book updates to db
+    setRatingTimedOut(true);
+    setTimeout(() => {
+      setRatingTimedOut(false);
+    }, timeout);
   };
 
   return <Rating rating={rating} handleRating={handleRating} />;

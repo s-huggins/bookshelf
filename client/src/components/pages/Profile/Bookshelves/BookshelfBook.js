@@ -115,6 +115,8 @@ import { useEffect } from 'react';
 import { useRef } from 'react';
 import BookshelfBookEditPane from './BookshelfBookEditPane';
 import { memo } from 'react';
+import { useContext } from 'react';
+import BookshelvesContext from './BookshelvesContext';
 
 const BookshelfBook = ({
   ownBookshelf,
@@ -124,15 +126,9 @@ const BookshelfBook = ({
   authors,
   image_url,
   average_rating,
-  userRating,
-  rateBook,
-  editShelf
+  userRating
 }) => {
-  // console.log('rendering book');
-  // const ownBooks = useSelector(state => state.auth.user.profile.books);
-  // const [bookShelved, setBookShelved] = useState(
-  //   ownBooks.find(book => book.bookId === _id)
-  // );
+  const { editRating } = useContext(BookshelvesContext);
 
   const shelvedBook = useSelector(state =>
     state.auth.user.profile.books.find(book => book.bookId === _id)
@@ -190,8 +186,7 @@ const BookshelfBook = ({
           title={title}
           authors={authors}
           image_url={image_url}
-          // updateDisplay={updateRatingDisplay}
-          rate={rating => rateBook(_id, rating)}
+          rate={rating => editRating(_id, rating)}
         />
         <span className="shelf-action" onClick={handleEditPane}>
           {bookShelved ? 'edit shelves' : 'add to shelves'}
@@ -206,7 +201,6 @@ const BookshelfBook = ({
           editPaneActive={editPaneActive}
           setEditPaneActive={setEditPaneActive}
           setBookShelved={setBookShelved}
-          editShelf={editShelf}
         />
       </td>
 

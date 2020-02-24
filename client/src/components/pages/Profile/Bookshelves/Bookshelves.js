@@ -10,6 +10,7 @@ import queryString from 'query-string';
 import PaginationSettings from './PaginationSettings';
 import Breadcrumb from './Breadcrumb';
 import usePrivateProfile from '../Hooks/usePrivateProfile';
+import BookshelvesContext from './BookshelvesContext';
 
 const Bookshelves = ({ location }) => {
   const { user } = useSelector(state => state.auth);
@@ -197,21 +198,29 @@ const Bookshelves = ({ location }) => {
         />
 
         <div className="Bookshelves__content">
-          <BookshelvesNav
-            countShelf={countShelf}
-            buildBookshelfLink={buildBookshelfLink}
-            books={allBooks}
-          />
-          <Bookshelf
-            books={activeShelf.shelfBooks}
-            shelf={activeShelf.shelf}
-            ownBookshelf={ownBookshelves}
-            rateBook={updateBookRatingsData}
-            editShelf={updateBookShelfData}
-            // rateBook={null}
+          <BookshelvesContext.Provider
+            value={{
+              allBooks,
+              editShelf: updateBookShelfData,
+              editRating: updateBookRatingsData
+            }}
           >
-            <PaginationSettings ownBookshelf={ownBookshelves} />
-          </Bookshelf>
+            <BookshelvesNav
+              countShelf={countShelf}
+              buildBookshelfLink={buildBookshelfLink}
+              books={allBooks}
+            />
+            <Bookshelf
+              books={activeShelf.shelfBooks}
+              shelf={activeShelf.shelf}
+              ownBookshelf={ownBookshelves}
+              rateBook={updateBookRatingsData}
+              editShelf={updateBookShelfData}
+              // rateBook={null}
+            >
+              <PaginationSettings ownBookshelf={ownBookshelves} />
+            </Bookshelf>
+          </BookshelvesContext.Provider>
         </div>
       </main>
     </div>

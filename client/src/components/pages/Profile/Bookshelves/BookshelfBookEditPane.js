@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { shelveBook } from '../../../../redux/profile/profileActions';
+import { useContext } from 'react';
+import BookshelvesContext from './BookshelvesContext';
 
 const BookshelfBookEditPane = React.forwardRef(
   (
@@ -11,13 +13,13 @@ const BookshelfBookEditPane = React.forwardRef(
       image_url,
       editPaneActive,
       setEditPaneActive,
-      setBookShelved,
-      editShelf
+      setBookShelved
     },
     ref
   ) => {
     const ownBooks = useSelector(state => state.auth.user.profile.books);
     const dispatch = useDispatch();
+    const { editShelf } = useContext(BookshelvesContext);
 
     const bookShelved = ownBooks.find(book => book.bookId === _id);
     const primaryShelf = bookShelved ? bookShelved.primaryShelf : '';
