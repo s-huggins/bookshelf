@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
-import { useLocation, useParams } from 'react-router-dom';
-import { useDispatch, useSelector, shallowEqual } from 'react-redux';
+import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchInboxPage,
   fetchSavedPage,
@@ -77,13 +77,14 @@ const useLoadMail = folder => {
   const numTrashed = useSelector(state => state.mail.mailbox.numTrashed);
   const numSaved = useSelector(state => state.mail.mailbox.numSaved);
   const numUnread = useSelector(state => state.mail.mailbox.numUnread);
+  const numSent = useSelector(state => state.mail.mailbox.numSent);
 
   const page = getPage();
 
   useEffect(() => {
     if (!loading) setLoading(true);
     dispatch(fetchers[folder](page));
-  }, [page, numTrashed, numSaved, numUnread]);
+  }, [page, numTrashed, numSaved, numUnread, numSent]);
 
   useEffect(() => {
     if (firstCycle.current) {

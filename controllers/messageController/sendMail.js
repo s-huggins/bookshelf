@@ -280,6 +280,143 @@ const updateInboxBuckets = async (recip, message) => {
 };
 
 // a 'fan-out-on-write' esque implementation
+// exports.sendMessage = catchAsync(async (req, res) => {
+//   const { recipients } = req; // prepared in message validation middleware
+//   const from = {
+//     profileId: req.user.profile.id,
+//     profile: req.user.profile._id,
+//     archived: {
+//       displayName: req.user.profile.displayName
+//     }
+//   };
+//   const to = recipients.map(recip => ({
+//     profileId: recip.get('id'),
+//     profile: recip.get('_id', String),
+//     archived: {
+//       displayName: recip.get('displayName')
+//     }
+//   }));
+
+//   // don't duplicate sender's profile
+//   const spoolProfiles = to.find(recip => recip.profileId === from.profileId)
+//     ? to
+//     : to.concat(from); // .tostring
+
+//   // ordered profile IDs without duplication to identify the spool
+//   let group = [...req.body.to, req.user.profile.id];
+//   group = Array.from(new Set(group));
+//   group = group.sort((n1, n2) => {
+//     if (n1 < n2) return -1;
+//     if (n1 === n2) return 0;
+//     return 1;
+//   });
+//   group = group.join(':');
+//   group = `:${group}:`;
+
+//   // profileLinks array is used to track living profiles with a connection to the spool
+//   let profileLinks = recipients.map(recip => recip.get('id'));
+//   profileLinks.push(req.user.profile.id);
+//   profileLinks = Array.from(new Set(profileLinks));
+
+//   let message = {
+//     from: req.user.profile.id,
+//     subject: req.body.subject,
+//     body: req.body.body
+//   };
+
+//   // CREATE SPOOL MESSAGE FIRST SO THAT INBOX/OUTBOX MESSAGES CAN REFERENCE THE SPOOL BUCKET
+
+//   // const spoolGroup = await SpoolGroup.findOneAndUpdate(
+//   //   {
+//   //     group // ordered array
+//   //   },
+//   //   { profileLinks }, // if upsert required
+//   //   {
+//   //     upsert: true,
+//   //     new: true,
+//   //     lean: true,
+//   //     setDefaultsOnInsert: true
+//   //   }
+//   // );
+
+//   const spoolGroup = await SpoolGroup.findOneAndUpdate(
+//     {
+//       group
+//     },
+//     { profileLinks }, // if upsert required
+//     {
+//       upsert: true,
+//       new: true,
+//       lean: true,
+//       setDefaultsOnInsert: true
+//     }
+//   );
+
+//   // const spoolGroup = await SpoolGroup.findOneAndUpdate(
+//   //   {
+//   //     group
+//   //   },
+//   //   { profileLinks }, // if upsert required
+//   //   {
+//   //     upsert: true,
+//   //     new: true,
+//   //     lean: true,
+//   //     setDefaultsOnInsert: true
+//   //   }
+//   // );
+
+//   const spoolBucket = await updateSpools(
+//     spoolGroup._id,
+//     message,
+//     spoolProfiles,
+//     profileLinks
+//   );
+
+//   await SpoolGroup.findOneAndUpdate(
+//     {
+//       _id: spoolGroup._id,
+//       'newestSpoolBucket.seq': { $lte: spoolBucket.seq } // in case seqCurrent has already increased
+//     },
+//     {
+//       $set: {
+//         'newestSpoolBucket.bucket': spoolBucket._id,
+//         'newestSpoolBucket.seq': spoolBucket.seq
+//       },
+//       $inc: {
+//         messagesTotal: 1
+//       }
+//     }
+//   );
+
+//   // UPDATE SENDER OUTBOX AND RECIPIENT INBOX BUCKETS
+
+//   message = {
+//     to,
+//     from,
+//     subject: req.body.subject,
+//     body: req.body.body,
+//     spoolBucket: spoolBucket._id,
+//     spoolGroup: spoolGroup._id
+//   };
+
+//   const tasks = [];
+//   // update outbox and profile of sender
+//   tasks.push(updateOutboxBuckets(req.user.profile._id, message));
+//   // update inboxes and profiles of recipients
+//   recipients.forEach(recip => tasks.push(updateInboxBuckets(recip, message)));
+
+//   const results = await Promise.all(tasks);
+//   const [mailbox, outboxBucket] = results[0];
+
+//   res.status(200).json({
+//     status: 'success',
+//     data: {
+//       mailbox,
+//       sent: outboxBucket.messages[outboxBucket.messages.length - 1]
+//     }
+//   });
+// });
+
 exports.sendMessage = catchAsync(async (req, res) => {
   const { recipients } = req; // prepared in message validation middleware
   const from = {

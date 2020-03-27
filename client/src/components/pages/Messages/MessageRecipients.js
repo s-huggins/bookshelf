@@ -1,6 +1,4 @@
 import React, { useState, useLayoutEffect } from 'react';
-import { Link } from 'react-router-dom';
-import Avatar from '../Profile/Avatar';
 import MessageAvatar from './MessageAvatar';
 import pluralize from '../../../util/pluralize';
 import { useSelector } from 'react-redux';

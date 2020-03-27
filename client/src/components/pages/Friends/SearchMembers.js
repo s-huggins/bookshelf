@@ -15,7 +15,7 @@ const SearchMembers = () => {
       <input
         type="text"
         className="form-control"
-        placeholder="Find by name or email"
+        placeholder="Find by name or handle"
         value={userInput}
         onChange={e => setUserInput(e.target.value)}
       />

@@ -4,7 +4,6 @@ import FriendCurrentRead from './FriendCurrentRead';
 import Pagination from '../../common/Pagination';
 import Loader from '../../common/Loader';
 import { useSelector } from 'react-redux';
-import withUpdatingRating from '../Profile/withUpdatingRating';
 import queryString from 'query-string';
 import { useLayoutEffect } from 'react';
 
@@ -119,21 +118,15 @@ const FriendsReading = () => {
                 <div className="FriendsReading__pagination">
                   <Pagination {...getPaginationSettings()} />
                 </div>
+
                 {booksView.books
                   .slice(booksView.startIndex, booksView.endIndex)
-                  .map(book => {
-                    const CurrentReadWithUpdatingRating = withUpdatingRating(
-                      FriendCurrentRead
-                    );
-                    return (
-                      <CurrentReadWithUpdatingRating
-                        key={book.friendId}
-                        props={{
-                          ...book
-                        }}
-                      />
-                    );
-                  })}
+                  .map(book => (
+                    <FriendCurrentRead
+                      key={`${book.friendId}-${book._id}`}
+                      {...book}
+                    />
+                  ))}
                 <div className="FriendsReading__pagination">
                   <Pagination {...getPaginationSettings()} />
                 </div>

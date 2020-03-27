@@ -35,8 +35,6 @@ export const lastActive = date => {
 
 /* USED INLINE ON PANELS */
 export const printTimeAgo = date => {
-  // const time = moment(date);
-  let activityString = '';
   const currentTime = new Date();
   const secsAgo = Math.floor((currentTime - date) / 1000);
 
@@ -50,7 +48,6 @@ export const printTimeAgo = date => {
   } else if (secsAgo < 60 * 60 * 24) {
     // less than 1 day ago
     const hoursAgo = Math.floor(secsAgo / (60 * 60));
-    const minsAgo = Math.floor(secsAgo / 60);
 
     const minsRemainder = Math.floor(Math.floor(secsAgo / 60) - hoursAgo * 60);
 

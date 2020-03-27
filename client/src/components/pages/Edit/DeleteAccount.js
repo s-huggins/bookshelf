@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import EditTextInput from './EditTextInput';
 import { useEffect } from 'react';
 import Loader from '../../common/Loader';
 import {
-  editPassword,
   clearEditStatus,
   deleteAccount
 } from '../../../redux/auth/authActions';
@@ -29,7 +27,6 @@ const DeleteAccount = () => {
 
   const editStatus = useSelector(state => state.auth.editStatus);
   const errorMessage = useSelector(state => state.auth.errorMessage);
-  const token = useSelector(state => state.auth.token);
   const dispatch = useDispatch();
 
   useEffect(() => {

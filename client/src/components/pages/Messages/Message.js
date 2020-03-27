@@ -129,7 +129,9 @@ const Message = ({ message, dismissAlert }) => {
           <tr>
             <th scope="row">message:</th>
             <td>
-              <p>{message.body}</p>
+              <div className="cell-content-container">
+                <p className="Message__text-body">{message.body}</p>
+              </div>
             </td>
           </tr>
         </tbody>

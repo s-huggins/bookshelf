@@ -92,11 +92,11 @@ const Book = ({ match }) => {
                 {book.average_rating.toFixed(2)}
               </span>
               <span className="middle-dot">&#183;</span>
-              <span className="green-link">
+              <span>
                 {book.ratings_count} {pluralize('rating', book.ratings_count)}
               </span>
-              <span className="middle-dot">&#183;</span>
-              <span className="green-link">0 reviews</span>
+              {/* <span className="middle-dot">&#183;</span>
+              <span className="green-link">0 reviews</span> */}
             </div>
             <p
               className="profile__desciption"
@@ -126,9 +126,9 @@ const Book = ({ match }) => {
           <div className="also-enjoyed">
             <h3 className="also-enjoyed-header">Readers also enjoyed</h3>
             <SimilarBooks books={book.similar_books.book} />
-            <a href="#!" className="green-link see-similar">
+            {/* <a href="#!" className="green-link see-similar">
               See similar books...
-            </a>
+            </a> */}
           </div>
         ) : null}
         <div className="sidebar-authors">

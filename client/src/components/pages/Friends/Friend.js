@@ -1,6 +1,4 @@
 import React from 'react';
-import pepe from '../../../img/pepe.png';
-import moby from '../../../img/moby.jpg';
 import { Link } from 'react-router-dom';
 import Avatar from '../Profile/Avatar';
 import pluralize from '../../../util/pluralize';

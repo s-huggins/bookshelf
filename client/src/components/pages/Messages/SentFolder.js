@@ -5,14 +5,11 @@ import useLoadMail, { MailFolder } from './hooks/useLoadMail';
 import { deleteSent } from '../../../redux/mail/mailActions';
 import Folder from './Folder';
 import Loader from '../../common/Loader';
-import { useLayoutEffect } from 'react';
-import { useLocation } from 'react-router-dom';
 
 const SentFolder = () => {
   const dispatch = useDispatch();
   const [action, setAction] = useState('');
   const [alertCache, alert, dismissAlert] = useMailboxAlert();
-  const location = useLocation();
 
   const [loadingMail, mail] = useLoadMail(MailFolder.SENT);
   const numSent = useSelector(state => state.mail.mailbox.numSent);
@@ -48,7 +45,7 @@ const SentFolder = () => {
     switch (e.target.value) {
       case 'delete':
         dispatch(deleteSent(messages));
-        alertCache.current = writeAlertText(writeAlertText.deleteSent);
+        alertCache.current = writeAlertText(writeAlertText.DELETE, numChecked);
     }
     setAction('');
   };

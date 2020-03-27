@@ -61,7 +61,7 @@ const SpoolBucketSchema = new Schema({
         body: {
           type: String,
           trim: true,
-          maxlength: 20000,
+          maxlength: 30000,
           required: [true, 'A message body is required.']
         },
         dateCreated: {

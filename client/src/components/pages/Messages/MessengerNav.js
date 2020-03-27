@@ -1,42 +1,5 @@
-// import React from 'react';
-// import { Link } from 'react-router-dom';
-
-// const MessengerNav = () => {
-//   return (
-//     <ul className="messenger-nav-list">
-//       <li className="messenger-nav-compose">
-//         <Link to="/message/new" className="green-link">
-//           compose
-//         </Link>
-//       </li>
-//       <li>
-//         <Link to="/message/inbox" className="green-link">
-//           inbox
-//         </Link>
-//       </li>
-//       <li>
-//         <Link to="/message/saved" className="green-link">
-//           saved
-//         </Link>
-//       </li>
-//       <li>
-//         <Link to="/message/outbox" className="green-link">
-//           sent
-//         </Link>
-//       </li>
-//       <li>
-//         <Link to="/message/trash" className="green-link">
-//           trash
-//         </Link>
-//       </li>
-//     </ul>
-//   );
-// };
-
-// export default MessengerNav;
-
 import React from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 const MessengerNav = () => {
   return (

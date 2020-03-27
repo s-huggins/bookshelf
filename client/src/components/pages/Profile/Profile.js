@@ -8,16 +8,14 @@ import ProfileSide from './ProfileSide';
 import { getMonth, lastActive } from '../../../util/lastActive';
 import { Redirect } from 'react-router-dom';
 import useLoadProfile from './Hooks/useLoadProfile';
-import BookshelvesPanel from './BookshelvesPanel';
-import CurrentlyReadingPanel from './CurrentlyReadingPanel';
-import RecentUpdatesPanel from './RecentUpdatesPanel';
+// import BookshelvesPanel from './BookshelvesPanel';
+// import CurrentlyReadingPanel from './CurrentlyReadingPanel';
+// import RecentUpdatesPanel from './RecentUpdatesPanel';
 import usePrivateProfile from './Hooks/usePrivateProfile';
 import ProfilePanels from './ProfilePanels';
 
 const Profile = ({ location }) => {
-  const { id: ownProfileId, friends: ownFriends } = useSelector(
-    state => state.auth.user.profile
-  );
+  const { id: ownProfileId } = useSelector(state => state.auth.user.profile);
   const [loadingProfile, profile] = useLoadProfile();
   const profileIsPrivate = usePrivateProfile(profile);
   /**

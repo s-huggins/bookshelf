@@ -1,5 +1,4 @@
 import React from 'react';
-import avatar from '../../../img/avatar.png';
 import { Link } from 'react-router-dom';
 import Avatar from './Avatar';
 import pluralize from '../../../util/pluralize';

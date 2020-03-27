@@ -15,7 +15,8 @@ class GlobalErrorBoundary extends Component {
   }
 
   componentDidUpdate() {
-    if (!this.props.isAuthenticated) window.location.reload();
+    if (!this.props.isAuthenticated && this.state.errorThrown)
+      window.location.reload();
   }
 
   handleNavigateAway = () => {

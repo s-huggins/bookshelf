@@ -4,6 +4,7 @@
   display: flex;
   justify-content: space-between;
   padding-top: 1rem;
+  // border: 1px solid red;
 
   main {
     flex-grow: 1;
@@ -26,6 +27,12 @@
     .button-check {
       padding-right: 0.25rem;
     }
+  }
+
+  .profile-text-item {
+    word-wrap: break-word;
+    display: inline-block;
+    width: 80%;
   }
 
   .social-links {

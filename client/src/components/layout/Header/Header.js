@@ -9,7 +9,7 @@ const Header = () => {
   const loadingUser = useSelector(state => state.auth.loadingUser);
 
   return (
-    <header className={`Header${!isAuthenticated ? ' Header--expand' : ''}`}>
+    <header className="Header">
       <nav className="header-contents">
         <HeaderLogo />
 

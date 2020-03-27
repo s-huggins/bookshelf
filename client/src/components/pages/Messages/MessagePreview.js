@@ -38,7 +38,7 @@ const MessagePreview = ({
       </td>
       <td className="cell-subject" onClick={() => history.push(buildLink())}>
         <span>
-          <span className="green-link">{subject}</span>{' '}
+          <span className="green-link subject-text">{subject}</span>{' '}
           {messageDirection !== 'out' && !read && (
             <span className="new-message">(new)</span>
           )}{' '}

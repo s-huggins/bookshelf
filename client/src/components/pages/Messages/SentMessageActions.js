@@ -3,12 +3,6 @@ import { Link, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import {
   clearMailActionStatus,
-  saveMail,
-  unsaveMail,
-  markRead,
-  markUnread,
-  trashMail,
-  untrashMail,
   deleteSent
 } from '../../../redux/mail/mailActions';
 import { useState } from 'react';
@@ -17,7 +11,6 @@ const SentMessageActions = ({ message, setAlert }) => {
   const dispatch = useDispatch();
   const actionStatus = useSelector(state => state.mail.actionStatus);
   const action = useRef({ type: '', flag: null });
-  const history = useHistory();
   const [deleted, setDeleted] = useState(message.deleted);
 
   useEffect(() => {

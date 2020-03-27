@@ -1,17 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { withRouter, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logIn, clearFailedSignin } from '../../../redux/auth/authActions';
-
-/* TODO: Header will vary based on authentication status
-i.e. the signin form will change to a logout button
-*/
+import { logIn } from '../../../redux/auth/authActions';
 
 const HeaderLogin = ({ history }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const dispatch = useDispatch();
-  const isAuthenticated = useSelector(state => state.auth.isAuthenticated);
   const signIn = useSelector(state => state.auth.signIn);
 
   const handleSubmit = e => {

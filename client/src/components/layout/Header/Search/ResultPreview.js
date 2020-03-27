@@ -11,7 +11,7 @@ function firstLine(el) {
   const arr = text.split(' ');
   for (let i = 0; i < arr.length; i++) {
     text = text.substring(0, text.lastIndexOf(' '));
-    if (el.offsetHeight == initial) {
+    if (el.offsetHeight === initial) {
       const temp = el.innerHTML;
       el.innerHTML = cache;
       return temp;

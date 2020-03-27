@@ -72,8 +72,7 @@ const ProfilePanels = ({ profile, ownProfile, buildBookshelfLink }) => {
 
 export default ProfilePanels;
 
-{
-  /*
+/*
 <RecentUpdatesPanel
   books={profile.books}
   displayName={profile.displayName}
@@ -81,4 +80,3 @@ export default ProfilePanels;
   buildBookshelfLink={buildBookshelfLink}
 />
 */
-}

@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import MessagePreview from './MessagePreview';
 import MessengerNav from './MessengerNav';
-import { useDispatch } from 'react-redux';
-// import { getMailbox } from '../../../redux/profile/profileActions';
 import { useLayoutEffect } from 'react';
 import Loader from '../../common/Loader';
 import Pagination from '../../common/Pagination';
 import { useParams, Redirect } from 'react-router-dom';
 import Alert from '../../common/Alert';
-import { fetchInboxPage } from '../../../redux/mail/mailActions';
+// import { fetchInboxPage } from '../../../redux/mail/mailActions';
 
 const Folder = ({
   title,

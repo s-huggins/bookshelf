@@ -3,7 +3,7 @@
   // flex-grow: 1;
   // max-width: 70%;
   padding: 0 0.5rem;
-
+  // border: 1px solid black;
   &__side {
     margin-right: 2rem;
 
@@ -68,9 +68,11 @@
 
       .text-bold {
         display: inline-block;
-        min-width: 22%;
+        // min-width: 22%;
+        // width: auto;
         // width: 5rem;
         // padding-right: 2rem;
+        // margin-right: 2rem;
         font-weight: bold;
       }
 
@@ -81,6 +83,7 @@
     }
 
     &--user-profile {
+      max-width: 30rem;
       li {
         .text-bold {
           min-width: 0;

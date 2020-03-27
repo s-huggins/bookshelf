@@ -56,7 +56,7 @@ const ProfileIcon = ({ firstName }) => {
           </Link>
 
           <a href="/user/bookshelves">
-            <li>My books</li>
+            <li>My Bookshelves</li>
           </a>
         </ul>
 

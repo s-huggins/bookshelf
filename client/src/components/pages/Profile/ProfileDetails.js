@@ -78,26 +78,30 @@ const ProfileDetails = ({ profile }) => {
           </li>
           {profile.interests && (
             <li>
-              <span className="text-bold">Interests</span> {profile.interests}
+              <span className="text-bold">Interests</span>{' '}
+              <p className="profile-text-item">{profile.interests}</p>
             </li>
           )}
           {profile.favBooks && (
             <li>
               <span className="text-bold">Favorite Books</span>{' '}
-              {profile.favBooks}
+              <p className="profile-text-item">{profile.favBooks}</p>
             </li>
           )}
           {profile.aboutMe && (
             <li>
-              <span className="text-bold">About Me</span>{' '}
-              <p>
+              <span className="text-bold">About Me</span>
+              <p className="profile-text-item">
                 {seeMore.isNeeded && seeMore.show
                   ? profile.aboutMe.substring(0, 400) + '...'
                   : profile.aboutMe}{' '}
                 {seeMore.isNeeded && (
-                  <a className="green-link see-more" onClick={handleSeeMore}>
+                  <button
+                    className="green-link button-reset see-more"
+                    onClick={handleSeeMore}
+                  >
                     {seeMore.show ? '(See more)' : '(Show less)'}
-                  </a>
+                  </button>
                 )}
               </p>
             </li>

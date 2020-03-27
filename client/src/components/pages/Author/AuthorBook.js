@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import MiniRating from '../../common/MiniRating';
 import { Link } from 'react-router-dom';
 import SearchResultRating from '../Search/SearchResultRating';
@@ -6,41 +6,9 @@ import pluralize from '../../../util/pluralize';
 import AuthorBookDropdownButton from './AuthorBookDropdownButton';
 
 const AuthorBook = ({ book }) => {
-  const [averageRating, setAverageRating] = useState(book.average_rating);
-  const [ratingsCount, setRatingsCount] = useState(book.ratings_count);
-
-  const updateRatingDisplay = (oldRating, newRating) => {
-    const sumRatings = averageRating * ratingsCount;
-
-    // if book was not previously rated by user
-    if (!oldRating) {
-      const newSumRatings = sumRatings + newRating;
-      const newRatingsCount = ratingsCount + 1;
-      const newAverageRating = newSumRatings / newRatingsCount;
-
-      setAverageRating(newAverageRating);
-      setRatingsCount(newRatingsCount);
-    } else if (newRating) {
-      // user updated rating without unrating
-      const newSumRatings = sumRatings - oldRating + newRating;
-      const newAverageRating = newSumRatings / ratingsCount;
-
-      setAverageRating(newAverageRating);
-    } else {
-      // user removed a rating
-      const newSumRatings = sumRatings - oldRating;
-      const newRatingsCount = ratingsCount - 1;
-      const newAverageRating =
-        newRatingsCount !== 0 ? newSumRatings / newRatingsCount : 0;
-
-      setAverageRating(newAverageRating);
-      setRatingsCount(newRatingsCount);
-    }
-  };
-
   const printDetails = book => {
-    const avgRatingStr = `${averageRating.toFixed(2)} avg rating`;
-    const ratingsCountStr = `${ratingsCount} ${pluralize(
+    const avgRatingStr = `${book.average_rating.toFixed(2)} avg rating`;
+    const ratingsCountStr = `${book.ratings_count} ${pluralize(
       'rating',
       book.ratings_count
     )}`;
@@ -72,7 +40,7 @@ const AuthorBook = ({ book }) => {
 
           <div className="AuthorBook__details-specifics">
             <span className="AuthorBook__details-rating">
-              <MiniRating average={averageRating} />
+              <MiniRating average={book.average_rating} />
             </span>
             <span className="text-tiny">{printDetails(book)}</span>
           </div>
@@ -90,10 +58,7 @@ const AuthorBook = ({ book }) => {
             Rate this book
           </span>
           <div>
-            <SearchResultRating
-              book={book}
-              updateDisplay={updateRatingDisplay}
-            />
+            <SearchResultRating book={book} />
           </div>
         </div>
       </div>

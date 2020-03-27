@@ -1,3 +1,63 @@
+// .Message {
+//   h2 {
+//     font-family: $font-secondary;
+//     margin-bottom: 1.5rem;
+//   }
+//   &__action-bar {
+//     display: block;
+//     // width: 100%;
+//     // position: absolute;
+//     // right: 0;
+//     justify-content: flex-end;
+//     text-align: right;
+//     .middle-dot {
+//       padding: 0rem 0.1rem;
+//     }
+//   }
+
+//   table {
+//     max-width: 40rem;
+//     margin-bottom: 1.5rem;
+//     border-collapse: collapse;
+//     th {
+//       font-weight: bold;
+//       width: 6rem;
+//       text-align: left;
+//       vertical-align: top;
+//     }
+//     th,
+//     td {
+//       padding: 0.4rem;
+//     }
+//   }
+
+//   &__recipients {
+//     .button-wind {
+//       display: inline-block;
+//       margin: 0.75rem 0;
+//       margin-right: 0.75rem;
+//     }
+//   }
+
+//   &__profile {
+//     display: inline-flex;
+//     justify-content: flex-start;
+//     align-items: flex-start;
+
+//     &--recipient {
+//       margin-right: 0.6rem;
+//       // display: block;
+//       width: 100%;
+//     }
+
+//     img {
+//       margin-right: 0.6rem;
+//       width: 30px;
+//       height: 40px;
+//     }
+//   }
+// }
+
 .Message {
   h2 {
     font-family: $font-secondary;
@@ -19,6 +79,7 @@
     max-width: 40rem;
     margin-bottom: 1.5rem;
     border-collapse: collapse;
+    table-layout: fixed;
     th {
       font-weight: bold;
       width: 6rem;
@@ -28,6 +89,8 @@
     th,
     td {
       padding: 0.4rem;
+      max-width: 34rem;
+      word-wrap: break-word;
     }
   }
 
