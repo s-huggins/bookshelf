@@ -24,6 +24,7 @@ app.use(helmet());
 //   })
 // );
 
+app.options('*', cors());
 app.use(
   cors({
     origin: 'https://goodreads-clone.herokuapp.com'
