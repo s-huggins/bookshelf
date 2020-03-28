@@ -13,7 +13,7 @@ const AddFriendsPage = () => {
   const token = useSelector(state => state.auth.token);
 
   const fetchProfiles = async queryStr => {
-    const uri = `http://localhost:5000/api/v1/profile/search?${queryStr}`;
+    const uri = `/api/v1/profile/search?${queryStr}`;
     const res = await fetch(uri, {
       method: 'GET',
       headers: {

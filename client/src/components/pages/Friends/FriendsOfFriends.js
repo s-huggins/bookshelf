@@ -19,7 +19,7 @@ const FriendsOfFriends = () => {
   const friends = useSelector(state => state.auth.user.profile.friends);
   // fetch user profile with friends' current reads
   const fetchData = async () => {
-    const uri = 'http://localhost:5000/api/v1/profile/friends/ofFriends';
+    const uri = '/api/v1/profile/friends/ofFriends';
     const res = await fetch(uri, {
       method: 'GET',
       headers: {

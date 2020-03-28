@@ -20,7 +20,7 @@ const AuthorStats = ({
   });
 
   const fetchNewStats = async () => {
-    const uri = `http://localhost:5000/api/v1/author/${authorId}/ratings`;
+    const uri = `/api/v1/author/${authorId}/ratings`;
 
     const res = await fetch(uri, {
       method: 'GET',

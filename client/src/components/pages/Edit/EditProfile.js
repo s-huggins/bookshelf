@@ -39,7 +39,7 @@ const handleValidator = handle => {
     )
   ) {
     return new Promise((resolve, reject) => {
-      const uri = `http://localhost:5000/api/v1/profile/handleCheck/${handle}`;
+      const uri = `/api/v1/profile/handleCheck/${handle}`;
       const token = store.getState().auth.token;
       fetch(uri, {
         method: 'GET',

@@ -8,7 +8,7 @@ import {
 } from './authorTypes';
 
 export const fetchAuthor = authorId => async dispatch => {
-  let uri = `http://localhost:5000/api/v1/author/${authorId}`;
+  let uri = `/api/v1/author/${authorId}`;
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {
@@ -39,7 +39,7 @@ export const fetchAuthorBooks = (
   page,
   withAuthorImage
 ) => async dispatch => {
-  let uri = `http://localhost:5000/api/v1/author/${authorId}/books?page=${page}`;
+  let uri = `/api/v1/author/${authorId}/books?page=${page}`;
   uri = withAuthorImage ? uri + '&image=true' : uri;
 
   const token = store.getState().auth.token;

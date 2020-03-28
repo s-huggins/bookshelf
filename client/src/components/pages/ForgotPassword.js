@@ -16,17 +16,14 @@ const ForgotPassword = () => {
 
     setLoading(true);
 
-    const res = await fetch(
-      'http://localhost:5000/api/v1/users/forgotPassword',
-      {
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ email })
-      }
-    );
+    const res = await fetch('/api/v1/users/forgotPassword', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ email })
+    });
 
     setLoading(false);
 

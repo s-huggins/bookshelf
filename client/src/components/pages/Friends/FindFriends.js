@@ -19,7 +19,7 @@ const FindFriends = () => {
   });
 
   const fetchProfiles = async queryStr => {
-    const uri = `http://localhost:5000/api/v1/profile/search?search=${queryStr}`;
+    const uri = `/api/v1/profile/search?search=${queryStr}`;
     const res = await fetch(uri, {
       method: 'GET',
       headers: {

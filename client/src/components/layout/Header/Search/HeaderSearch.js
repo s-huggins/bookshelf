@@ -13,7 +13,7 @@ const fetchBooks = (searchString, setSearching, cancelSearch) => {
   if (searchString.trim() === '') return Promise.resolve(null);
   setSearching(true);
   return new Promise((resolve, reject) => {
-    const uri = `http://localhost:5000/api/v1/search?q=${searchString}`;
+    const uri = `/api/v1/search?q=${searchString}`;
     const token = store.getState().auth.token;
 
     fetch(uri, {

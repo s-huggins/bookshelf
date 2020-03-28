@@ -9,7 +9,7 @@ import {
 export const clearFetchStatus = () => ({ type: CLEAR_FETCH_STATUS });
 
 export const fetchBook = bookId => async dispatch => {
-  let uri = `http://localhost:5000/api/v1/book/${bookId}`;
+  let uri = `/api/v1/book/${bookId}`;
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {

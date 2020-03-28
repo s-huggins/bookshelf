@@ -21,7 +21,7 @@ const useLoadMessage = () => {
 
   const loadMessage = async (folder, seq, id) => {
     const token = store.getState().auth.token;
-    const endpoint = `http://localhost:5000/api/v1/message/folder/${folder}/${seq}/${id}`;
+    const endpoint = `/api/v1/message/folder/${folder}/${seq}/${id}`;
     const res = await fetch(endpoint, {
       method: 'GET',
       headers: {

@@ -30,7 +30,7 @@ export const clearEditAvatarStatus = () => ({
 // profileId optional
 export const getProfile = profileId => async dispatch => {
   dispatch(prepareGetProfile());
-  let uri = 'http://localhost:5000/api/v1/profile';
+  let uri = '/api/v1/profile';
   if (profileId) {
     uri = `${uri}/${profileId}`;
   }
@@ -62,7 +62,7 @@ export const editProfile = updatedProfile => async dispatch => {
   // make call to api
   // dispatch success or failure, depending upon backend validation
 
-  const uri = 'http://localhost:5000/api/v1/profile';
+  const uri = '/api/v1/profile';
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {
@@ -95,7 +95,7 @@ export const editProfile = updatedProfile => async dispatch => {
 
 export const editAvatar = formData => async dispatch => {
   const token = store.getState().auth.token;
-  const res = await fetch('http://localhost:5000/api/v1/profile/avatar', {
+  const res = await fetch('/api/v1/profile/avatar', {
     method: 'POST',
     headers: {
       Accept: 'application/json',
@@ -125,7 +125,7 @@ export const editAvatar = formData => async dispatch => {
 
 export const deleteAvatar = () => async dispatch => {
   const token = store.getState().auth.token;
-  const res = await fetch('http://localhost:5000/api/v1/profile/avatar', {
+  const res = await fetch('/api/v1/profile/avatar', {
     method: 'DELETE',
     headers: {
       Accept: 'application/json',
@@ -157,7 +157,7 @@ export const shelveBook = (bookData, shelf) => async dispatch => {
 
   const token = store.getState().auth.token;
   // const res =
-  await fetch('http://localhost:5000/api/v1/profile/bookshelves', {
+  await fetch('/api/v1/profile/bookshelves', {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
@@ -172,7 +172,7 @@ export const rateBook = (bookData, rating) => async dispatch => {
   const body = { rating, ...bookData };
 
   const token = store.getState().auth.token;
-  const res = await fetch('http://localhost:5000/api/v1/profile/rating', {
+  const res = await fetch('/api/v1/profile/rating', {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',

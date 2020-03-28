@@ -51,6 +51,17 @@ app.use(mongoSanitize());
 // sanitizes data against XSS
 app.use(xssClean());
 
+// app.use((req, res, next) => {
+//   res.header('Access-Control-Allow-Origin', 'https://goodreads-clone.herokuapp.com');
+//   res.header('Access-Control-Allow-Credentials', true);
+//   res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,PATCH,DELETE,OPTIONS');
+//   res.header(
+//     'Access-Control-Allow-Headers',
+//     'Origin,X-Requested-With,Content-Type,Authorization,Accept,content-type,application/json'
+//   );
+//   next();
+// });
+
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/profile', profileRouter);
 app.use('/api/v1/search', searchRouter);

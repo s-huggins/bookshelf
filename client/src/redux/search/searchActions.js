@@ -6,7 +6,7 @@ import {
 } from './searchTypes';
 
 export const searchBooks = (query, filter, page) => async dispatch => {
-  let uri = 'http://localhost:5000/api/v1/search';
+  let uri = '/api/v1/search';
 
   // TODO: check params, return early if invalid?
 

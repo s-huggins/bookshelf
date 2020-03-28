@@ -108,18 +108,15 @@ const ChangeEmail = () => {
           return 'Sorry, your email cannot exceed 80 characters.';
         if (!validator.isEmail(val)) return 'Not a valid email.';
 
-        const res = await fetch(
-          'http://localhost:5000/api/v1/users/emailCheck',
-          {
-            method: 'POST',
-            headers: {
-              Accept: 'application/json',
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ email: val })
-          }
-        );
+        const res = await fetch('/api/v1/users/emailCheck', {
+          method: 'POST',
+          headers: {
+            Accept: 'application/json',
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ email: val })
+        });
 
         const json = await res.json();
         if (json.status === 'success' && json.data.emailAlreadyRegistered)

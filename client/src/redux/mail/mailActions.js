@@ -44,24 +44,24 @@ const fetchMail = async (endpoint, dispatch, fetchType) => {
 };
 
 const fetchInbox = (skip = 0, limit = 20) => async dispatch => {
-  const endpoint = `http://localhost:5000/api/v1/message/folder/inbox?skip=${skip}&limit=${limit}`;
+  const endpoint = `/api/v1/message/folder/inbox?skip=${skip}&limit=${limit}`;
   await fetchMail(endpoint, dispatch, FETCH_INBOX);
 };
 
 const fetchSaved = (skip = 0, limit = 20) => async dispatch => {
-  const endpoint = `http://localhost:5000/api/v1/message/folder/saved?skip=${skip}&limit=${limit}`;
+  const endpoint = `/api/v1/message/folder/saved?skip=${skip}&limit=${limit}`;
   await fetchMail(endpoint, dispatch, FETCH_SAVED);
 };
 const fetchTrash = (skip = 0, limit = 20) => async dispatch => {
-  const endpoint = `http://localhost:5000/api/v1/message/folder/trash?skip=${skip}&limit=${limit}`;
+  const endpoint = `/api/v1/message/folder/trash?skip=${skip}&limit=${limit}`;
   await fetchMail(endpoint, dispatch, FETCH_TRASH);
 };
 const fetchSent = (skip = 0, limit = 20) => async dispatch => {
-  const endpoint = `http://localhost:5000/api/v1/message/folder/sent?skip=${skip}&limit=${limit}`;
+  const endpoint = `/api/v1/message/folder/sent?skip=${skip}&limit=${limit}`;
   await fetchMail(endpoint, dispatch, FETCH_SENT);
 };
 const fetchSpool = (groupId, skip = 0, limit = 20) => async dispatch => {
-  const endpoint = `http://localhost:5000/api/v1/message/spool/${groupId}?skip=${skip}&limit=${limit}`;
+  const endpoint = `/api/v1/message/spool/${groupId}?skip=${skip}&limit=${limit}`;
   await fetchMail(endpoint, dispatch, FETCH_SPOOL);
 };
 
@@ -100,7 +100,7 @@ const updateMail = async (endpoint, messages, dispatch) => {
 };
 
 const handleTrash = (messages, undo = false) => async dispatch => {
-  let endpoint = `http://localhost:5000/api/v1/message/trash`;
+  let endpoint = `/api/v1/message/trash`;
   if (undo) endpoint = `${endpoint}?undo=true`;
 
   await updateMail(endpoint, messages, dispatch);
@@ -110,7 +110,7 @@ export const trashMail = messages => handleTrash(messages);
 export const untrashMail = messages => handleTrash(messages, true);
 
 const handleRead = (messages, unread = false) => async dispatch => {
-  let endpoint = `http://localhost:5000/api/v1/message/mark/read`;
+  let endpoint = `/api/v1/message/mark/read`;
   if (unread) endpoint = `${endpoint}?undo=true`;
 
   await updateMail(endpoint, messages, dispatch);
@@ -120,7 +120,7 @@ export const markRead = messages => handleRead(messages);
 export const markUnread = messages => handleRead(messages, true);
 
 const handleSave = (messages, unsave = false) => async dispatch => {
-  let endpoint = `http://localhost:5000/api/v1/message/mark/saved`;
+  let endpoint = `/api/v1/message/mark/saved`;
   if (unsave) endpoint = `${endpoint}?undo=true`;
 
   await updateMail(endpoint, messages, dispatch);
@@ -130,11 +130,11 @@ export const saveMail = messages => handleSave(messages);
 export const unsaveMail = messages => handleSave(messages, true);
 
 export const deleteSent = messages => async dispatch => {
-  const endpoint = 'http://localhost:5000/api/v1/message/delete/sent';
+  const endpoint = '/api/v1/message/delete/sent';
   await updateMail(endpoint, messages, dispatch);
 };
 export const deleteTrash = messages => async dispatch => {
-  const endpoint = 'http://localhost:5000/api/v1/message/delete/trash';
+  const endpoint = '/api/v1/message/delete/trash';
   await updateMail(endpoint, messages, dispatch);
 };
 
@@ -147,7 +147,7 @@ export const sendMessage = async (msgRecipients, msgSubject, msgBody) => {
     subject: msgSubject,
     body: msgBody
   };
-  const res = await fetch('http://localhost:5000/api/v1/message', {
+  const res = await fetch('/api/v1/message', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',

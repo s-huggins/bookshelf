@@ -31,7 +31,7 @@ export const clearLandingAuthFail = () => ({ type: CLEAR_LANDING_AUTH_FAIL });
 
 export const register = (userData, fromLanding = false) => async dispatch => {
   try {
-    const res = await fetch('http://localhost:5000/api/v1/users/signup', {
+    const res = await fetch('/api/v1/users/signup', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
@@ -75,7 +75,7 @@ export const register = (userData, fromLanding = false) => async dispatch => {
 
 export const logIn = userData => async dispatch => {
   try {
-    const res = await fetch('http://localhost:5000/api/v1/users/login', {
+    const res = await fetch('/api/v1/users/login', {
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
@@ -117,7 +117,7 @@ export const logIn = userData => async dispatch => {
 export const setCurrentUser = () => async dispatch => {
   if (localStorage.jwt) {
     const jwtHeader = `Bearer ${localStorage.jwt}`;
-    const res = await fetch('http://localhost:5000/api/v1/users', {
+    const res = await fetch('/api/v1/users', {
       headers: {
         Accept: 'application/json',
         Authorization: jwtHeader
@@ -176,7 +176,7 @@ const resolveAccountEdit = (json, dispatch) => {
 
 export const editEmail = (email, password) => async dispatch => {
   const token = store.getState().auth.token;
-  const res = await fetch('http://localhost:5000/api/v1/users/updateEmail', {
+  const res = await fetch('/api/v1/users/updateEmail', {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
@@ -196,7 +196,7 @@ export const editPassword = (
   newPassword
 ) => async dispatch => {
   const token = store.getState().auth.token;
-  const res = await fetch('http://localhost:5000/api/v1/users/updatePassword', {
+  const res = await fetch('/api/v1/users/updatePassword', {
     method: 'PATCH',
     headers: {
       Accept: 'application/json',
@@ -213,7 +213,7 @@ export const editPassword = (
 
 export const deleteAccount = password => async dispatch => {
   const token = store.getState().auth.token;
-  const res = await fetch('http://localhost:5000/api/v1/users', {
+  const res = await fetch('/api/v1/users', {
     method: 'DELETE',
     headers: {
       Accept: 'application/json',
@@ -265,7 +265,7 @@ export const clearEditStatus = () => ({
 });
 
 export const sendFriendRequest = profileId => async dispatch => {
-  const uri = `http://localhost:5000/api/v1/profile/friendRequests/outgoing/${profileId}`;
+  const uri = `/api/v1/profile/friendRequests/outgoing/${profileId}`;
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {
@@ -289,7 +289,7 @@ export const sendFriendRequest = profileId => async dispatch => {
 };
 
 export const cancelFriendRequest = profileId => async dispatch => {
-  const uri = `http://localhost:5000/api/v1/profile/friendRequests/outgoing/${profileId}`;
+  const uri = `/api/v1/profile/friendRequests/outgoing/${profileId}`;
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {
@@ -313,7 +313,7 @@ export const cancelFriendRequest = profileId => async dispatch => {
 };
 
 export const acceptFriendRequest = profileId => async dispatch => {
-  const uri = `http://localhost:5000/api/v1/profile/friendRequests/incoming/${profileId}`;
+  const uri = `/api/v1/profile/friendRequests/incoming/${profileId}`;
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {
@@ -338,7 +338,7 @@ export const acceptFriendRequest = profileId => async dispatch => {
 };
 
 export const ignoreFriendRequest = profileId => async dispatch => {
-  const uri = `http://localhost:5000/api/v1/profile/friendRequests/incoming/${profileId}`;
+  const uri = `/api/v1/profile/friendRequests/incoming/${profileId}`;
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {
@@ -362,7 +362,7 @@ export const ignoreFriendRequest = profileId => async dispatch => {
 };
 
 export const removeFriend = profileId => async dispatch => {
-  const uri = `http://localhost:5000/api/v1/profile/friends/${profileId}`;
+  const uri = `/api/v1/profile/friends/${profileId}`;
   const token = store.getState().auth.token;
 
   const res = await fetch(uri, {
