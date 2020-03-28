@@ -9,7 +9,7 @@
     "server": "nodemon server.js",
     "client": "cd client && npm start",
     "dev": "concurrently -n 'server,client' -c 'green,blue' \"npm run server\" \"npm run client\"",
-    "heroku-postbuild": "cd client && npm install --only=dev && npm run build"
+    "heroku-postbuild": "cd client && npm install && npm run build"
   },
   "engines": {
     "node": "12.13.1",
@@ -44,6 +44,7 @@
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "multer-gridfs-storage": "^4.0.1",
+    "node-sass": "^4.13.1",
     "nodemailer": "^6.3.1",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.8",
