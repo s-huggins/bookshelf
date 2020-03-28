@@ -18,11 +18,13 @@ const app = express();
 
 app.use(helmet());
 
-app.use(
-  cors({
-    origin: 'http://localhost:3000'
-  })
-);
+// app.use(
+//   cors({
+//     origin: 'http://localhost:3000'
+//   })
+// );
+
+app.use(cors());
 
 /**
  * // limit requests to API
