@@ -7,7 +7,7 @@ const {
   signinValidator
 } = require('../../../../controllers/authValidators');
 
-// api/v1/users/
+// /api/v1/users/
 const router = express.Router();
 const { protect, restrictTo } = authController;
 

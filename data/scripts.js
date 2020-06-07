@@ -6,7 +6,7 @@ const request = require('request-promise-native');
 // makeFriends(20);
 // addCurrentlyReading(34);
 // acceptAllFriendRequests();
-SendMessagesSync(51);
+// SendMessagesSync(51);
 
 async function SendMessagesSync(n) {
   await createAccount('1-test');
@@ -17,7 +17,7 @@ async function SendMessagesSync(n) {
   for (let i = 1; i <= n; i++) {
     await request
       .post({
-        url: `http://localhost:5000/api/v1/message`,
+        url: `http://localhost:5000http://localhost:5000/api/v1/message`,
         json: true,
         auth: {
           bearer: token
@@ -47,7 +47,7 @@ async function sendMessagesAsync() {
   for (let i = 1; i <= 50; i++) {
     const message = request
       .post({
-        url: `http://localhost:5000/api/v1/message`,
+        url: `http://localhost:5000http://localhost:5000/api/v1/message`,
         json: true,
         auth: {
           bearer: token
@@ -75,7 +75,7 @@ async function sendMessagesAsync() {
 
 function createTestAccount(name) {
   return request.post({
-    url: 'http://localhost:5000/api/v1/users/signup',
+    url: 'http://localhost:5000http://localhost:5000/api/v1/users/signup',
     json: true,
     body: {
       name,
@@ -115,7 +115,7 @@ async function acceptAllFriendRequests() {
 function acceptFriendRequest(token, profileId) {
   return request
     .post({
-      url: `http://localhost:5000/api/v1/profile/friendRequests/incoming/${profileId}`,
+      url: `http://localhost:5000http://localhost:5000/api/v1/profile/friendRequests/incoming/${profileId}`,
       json: true,
       auth: {
         bearer: token
@@ -139,7 +139,7 @@ function acceptFriendRequest(token, profileId) {
 function signIn(email, password) {
   return request
     .post({
-      url: 'http://localhost:5000/api/v1/users/login',
+      url: 'http://localhost:5000http://localhost:5000/api/v1/users/login',
       json: true,
       body: {
         email,
@@ -164,7 +164,7 @@ function fetchProfile(token) {
   // send request for profile
   return request
     .get({
-      url: 'http://localhost:5000/api/v1/profile',
+      url: 'http://localhost:5000http://localhost:5000/api/v1/profile',
       json: true,
       auth: {
         bearer: token
@@ -193,7 +193,8 @@ function addCurrentlyReading(bookId) {
       const token = tokens[i];
 
       request.patch({
-        url: 'http://localhost:5000/api/v1/profile/bookshelves',
+        url:
+          'http://localhost:5000http://localhost:5000/api/v1/profile/bookshelves',
         json: true,
         auth: {
           bearer: token
@@ -234,7 +235,7 @@ async function makeFriends(count) {
 function createAccount(name) {
   return request
     .post({
-      url: 'http://localhost:5000/api/v1/users/signup',
+      url: 'http://localhost:5000http://localhost:5000/api/v1/users/signup',
       json: true,
       body: {
         name,
@@ -254,7 +255,8 @@ function createAccount(name) {
 function sendFriendRequest(token) {
   return request
     .post({
-      url: 'http://localhost:5000/api/v1/profile/friendRequests/outgoing/1',
+      url:
+        'http://localhost:5000http://localhost:5000/api/v1/profile/friendRequests/outgoing/1',
       json: true,
       auth: {
         bearer: token
@@ -296,7 +298,7 @@ function saveToken(token) {
 function removeAccount(token) {
   request
     .delete({
-      url: 'http://localhost:5000/api/v1/users/',
+      url: 'http://localhost:5000http://localhost:5000/api/v1/users/',
       json: true,
       body: {
         password: '12345678'

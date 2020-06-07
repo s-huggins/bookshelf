@@ -6,7 +6,7 @@ const avatarRouter = require('./avatarRoutes');
 // const { protect, restrictTo } = authController;
 const { protect } = authController;
 
-// nested route: api/v1/users/:userId/profile
+// nested route: /api/v1/users/:userId/profile
 const router = express.Router({ mergeParams: true });
 
 router.use('/avatar', avatarRouter);

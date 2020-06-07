@@ -42,17 +42,22 @@ class GlobalErrorBoundary extends Component {
 
             <div className="GlobalError page-container">
               <h1>Something went wrong!</h1>
-              <div className="button-bar">
-                <button
-                  className="btn btn--light"
-                  onClick={this.handleNavigateAway}
-                >
-                  Back to my Profile
-                </button>
-                <button className="btn btn--light" onClick={this.handleSignOut}>
-                  Sign out
-                </button>
-              </div>
+              {this.props.isAuthenticated && (
+                <div className="button-bar">
+                  <button
+                    className="btn btn--light"
+                    onClick={this.handleNavigateAway}
+                  >
+                    Back to my Profile
+                  </button>
+                  <button
+                    className="btn btn--light"
+                    onClick={this.handleSignOut}
+                  >
+                    Sign out
+                  </button>
+                </div>
+              )}
             </div>
           </main>
         )}

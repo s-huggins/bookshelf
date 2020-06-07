@@ -128,6 +128,7 @@ exports.restrictTo = (...roles) => {
 /* Handlers */
 
 exports.signup = catchAsync(async (req, res) => {
+  console.log('TEST');
   User.once('profileWasCreated', newUser => {
     createAndSendToken(newUser, 201, res);
   });

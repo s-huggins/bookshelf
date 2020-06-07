@@ -25,11 +25,17 @@ app.use(helmet());
 // );
 
 app.options('*', cors());
-app.use(
+if (process.env.NODE_ENV === 'production') {
   cors({
     origin: 'https://goodreads-clone.herokuapp.com'
-  })
-);
+  });
+} else {
+  app.use(
+    cors({
+      origin: '*'
+    })
+  );
+}
 
 /**
  * // limit requests to API
@@ -62,8 +68,8 @@ app.use(xssClean());
 //   next();
 // });
 
-app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/profile', profileRouter);
+app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/search', searchRouter);
 app.use('/api/v1/book', bookRouter);
 app.use('/api/v1/author', authorRouter);
@@ -78,6 +84,7 @@ if (process.env.NODE_ENV === 'production') {
   });
 } else {
   app.all('*', (req, res, next) => {
+    console.log('FAIL');
     next(new AppError(`Can't find ${req.originalUrl}`, 404));
   });
 }
