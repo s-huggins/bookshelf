@@ -30,7 +30,7 @@ const Search = ({ location, history }) => {
   const [searching, setSearching] = useState(false);
   const [page, setPage] = useState(1);
 
-  const searchStatus = useSelector(state => state.search.searchStatus);
+  const { searchStatus, bookResults } = useSelector(state => state.search);
   const dispatch = useDispatch();
 
   /* INITIAL MOUNT AND QUERY STRING CHANGE */
@@ -55,7 +55,7 @@ const Search = ({ location, history }) => {
     if (searchStatus !== '') {
       setSearching(false);
     }
-  }, [searchStatus]);
+  }, [bookResults]);
 
   useEffect(() => {
     if (!searching) {
