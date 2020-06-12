@@ -12,10 +12,14 @@ export const searchBooks = (query, filter, page) => async dispatch => {
 
   const token = store.getState().auth.token;
 
-  const url = new URL(uri);
-  url.search = new URLSearchParams({ q: query, 'search[field]': filter, page });
+  // ***** FOLLOWING LINES BREAK WHEN DEPLOYED ******
+  // let url = new URL(uri);
+  // url.search = new URLSearchParams({ q: query, 'search[field]': filter, page });
+  // url = url.toString();
 
-  const res = await fetch(url.toString(), {
+  const url = `${uri}?q=${query}&search[field]=${filter}&page=${page}`;
+
+  const res = await fetch(url, {
     method: 'GET',
     headers: {
       Accept: 'application/json',
