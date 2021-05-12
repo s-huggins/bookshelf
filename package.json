@@ -45,7 +45,7 @@
     "multer": "^1.4.2",
     "multer-gridfs-storage": "^4.0.1",
     "node-sass": "^4.13.1",
-    "nodemailer": "^6.3.1",
+    "nodemailer": "^6.4.16",
     "request": "^2.88.0",
     "request-promise-native": "^1.0.8",
     "validator": "^12.1.0",
