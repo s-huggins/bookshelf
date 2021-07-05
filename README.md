@@ -6,4 +6,4 @@ Deployed live [here](https://goodreads-clone.herokuapp.com).
 
 ## † Important Update (10/12/2020) †
 
-Unfortunately, Goodreads has decided to permanently rm the public API that was integral to the functioning of this project. While it remains deployed at the above link, the project is now lifeless and defunct without API support.
+Unfortunately Goodreads has decided to permanently rm the public API that was integral to the functioning of this project. While it remains deployed at the above link, the project is now lifeless and defunct without API support.
